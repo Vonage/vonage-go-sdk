@@ -28,6 +28,7 @@ type Client interface {
 	SetConnectionTimeout(timeout time.Duration)
 	SetSoTimeout(timeout time.Duration)
 	Verify(VerifyRequest) (*VerifyResponse, error)
+	Check(requestID, code string) (*CheckResponse, error)
 }
 
 // NewClient creates a Client for sending requests to Nexmo.

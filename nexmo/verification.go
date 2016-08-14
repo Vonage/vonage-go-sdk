@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"strconv"
 	"time"
 )
 
@@ -14,14 +13,14 @@ import (
 //
 // Parameter values are documented at https://docs.nexmo.com/verify/api-reference/api-reference
 type VerifyRequest struct {
-	Number string
-	Brand string
-	Country string
-	SenderID string
-	CodeLength int
-	Locale string
-	RequireType string
-	PinExpiry	time.Duration
+	Number        string
+	Brand         string
+	Country       string
+	SenderID      string
+	CodeLength    int
+	Locale        string
+	RequireType   string
+	PinExpiry     time.Duration
 	NextEventWait time.Duration
 }
 
@@ -55,7 +54,7 @@ func (request VerifyRequest) toURLValues(params *url.Values) {
 func NewVerifyRequest(number, brand string) VerifyRequest {
 	return VerifyRequest{
 		Number: number,
-		Brand: brand,
+		Brand:  brand,
 	}
 }
 
@@ -69,10 +68,6 @@ type verificationResponse struct {
 	RequestID string `json:"request_id"`
 	Status    string `json:"status"`
 	ErrorText string `json:"error_text"`
-}
-
-func (response verificationResponse) StatusCode() (int, error) {
-	return strconv.Atoi(response.Status)
 }
 
 func (client nexmoClient) Verify(request VerifyRequest) (*VerifyResponse, error) {
@@ -95,22 +90,7 @@ func (client nexmoClient) Verify(request VerifyRequest) (*VerifyResponse, error)
 	}
 	url.RawQuery = params.Encode()
 
-	httpRequest, err := http.NewRequest("GET", url.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	response, err := http.DefaultClient.Do(httpRequest)
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
-
-	if response.StatusCode != 200 {
-		return nil, fmt.Errorf("Unexpected response from server: %d %s", response.StatusCode, response.Status)
-	}
-
-	bytes, err := ioutil.ReadAll(response.Body)
+	bytes, err := urlSlurp(url.String())
 	if err != nil {
 		return nil, err
 	}
@@ -125,13 +105,91 @@ func parseVerifyResponse(data []byte) (*VerifyResponse, error) {
 		return nil, err
 	}
 
-	statusCode, err := response.StatusCode()
-	if err != nil {
-		return nil, err
-	}
-	if statusCode != 0 {
+	if response.Status != "0" {
 		return nil, fmt.Errorf("%s: %s", response.Status, response.ErrorText)
 	}
 
 	return &VerifyResponse{RequestID: response.RequestID}, err
+}
+
+// CheckResponse holds the values returned from a successful check request.
+type CheckResponse struct {
+	EventID  string
+	Price    string
+	Currency string
+}
+
+type checkResponse struct {
+	EventID   string `json:"event_id"`
+	Status    string `json:"status"`
+	Price     string `json:"price"`
+	Currency  string `json:"currency"`
+	ErrorText string `json:"error_text"`
+}
+
+func (response checkResponse) toPublic() *CheckResponse {
+	return &CheckResponse{
+		EventID:  response.EventID,
+		Price:    response.Price,
+		Currency: response.Currency,
+	}
+}
+
+func buildCheckURL(client *nexmoClient, requestID, code string) (string, error) {
+	params := url.Values{}
+	params.Set("api_key", client.apiKey)
+	params.Set("api_secret", client.apiSecret)
+	params.Set("request_id", requestID)
+	params.Set("code", code)
+
+	url, err := url.Parse(client.baseURL + pathVerifyCheck)
+	if err != nil {
+		return "", err
+	}
+	url.RawQuery = params.Encode()
+
+	return url.String(), nil
+}
+
+func parseCheckResponse(data []byte) (*CheckResponse, error) {
+	response := checkResponse{}
+	err := json.Unmarshal(data, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	if response.Status != "0" {
+		return nil, fmt.Errorf("%s: %s", response.Status, response.ErrorText)
+	}
+
+	return response.toPublic(), err
+}
+
+func (client nexmoClient) Check(requestID, code string) (*CheckResponse, error) {
+	url, err := buildCheckURL(&client, requestID, code)
+	if err != nil {
+		return nil, err
+	}
+
+	bytes, err := urlSlurp(url)
+	if err != nil {
+		return nil, err
+	}
+
+	return parseCheckResponse(bytes)
+}
+
+// Utility function for making a GET request and returning the body's bytes.
+func urlSlurp(url string) ([]byte, error) {
+	response, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode != 200 {
+		return nil, fmt.Errorf("Unexpected response from server: %d %s", response.StatusCode, response.Status)
+	}
+
+	return ioutil.ReadAll(response.Body)
 }
