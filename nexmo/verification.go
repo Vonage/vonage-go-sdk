@@ -19,7 +19,7 @@ func (response verificationResponse) StatusCode() (int, error) {
 	return strconv.Atoi(response.Status)
 }
 
-func (client nexmoClient) Verify(number, brand, from string, length int, locale string) (*VerificationResponse, error) {
+func (client nexmoClient) Verify(number, brand, from string, length int, locale string) (*VerifyResponse, error) {
 	// TODO: Missing a couple of params, and locale is unused.
 	// TODO: Timeouts are currently ignored.
 
@@ -62,7 +62,7 @@ func (client nexmoClient) Verify(number, brand, from string, length int, locale 
 	return parseVerifyResponse(bytes)
 }
 
-func parseVerifyResponse(data []byte) (*VerificationResponse, error) {
+func parseVerifyResponse(data []byte) (*VerifyResponse, error) {
 	response := verificationResponse{}
 	err := json.Unmarshal(data, &response)
 	if err != nil {
@@ -77,5 +77,5 @@ func parseVerifyResponse(data []byte) (*VerificationResponse, error) {
 		return nil, fmt.Errorf("%s: %s", response.Status, response.ErrorText)
 	}
 
-	return &VerificationResponse{RequestID: response.RequestID}, err
+	return &VerifyResponse{RequestID: response.RequestID}, err
 }
