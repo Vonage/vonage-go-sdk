@@ -8,11 +8,11 @@ func TestParseVerifyResponseSuccess(t *testing.T) {
 		t.Errorf("err was not nil, was %s instead", err)
 		return
 	}
-	if response == "" {
+	if response == nil {
 		t.Errorf("Response was empty!")
 		return
 	}
-	if response != "e80c552b22054bbc8b95e521520b0e1c" {
+	if response.RequestID != "e80c552b22054bbc8b95e521520b0e1c" {
 		t.Errorf("Returned RequestID was incorrect: %s", response)
 		return
 	}
@@ -20,7 +20,7 @@ func TestParseVerifyResponseSuccess(t *testing.T) {
 
 func TestParseVerifyResponseFailure(t *testing.T) {
 	response, err := parseVerifyResponse([]byte(`{"status":"2","error_text":"Missing username"}`))
-	if response != "" {
+	if response != nil {
 		t.Errorf("response was not empty! Instead it was %s", response)
 		return
 	}
