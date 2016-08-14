@@ -27,9 +27,7 @@ type Client interface {
 	SetBaseURL(baseURL string)
 	SetConnectionTimeout(timeout time.Duration)
 	SetSoTimeout(timeout time.Duration)
-
-	//
-	Verify(number, brand, from string, length int, locale string) (*VerifyResponse, error)
+	Verify(VerifyRequest) (*VerifyResponse, error)
 }
 
 // NewClient creates a Client for sending requests to Nexmo.
@@ -41,8 +39,4 @@ func NewClient(apiKey, apiSecret string) Client {
 		connectionTimeout: DefaultConnectionTimeout,
 		soTimeout:         DefaultSoTimeout,
 	}
-}
-
-type VerifyResponse struct {
-	RequestID string
 }
