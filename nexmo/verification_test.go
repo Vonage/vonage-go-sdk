@@ -33,3 +33,97 @@ func TestParseVerifyResponseFailure(t *testing.T) {
 		return
 	}
 }
+
+func TestParseVerifySearchResponseSuccess(t *testing.T) {
+	bytes := []byte(`{
+	"request_id": "ad883d3ba753473694d9d6c70f529124",
+	"account_id": "accountID",
+	"number": "447720444444",
+	"sender_id": "verify",
+	"date_submitted": "2016-08-14 10:45:26",
+	"date_finalized": "2016-08-14 10:45:37",
+	"checks": [
+		{
+		"date_received": "2016-08-14 10:45:37",
+		"code": "1111",
+		"status": "VALID",
+		"ip_address": ""
+		}
+	],
+	"first_event_date": "2016-08-14 10:45:26",
+	"last_event_date": "2016-08-14 10:45:26",
+	"price": "0.10000000",
+	"currency": "EUR",
+	"status": "SUCCESS"
+	}`)
+
+	response, err := parseVerifySearchResponse(bytes)
+	if err != nil {
+		t.Errorf("err was non-nil! %s", err)
+		return
+	}
+	assertString(t, response.RequestID, "ad883d3ba753473694d9d6c70f529124")
+	assertString(t, response.Checks[0].Code, "1111")
+}
+
+func TestParseVerifySearchResponseFailure(t *testing.T) {
+	bytes := []byte(`{"status":"101","error_text":"No response found"}`)
+
+	response, err := parseVerifySearchResponse(bytes)
+	if response != nil {
+		t.Errorf("response was non-nil! %s", response)
+	}
+
+	if err == nil {
+		t.Errorf("Error should have been non-nil!")
+	}
+
+	assertString(t, err.Error(), "101: No response found")
+}
+
+func assertString(t *testing.T, value, expected string) {
+	if value != expected {
+		t.Errorf("Expected %s to be %s", value, expected)
+	}
+}
+
+func TestParseVerifySearchResponseMultiple(t *testing.T) {
+	bytes := []byte(`{
+	"verification_requests": [
+		{
+		"request_id": "ad883d3ba753473694d9d6c70f529124",
+		"account_id": "accountID",
+		"number": "447720444444",
+		"sender_id": "verify",
+		"date_submitted": "2016-08-14 10:45:26",
+		"date_finalized": "2016-08-14 10:45:37",
+		"checks": [
+			{
+			"date_received": "2016-08-14 10:45:37",
+			"code": "1111",
+			"status": "VALID",
+			"ip_address": ""
+			}
+		],
+		"first_event_date": "2016-08-14 10:45:26",
+		"last_event_date": "2016-08-14 10:45:26",
+		"price": "0.10000000",
+		"currency": "EUR",
+		"status": "SUCCESS"
+		}
+	]
+	}`)
+
+	response, err := parseVerifySearchResponseMultiple(bytes)
+	if err != nil {
+		t.Errorf("err was non-nil! %s", err)
+		return
+	}
+
+	if len(response) != 1 {
+		t.Errorf("Length of response expected to be 1. Instead was %d", len(response))
+		return
+	}
+	assertString(t, response[0].RequestID, "ad883d3ba753473694d9d6c70f529124")
+	assertString(t, response[0].Checks[0].Code, "1111")
+}

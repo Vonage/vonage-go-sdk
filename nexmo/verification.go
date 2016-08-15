@@ -9,6 +9,15 @@ import (
 	"time"
 )
 
+// PathVerify is the endpoint path for submitting verification requests
+const pathVerify = "/verify/json"
+
+// PathVerifyCheck is the endpoint path for submitting verification check requests
+const pathVerifyCheck = "/verify/check/json"
+
+// PathVerifySearch is the endpoint path for submitting verification search requests
+const pathVerifySearch = "/verify/search/json"
+
 // VerifyRequest encapsulates all of the possible arguments for a verify call.
 //
 // Parameter values are documented at https://docs.nexmo.com/verify/api-reference/api-reference
@@ -192,4 +201,109 @@ func urlSlurp(url string) ([]byte, error) {
 	}
 
 	return ioutil.ReadAll(response.Body)
+}
+
+//----------------------------------------------------------------------------
+
+type VerifySearchResponse struct {
+	RequestID      string        `json:"request_id"`
+	AccountID      string        `json:"account_id"`
+	Number         string        `json:"number"`
+	SenderID       string        `json:"sender_id"`
+	DateSubmitted  string        `json:"date_submitted"`
+	DateFinalized  string        `json:"date_finalized"`
+	FirstEventDate string        `json:"first_event_date"`
+	LastEventDate  string        `json:"last_event_date"`
+	Status         string        `json:"status"`
+	Price          string        `json:"price"`
+	Currency       string        `json:"currency"`
+	ErrorText      string        `json:"error_text"`
+	Checks         []VerifyCheck `json:"checks"`
+}
+
+type verifySearchResponseMultiple struct {
+	VerificationRequests []VerifySearchResponse `json:"verification_requests"`
+}
+
+type VerifyCheck struct {
+	DateReceived string `json:"date_received"`
+	Code         string `json:"code"`
+	Status       string `json:"status"`
+	IPAddress    string `json:"ip_address"`
+}
+
+func parseVerifySearchResponse(data []byte) (*VerifySearchResponse, error) {
+	response := VerifySearchResponse{}
+	err := json.Unmarshal(data, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	if response.Status != "SUCCESS" {
+		return nil, fmt.Errorf("%s: %s", response.Status, response.ErrorText)
+	}
+
+	return &response, err
+}
+
+func parseVerifySearchResponseMultiple(data []byte) ([]VerifySearchResponse, error) {
+	response := verifySearchResponseMultiple{}
+	err := json.Unmarshal(data, &response)
+	if err != nil {
+		return nil, err
+	}
+	return response.VerificationRequests, err
+}
+
+func buildVerifySearchURL(client *nexmoClient, requestID []string) (string, error) {
+	params := url.Values{}
+	params.Set("api_key", client.apiKey)
+	params.Set("api_secret", client.apiSecret)
+
+	switch len(requestID) {
+	case 0:
+		return "", fmt.Errorf("At least one requestID must be provided.")
+	case 1:
+		params.Set("request_id", requestID[0])
+	default:
+		for _, id := range requestID {
+			params.Add("request_ids", id)
+		}
+	}
+
+	url, err := url.Parse(client.baseURL + pathVerifyCheck)
+	if err != nil {
+		return "", err
+	}
+	url.RawQuery = params.Encode()
+
+	return url.String(), nil
+}
+
+func (client nexmoClient) VerifySearch(requestID string) (*VerifySearchResponse, error) {
+	url, err := buildVerifySearchURL(&client, []string{requestID})
+	if err != nil {
+		return nil, err
+	}
+
+	bytes, err := urlSlurp(url)
+	if err != nil {
+		return nil, err
+	}
+
+	return parseVerifySearchResponse(bytes)
+}
+
+func (client nexmoClient) VerifySearchMultiple(requestID ...string) ([]VerifySearchResponse, error) {
+	url, err := buildVerifySearchURL(&client, requestID)
+	if err != nil {
+		return nil, err
+	}
+
+	bytes, err := urlSlurp(url)
+	if err != nil {
+		return nil, err
+	}
+
+	return parseVerifySearchResponseMultiple(bytes)
 }
