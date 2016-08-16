@@ -20,18 +20,22 @@ func TestParseVerifyResponseSuccess(t *testing.T) {
 
 func TestParseVerifyResponseFailure(t *testing.T) {
 	response, err := parseVerifyResponse([]byte(`{"status":"2","error_text":"Missing username"}`))
-	if response != nil {
-		t.Errorf("response was not empty! Instead it was %s", response)
+	if err != nil {
+		t.Errorf("err was not nil! Instead it was %s", err)
+	}
+	if response == nil {
+		t.Errorf("response was empty!")
 		return
 	}
-	if err == nil {
-		t.Errorf("err was nil!")
-		return
+
+	if response.Status != "2" {
+		t.Errorf("response.Status should have been \"2\". Instead it was %s", response.Status)
 	}
-	if err.Error() != "2: Missing username" {
-		t.Errorf("Error message was incorrect: \"%s\"", err)
-		return
+
+	if response.ErrorText != "Missing username" {
+		t.Errorf("response.ErrorText had the wrong value: %s", response.ErrorText)
 	}
+
 }
 
 func TestParseVerifySearchResponseSuccess(t *testing.T) {

@@ -18,6 +18,9 @@ const pathVerifyCheck = "/verify/check/json"
 // PathVerifySearch is the endpoint path for submitting verification search requests
 const pathVerifySearch = "/verify/search/json"
 
+// PathVerifyControl is the endpoint path for submitting verification control requests
+const pathVerifyControl = "/verify/control/json"
+
 // VerifyRequest encapsulates all of the possible arguments for a verify call.
 //
 // Parameter values are documented at https://docs.nexmo.com/verify/api-reference/api-reference
@@ -67,13 +70,8 @@ func NewVerifyRequest(number, brand string) VerifyRequest {
 	}
 }
 
-// VerifyResponse holds the values returned by a successful verify call.
-type VerifyResponse struct {
-	RequestID string
-}
-
 // verificationResponse holds the raw API struct returned by a verify call.
-type verificationResponse struct {
+type VerifyResponse struct {
 	RequestID string `json:"request_id"`
 	Status    string `json:"status"`
 	ErrorText string `json:"error_text"`
@@ -108,40 +106,22 @@ func (client nexmoClient) Verify(request VerifyRequest) (*VerifyResponse, error)
 }
 
 func parseVerifyResponse(data []byte) (*VerifyResponse, error) {
-	response := verificationResponse{}
+	response := VerifyResponse{}
 	err := json.Unmarshal(data, &response)
 	if err != nil {
 		return nil, err
 	}
 
-	if response.Status != "0" {
-		return nil, fmt.Errorf("%s: %s", response.Status, response.ErrorText)
-	}
-
-	return &VerifyResponse{RequestID: response.RequestID}, err
+	return &response, err
 }
 
 // CheckResponse holds the values returned from a successful check request.
 type CheckResponse struct {
-	EventID  string
-	Price    string
-	Currency string
-}
-
-type checkResponse struct {
 	EventID   string `json:"event_id"`
 	Status    string `json:"status"`
 	Price     string `json:"price"`
 	Currency  string `json:"currency"`
 	ErrorText string `json:"error_text"`
-}
-
-func (response checkResponse) toPublic() *CheckResponse {
-	return &CheckResponse{
-		EventID:  response.EventID,
-		Price:    response.Price,
-		Currency: response.Currency,
-	}
 }
 
 func buildCheckURL(client *nexmoClient, requestID, code string) (string, error) {
@@ -161,17 +141,13 @@ func buildCheckURL(client *nexmoClient, requestID, code string) (string, error) 
 }
 
 func parseCheckResponse(data []byte) (*CheckResponse, error) {
-	response := checkResponse{}
+	response := CheckResponse{}
 	err := json.Unmarshal(data, &response)
 	if err != nil {
 		return nil, err
 	}
 
-	if response.Status != "0" {
-		return nil, fmt.Errorf("%s: %s", response.Status, response.ErrorText)
-	}
-
-	return response.toPublic(), err
+	return &response, err
 }
 
 func (client nexmoClient) Check(requestID, code string) (*CheckResponse, error) {
