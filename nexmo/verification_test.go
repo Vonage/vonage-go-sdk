@@ -74,15 +74,12 @@ func TestParseVerifySearchResponseFailure(t *testing.T) {
 	bytes := []byte(`{"status":"101","error_text":"No response found"}`)
 
 	response, err := parseVerifySearchResponse(bytes)
-	if response != nil {
-		t.Errorf("response was non-nil! %s", response)
+
+	if err != nil {
+		t.Errorf("Error should have been nil!")
 	}
 
-	if err == nil {
-		t.Errorf("Error should have been non-nil!")
-	}
-
-	assertString(t, err.Error(), "101: No response found")
+	assertString(t, response.Status, "101")
 }
 
 func assertString(t *testing.T, value, expected string) {
@@ -124,10 +121,10 @@ func TestParseVerifySearchResponseMultiple(t *testing.T) {
 		return
 	}
 
-	if len(response) != 1 {
-		t.Errorf("Length of response expected to be 1. Instead was %d", len(response))
-		return
-	}
-	assertString(t, response[0].RequestID, "ad883d3ba753473694d9d6c70f529124")
-	assertString(t, response[0].Checks[0].Code, "1111")
+	// if len(response) != 1 {
+	// 	t.Errorf("Length of response expected to be 1. Instead was %d", len(response))
+	// 	return
+	// }
+	assertString(t, response.VerificationRequests[0].RequestID, "ad883d3ba753473694d9d6c70f529124")
+	assertString(t, response.VerificationRequests[0].Checks[0].Code, "1111")
 }

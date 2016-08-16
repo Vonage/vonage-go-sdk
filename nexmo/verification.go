@@ -197,7 +197,7 @@ type VerifySearchResponse struct {
 	Checks         []VerifyCheck `json:"checks"`
 }
 
-type verifySearchResponseMultiple struct {
+type VerifySearchResponses struct {
 	VerificationRequests []VerifySearchResponse `json:"verification_requests"`
 }
 
@@ -215,20 +215,16 @@ func parseVerifySearchResponse(data []byte) (*VerifySearchResponse, error) {
 		return nil, err
 	}
 
-	if response.Status != "SUCCESS" {
-		return nil, fmt.Errorf("%s: %s", response.Status, response.ErrorText)
-	}
-
 	return &response, err
 }
 
-func parseVerifySearchResponseMultiple(data []byte) ([]VerifySearchResponse, error) {
-	response := verifySearchResponseMultiple{}
+func parseVerifySearchResponseMultiple(data []byte) (*VerifySearchResponses, error) {
+	response := VerifySearchResponses{}
 	err := json.Unmarshal(data, &response)
 	if err != nil {
 		return nil, err
 	}
-	return response.VerificationRequests, err
+	return &response, err
 }
 
 func buildVerifySearchURL(client *nexmoClient, requestID []string) (string, error) {
@@ -247,7 +243,7 @@ func buildVerifySearchURL(client *nexmoClient, requestID []string) (string, erro
 		}
 	}
 
-	url, err := url.Parse(client.baseURL + pathVerifyCheck)
+	url, err := url.Parse(client.baseURL + pathVerifySearch)
 	if err != nil {
 		return "", err
 	}
@@ -270,7 +266,7 @@ func (client nexmoClient) VerifySearch(requestID string) (*VerifySearchResponse,
 	return parseVerifySearchResponse(bytes)
 }
 
-func (client nexmoClient) VerifySearchMultiple(requestID ...string) ([]VerifySearchResponse, error) {
+func (client nexmoClient) VerifySearchMultiple(requestID ...string) (*VerifySearchResponses, error) {
 	url, err := buildVerifySearchURL(&client, requestID)
 	if err != nil {
 		return nil, err
@@ -282,4 +278,49 @@ func (client nexmoClient) VerifySearchMultiple(requestID ...string) ([]VerifySea
 	}
 
 	return parseVerifySearchResponseMultiple(bytes)
+}
+
+func buildVerifyControlURL(client *nexmoClient, requestID, command string) (string, error) {
+	params := url.Values{}
+	params.Set("api_key", client.apiKey)
+	params.Set("api_secret", client.apiSecret)
+	params.Set("request_id", requestID)
+	params.Set("cmd", command)
+
+	url, err := url.Parse(client.baseURL + pathVerifyControl)
+	if err != nil {
+		return "", err
+	}
+	url.RawQuery = params.Encode()
+
+	return url.String(), nil
+}
+
+type VerifyControlResponse struct {
+	Status  string `json:"status"`
+	Command string `json:"command"`
+}
+
+func parseVerifyControlResponse(data []byte) (*VerifyControlResponse, error) {
+	response := VerifyControlResponse{}
+	err := json.Unmarshal(data, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	return &response, err
+}
+
+func (client nexmoClient) VerifySearchControl(requestID, command string) (*VerifyControlResponse, error) {
+	url, err := buildVerifySearchURL(&client, []string{requestID})
+	if err != nil {
+		return nil, err
+	}
+
+	bytes, err := urlSlurp(url)
+	if err != nil {
+		return nil, err
+	}
+
+	return parseVerifyControlResponse(bytes)
 }
