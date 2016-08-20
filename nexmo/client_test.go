@@ -3,7 +3,7 @@ package nexmo
 import "testing"
 
 func TestNewClient(t *testing.T) {
-	client := NewClient("abcd", "def")
+	client := NewClient("abcd", "def", nil)
 	switch client := client.(type) {
 	case *nexmoClient:
 		if client.apiKey != "abcd" {
@@ -18,7 +18,7 @@ func TestNewClient(t *testing.T) {
 }
 
 func TestSetBaseURL(t *testing.T) {
-	client := NewClient("abcd", "def")
+	client := NewClient("abcd", "def", nil)
 	client.SetBaseURL("a base url")
 	switch client := client.(type) {
 	case *nexmoClient:

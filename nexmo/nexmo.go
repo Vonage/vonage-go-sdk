@@ -1,34 +1,35 @@
 package nexmo
 
 import (
+	"net/http"
 	"time"
 )
 
 // DefaultBaseURL is the service url used unless overridden.
 const DefaultBaseURL = "https://api.nexmo.com"
 
-// DefaultConnectionTimeout of 5000ms used by this client unless specifically overridden onb the constructor
-const DefaultConnectionTimeout = 5000 * time.Millisecond
-
-// DefaultSoTimeout is the read timeout of 30000ms used by this client unless specifically overridden onb the constructor
-const DefaultSoTimeout = 30000 * time.Millisecond
+// defaultTimeout of 5000ms used by this client unless specifically overridden on the http.Client.
+const defaultTimeout = 5000 * time.Millisecond
 
 // Client represents a connection to the Nexmo API.
 type Client interface {
 	SetBaseURL(baseURL string)
-	SetConnectionTimeout(timeout time.Duration)
-	SetSoTimeout(timeout time.Duration)
 	Verify(VerifyRequest) (*VerifyResponse, error)
 	Check(requestID, code string) (*CheckResponse, error)
 }
 
 // NewClient creates a Client for sending requests to Nexmo.
-func NewClient(apiKey, apiSecret string) Client {
+func NewClient(apiKey, apiSecret string, client *http.Client) Client {
+	if client == nil {
+		client = &http.Client{
+			Timeout: defaultTimeout,
+		}
+	}
+
 	return &nexmoClient{
-		apiKey:            apiKey,
-		apiSecret:         apiSecret,
-		baseURL:           DefaultBaseURL,
-		connectionTimeout: DefaultConnectionTimeout,
-		soTimeout:         DefaultSoTimeout,
+		apiKey:     apiKey,
+		apiSecret:  apiSecret,
+		baseURL:    DefaultBaseURL,
+		httpClient: client,
 	}
 }

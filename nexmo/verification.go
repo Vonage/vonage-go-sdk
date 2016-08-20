@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/http"
 	"net/url"
 	"time"
 )
@@ -77,7 +76,7 @@ type VerifyResponse struct {
 	ErrorText string `json:"error_text"`
 }
 
-func (client nexmoClient) Verify(request VerifyRequest) (*VerifyResponse, error) {
+func (client *nexmoClient) Verify(request VerifyRequest) (*VerifyResponse, error) {
 	// TODO: Needs more validation.
 	// TODO: Timeouts are currently ignored.
 
@@ -97,7 +96,7 @@ func (client nexmoClient) Verify(request VerifyRequest) (*VerifyResponse, error)
 	}
 	url.RawQuery = params.Encode()
 
-	bytes, err := urlSlurp(url.String())
+	bytes, err := client.urlSlurp(url.String())
 	if err != nil {
 		return nil, err
 	}
@@ -150,13 +149,13 @@ func parseCheckResponse(data []byte) (*CheckResponse, error) {
 	return &response, err
 }
 
-func (client nexmoClient) Check(requestID, code string) (*CheckResponse, error) {
-	url, err := buildCheckURL(&client, requestID, code)
+func (client *nexmoClient) Check(requestID, code string) (*CheckResponse, error) {
+	url, err := buildCheckURL(client, requestID, code)
 	if err != nil {
 		return nil, err
 	}
 
-	bytes, err := urlSlurp(url)
+	bytes, err := client.urlSlurp(url)
 	if err != nil {
 		return nil, err
 	}
@@ -165,8 +164,8 @@ func (client nexmoClient) Check(requestID, code string) (*CheckResponse, error) 
 }
 
 // Utility function for making a GET request and returning the body's bytes.
-func urlSlurp(url string) ([]byte, error) {
-	response, err := http.Get(url)
+func (client *nexmoClient) urlSlurp(url string) ([]byte, error) {
+	response, err := client.httpClient.Get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -252,13 +251,13 @@ func buildVerifySearchURL(client *nexmoClient, requestID []string) (string, erro
 	return url.String(), nil
 }
 
-func (client nexmoClient) VerifySearch(requestID string) (*VerifySearchResponse, error) {
-	url, err := buildVerifySearchURL(&client, []string{requestID})
+func (client *nexmoClient) VerifySearch(requestID string) (*VerifySearchResponse, error) {
+	url, err := buildVerifySearchURL(client, []string{requestID})
 	if err != nil {
 		return nil, err
 	}
 
-	bytes, err := urlSlurp(url)
+	bytes, err := client.urlSlurp(url)
 	if err != nil {
 		return nil, err
 	}
@@ -266,13 +265,13 @@ func (client nexmoClient) VerifySearch(requestID string) (*VerifySearchResponse,
 	return parseVerifySearchResponse(bytes)
 }
 
-func (client nexmoClient) VerifySearchMultiple(requestID ...string) (*VerifySearchResponses, error) {
-	url, err := buildVerifySearchURL(&client, requestID)
+func (client *nexmoClient) VerifySearchMultiple(requestID ...string) (*VerifySearchResponses, error) {
+	url, err := buildVerifySearchURL(client, requestID)
 	if err != nil {
 		return nil, err
 	}
 
-	bytes, err := urlSlurp(url)
+	bytes, err := client.urlSlurp(url)
 	if err != nil {
 		return nil, err
 	}
@@ -311,13 +310,13 @@ func parseVerifyControlResponse(data []byte) (*VerifyControlResponse, error) {
 	return &response, err
 }
 
-func (client nexmoClient) VerifySearchControl(requestID, command string) (*VerifyControlResponse, error) {
-	url, err := buildVerifySearchURL(&client, []string{requestID})
+func (client *nexmoClient) VerifySearchControl(requestID, command string) (*VerifyControlResponse, error) {
+	url, err := buildVerifySearchURL(client, []string{requestID})
 	if err != nil {
 		return nil, err
 	}
 
-	bytes, err := urlSlurp(url)
+	bytes, err := client.urlSlurp(url)
 	if err != nil {
 		return nil, err
 	}

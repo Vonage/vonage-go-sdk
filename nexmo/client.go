@@ -1,23 +1,14 @@
 package nexmo
 
-import "time"
+import "net/http"
 
 type nexmoClient struct {
-	apiKey            string
-	apiSecret         string
-	baseURL           string
-	connectionTimeout time.Duration
-	soTimeout         time.Duration
+	apiKey     string
+	apiSecret  string
+	baseURL    string
+	httpClient *http.Client
 }
 
 func (client *nexmoClient) SetBaseURL(baseURL string) {
 	client.baseURL = baseURL
-}
-
-func (client *nexmoClient) SetConnectionTimeout(timeout time.Duration) {
-	client.connectionTimeout = timeout
-}
-
-func (client *nexmoClient) SetSoTimeout(timeout time.Duration) {
-	client.soTimeout = timeout
 }
