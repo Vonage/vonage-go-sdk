@@ -33,11 +33,17 @@ func NewAuthSet() *AuthSet {
 	return new(AuthSet)
 }
 
-func (a *AuthSet) SetAPISecret(apiKey, apiSecret string) {
-	a.apiSecret = &apiSecretAuth{
-		apiKey:    apiKey,
-		apiSecret: apiSecret,
+func (a *AuthSet) ApplyAPICredentials(request apiSecretRequest) {
+	a.apiSecret.apply(request)
+}
+
+func (a *AuthSet) ApplyJWT(sling *sling.Sling) error {
+	token, err := a.GenerateToken()
+	if err != nil {
+		return err
 	}
+	sling.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	return nil
 }
 
 func (a *AuthSet) GenerateToken() (string, error) {
@@ -45,6 +51,13 @@ func (a *AuthSet) GenerateToken() (string, error) {
 		return "", fmt.Errorf("must call SetApplicationAuth before calling GenerateToken")
 	}
 	return a.appAuth.generateToken()
+}
+
+func (a *AuthSet) SetAPISecret(apiKey, apiSecret string) {
+	a.apiSecret = &apiSecretAuth{
+		apiKey:    apiKey,
+		apiSecret: apiSecret,
+	}
 }
 
 func (a *AuthSet) SetApplicationAuth(appID string, key []byte) error {
@@ -60,32 +73,8 @@ func (a *AuthSet) SetApplicationAuth(appID string, key []byte) error {
 	return nil
 }
 
-func (a *AuthSet) ApplyAuth(acceptableAuths []AuthType, sling *sling.Sling, request apiSecretRequest) error {
-	for _, acceptableAuth := range acceptableAuths {
-		switch acceptableAuth {
-		case ApiSecretAuth:
-			if a.apiSecret != nil {
-				return a.apiSecret.apply(request)
-			}
-		case ApiSecretPathAuth:
-			if a.apiSecret != nil {
-				sling.Path(fmt.Sprintf("%s/%s", a.apiSecret.apiKey, a.apiSecret.apiSecret))
-			}
-		case JwtAuth:
-			token, err := a.appAuth.generateToken()
-			if err != nil {
-				return err
-			}
-			if a.appAuth != nil {
-				sling.Set("Authorization", fmt.Sprintf("Bearer %v", token))
-			}
-		}
-	}
-	return fmt.Errorf("AuthSet not configured with credentials for %x", acceptableAuths)
-}
-
 type apiSecretRequest interface {
-	applyAPISecret(apiKey, apiSecret string)
+	setApiCredentials(apiKey, apiSecret string)
 }
 
 type apiSecretAuth struct {
@@ -94,22 +83,19 @@ type apiSecretAuth struct {
 }
 
 func (a apiSecretAuth) apply(request apiSecretRequest) error {
-	if request == nil {
-		return fmt.Errorf("cannot apply api_key and api_secret to a nil request")
-	}
-	request.applyAPISecret(a.apiKey, a.apiSecret)
+	request.setApiCredentials(a.apiKey, a.apiSecret)
 	return nil
+}
+
+type jwtClaims struct {
+	ApplicationID string `json:"application_id"`
+	jwt.StandardClaims
 }
 
 type applicationAuth struct {
 	appID      string
 	privateKey *rsa.PrivateKey
 	r          RandomProvider
-}
-
-type jwtClaims struct {
-	ApplicationID string `json:"application_id"`
-	jwt.StandardClaims
 }
 
 func (a applicationAuth) generateToken() (string, error) {
