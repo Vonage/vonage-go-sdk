@@ -8,7 +8,7 @@ type VerifyService struct {
 }
 
 func newVerifyService(base *sling.Sling, authSet *AuthSet) *VerifyService {
-	sling := base.Base("https://api.nexmo.com/verify")
+	sling := base.Base("https://api.nexmo.com/verify/")
 	return &VerifyService{
 		sling:   sling,
 		authSet: authSet,

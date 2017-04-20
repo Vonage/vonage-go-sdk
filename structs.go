@@ -143,19 +143,25 @@ type CallInfo struct {
 }
 
 
-type GetCallRequest struct {
+type SimpleModifyCallRequest struct {
+    Action string `json:"action,omitempty"`
 }
 
 
-type GetCallResponse struct {
-}
-
-
-type ModifyCallRequest struct {
+type TransferCallRequest struct {
+    Action string `json:"action,omitempty"`
+    Destination TransferDestination `json:"destination,omitempty"`
 }
 
 
 type ModifyCallResponse struct {
+    Message string `json:"message,omitempty"`
+}
+
+
+type TransferDestination struct {
+    Type string `json:"type,omitempty"`
+    URL []string `json:"url,omitempty"`
 }
 
 

@@ -8,7 +8,7 @@ type ApplicationService struct {
 }
 
 func newApplicationService(base *sling.Sling, authSet *AuthSet) *ApplicationService {
-	sling := base.Base("https://api.nexmo.com/v1/applications")
+	sling := base.Base("https://api.nexmo.com/v1/applications/")
 	return &ApplicationService{
 		sling:   sling,
 		authSet: authSet,

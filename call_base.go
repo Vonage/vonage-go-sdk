@@ -8,7 +8,7 @@ type CallService struct {
 }
 
 func newCallService(base *sling.Sling, authSet *AuthSet) *CallService {
-	sling := base.Base("https://api.nexmo.com/v1/calls")
+	sling := base.Base("https://api.nexmo.com/v1/calls/")
 	return &CallService{
 		sling:   sling,
 		authSet: authSet,
