@@ -24,6 +24,5 @@ func (c *InsightService) GetBasicInsight(request BasicInsightRequest) (BasicInsi
 	if err != nil {
 		return *insightResponse, resp, err
 	}
-	err = insightResponse.responseError()
-	return *insightResponse, resp, err
+	return *insightResponse, resp, insightResponse.responseError()
 }

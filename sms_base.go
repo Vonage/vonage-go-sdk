@@ -8,7 +8,7 @@ type SMSService struct {
 }
 
 func newSMSService(base *sling.Sling, authSet *AuthSet) *SMSService {
-	sling := base.Base("https://rest.nexmo.com/")
+	sling := base.Base("https://rest.nexmo.com/sms/")
 	return &SMSService{
 		sling:   sling,
 		authSet: authSet,
