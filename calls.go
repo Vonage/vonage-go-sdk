@@ -45,6 +45,44 @@ func (c *CallService) ModifyCall(uuid string, request interface{}) (*ModifyCallR
 	return callResponse, httpResponse, err
 }
 
+func (c *CallService) Stream(uuid string, request StreamRequest) (*ModifyCallResponse, *http.Response, error) {
+	sling := c.sling.New().Put(fmt.Sprintf("%s/stream", uuid)).BodyJSON(request)
+
+	callResponse := new(ModifyCallResponse)
+	httpResponse, err := c.makeRequest(sling, callResponse)
+	return callResponse, httpResponse, err
+}
+
+func (c *CallService) StopStream(uuid string) (*ModifyCallResponse, *http.Response, error) {
+	sling := c.sling.New().Delete(fmt.Sprintf("%s/stream", uuid))
+	callResponse := new(ModifyCallResponse)
+	httpResponse, err := c.makeRequest(sling, callResponse)
+	return callResponse, httpResponse, err
+}
+
+func (c *CallService) Talk(uuid string, request TalkRequest) (*ModifyCallResponse, *http.Response, error) {
+	sling := c.sling.New().Put(fmt.Sprintf("%s/talk", uuid)).BodyJSON(request)
+
+	callResponse := new(ModifyCallResponse)
+	httpResponse, err := c.makeRequest(sling, callResponse)
+	return callResponse, httpResponse, err
+}
+
+func (c *CallService) StopTalk(uuid string) (*ModifyCallResponse, *http.Response, error) {
+	sling := c.sling.New().Delete(fmt.Sprintf("%s/talk", uuid))
+	callResponse := new(ModifyCallResponse)
+	httpResponse, err := c.makeRequest(sling, callResponse)
+	return callResponse, httpResponse, err
+}
+
+func (c *CallService) SendDTMF(uuid string, request DTMFRequest) (*ModifyCallResponse, *http.Response, error) {
+	sling := c.sling.New().Put(fmt.Sprintf("%s/dtmf", uuid)).BodyJSON(request)
+
+	callResponse := new(ModifyCallResponse)
+	httpResponse, err := c.makeRequest(sling, callResponse)
+	return callResponse, httpResponse, err
+}
+
 func (c *CallService) makeRequest(s *sling.Sling, successV interface{}) (*http.Response, error) {
 	errorV := new(CallErrorResponse)
 	if err := c.authSet.ApplyJWT(s); err != nil {

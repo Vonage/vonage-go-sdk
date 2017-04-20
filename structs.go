@@ -156,6 +156,7 @@ type TransferCallRequest struct {
 
 type ModifyCallResponse struct {
     Message string `json:"message,omitempty"`
+    UUID string `json:"uuid,omitempty"`
 }
 
 
@@ -168,5 +169,23 @@ type TransferDestination struct {
 type CallErrorResponse struct {
     Type string `json:"type,omitempty"`
     ErrorTitle string `json:"error_title,omitempty"`
+}
+
+
+type StreamRequest struct {
+    StreamURL []string `json:"stream_url"`
+    Loop int64 `json:"loop,omitempty"`
+}
+
+
+type TalkRequest struct {
+    Text string `json:"text"`
+    VoiceName string `json:"voice_name,omitempty"`
+    Loop int64 `json:"loop,omitempty"`
+}
+
+
+type DTMFRequest struct {
+    Digits string `json:"digits"`
 }
 
