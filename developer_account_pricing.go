@@ -5,19 +5,17 @@ import (
 	"net/http"
 )
 
-func (s *DeveloperService) GetBalance() (*GetBalanceResponse, *http.Response, error) {
-	request := new(Credentials)
-	s.authSet.ApplyAPICredentials(request)
-	sling := s.sling.New().Get("account/get-balance").QueryStruct(request)
-
-	response := new(GetBalanceResponse)
-	httpResponse, err := sling.ReceiveSuccess(response)
-	return response, httpResponse, err
-}
-
 type GetOutboundPricingForCountryRequest struct {
 	Credentials
 	Country string `url:"country"`
+}
+
+type CountryPrices struct {
+	MT       string         `json:"mt"`
+	Country  string         `json:"country"`
+	Prefix   string         `json:"prefix"`
+	Name     string         `json:"name"`
+	Networks []NetworkPrice `json:"networks"`
 }
 
 // GetOutboundPricingForCountry requests pricing for a given country
@@ -79,14 +77,6 @@ type GetPrefixOutboundPricingResponse struct {
 	Prices []CountryPrices `json:"prices"`
 }
 
-type CountryPrices struct {
-	MT       string         `json:"mt"`
-	Country  string         `json:"country"`
-	Prefix   string         `json:"prefix"`
-	Name     string         `json:"name"`
-	Networks []NetworkPrice `json:"networks"`
-}
-
 type NetworkPrice struct {
 	Network string `json:"network"`
 	Code    string `json:"code"`
@@ -104,6 +94,7 @@ func (s *DeveloperService) GetPrefixOutboundPricing(request GetPrefixOutboundPri
 	return response, httpResponse, err
 }
 
+// GetPhoneOutboundPricingRequest is the request object for DeveloperService.GetPhoneOutboundPricing
 type GetPhoneOutboundPricingRequest struct {
 	// This is defined here because Product must not be serialized, and I haven't implemented that in the json-schema
 	Credentials
