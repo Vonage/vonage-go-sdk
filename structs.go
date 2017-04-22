@@ -12,34 +12,6 @@ type Link struct {
 	Href string `json:"href,omitempty"`
 }
 
-type BasicInsightRequest struct {
-	APIKey    string `json:"api_key,omitempty"`
-	APISecret string `json:"api_secret,omitempty"`
-	Number    string `json:"number,omitempty"`
-	Country   string `json:"country,omitempty"`
-}
-
-func (r *BasicInsightRequest) setApiCredentials(apiKey, apiSecret string) {
-	r.APIKey = apiKey
-	r.APISecret = apiSecret
-}
-
-type BasicInsightResponse struct {
-	Status                    int64  `json:"status,omitempty"`
-	StatusMessage             string `json:"status_message,omitempty"`
-	ErrorText                 string `json:"error_text,omitempty"`
-	RequestID                 string `json:"request_id,omitempty"`
-	InternationalFormatNumber string `json:"international_format_number,omitempty"`
-	NationalFormatNumber      string `json:"national_format_number,omitempty"`
-	CountryCode               string `json:"country_code,omitempty"`
-	CountryCodeIso3           string `json:"country_code_iso3,omitempty"`
-	CountryName               string `json:"country_name,omitempty"`
-	CountryPrefix             string `json:"country_prefix,omitempty"`
-}
-
-type CallEndpoint struct {
-}
-
 type PhoneCallEndpoint struct {
 	Type       string `json:"type"`
 	Number     string `json:"number"`
@@ -69,11 +41,11 @@ type SendSMSRequest struct {
 	ClientRef       string `json:"client-ref,omitempty"`
 	Vcard           string `json:"vcard,omitempty"`
 	Vcal            string `json:"vcal,omitempty"`
-	Ttl             int64  `json:"ttl,omitempty"`
+	TTL             int64  `json:"ttl,omitempty"`
 	Callback        string `json:"callback,omitempty"`
 	MessageClass    int64  `json:"message-class,omitempty"`
 	Udh             string `json:"udh,omitempty"`
-	ProtocolId      int64  `json:"protocol-id,omitempty"`
+	ProtocolID      int64  `json:"protocol-id,omitempty"`
 	Body            string `json:"body,omitempty"`
 	Title           string `json:"title,omitempty"`
 	URL             string `json:"url,omitempty"`
@@ -92,7 +64,7 @@ type SendSMSResponse struct {
 
 type SendSMSResponseMessage struct {
 	Status           string `json:"status,omitempty"`
-	MessageId        string `json:"message-id,omitempty"`
+	MessageID        string `json:"message-id,omitempty"`
 	To               string `json:"to,omitempty"`
 	ClientRef        string `json:"client-ref,omitempty"`
 	RemainingBalance string `json:"remaining-balance,omitempty"`

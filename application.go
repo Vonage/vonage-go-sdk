@@ -7,6 +7,9 @@ import (
 
 	"log"
 
+	"io"
+	"os"
+
 	"github.com/dghubble/sling"
 )
 
@@ -119,20 +122,23 @@ func (s *ApplicationService) DeleteApplication(id string) (*http.Response, error
 }
 
 func verbalRequest(s *sling.Sling, sV interface{}) (*http.Response, error) {
+	// TODO: Need to remove this function
 	req, err := s.Request()
 	if err != nil {
 		return nil, err
 	}
 	log.Println("HTTP Request:", req)
-	e := new(interface{})
-	res, err := s.Do(req, sV, e)
-	if e != nil {
-		return res, jsonError(e)
+	res, err := http.DefaultClient.Do(req)
+	defer res.Body.Close()
+	if err != nil {
+		return res, err
 	}
+	io.Copy(os.Stdout, res.Body)
 	return res, err
 }
 
 func jsonError(e interface{}) error {
+	// TODO: Need to remove this function
 	rep, err := json.MarshalIndent(e, "", "  ")
 	if err != nil {
 		return err

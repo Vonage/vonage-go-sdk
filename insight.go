@@ -6,6 +6,25 @@ import (
 	"fmt"
 )
 
+type BasicInsightRequest struct {
+	Credentials
+	Number  string `json:"number,omitempty"`
+	Country string `json:"country,omitempty"`
+}
+
+type BasicInsightResponse struct {
+	Status                    int64  `json:"status,omitempty"`
+	StatusMessage             string `json:"status_message,omitempty"`
+	ErrorText                 string `json:"error_text,omitempty"`
+	RequestID                 string `json:"request_id,omitempty"`
+	InternationalFormatNumber string `json:"international_format_number,omitempty"`
+	NationalFormatNumber      string `json:"national_format_number,omitempty"`
+	CountryCode               string `json:"country_code,omitempty"`
+	CountryCodeIso3           string `json:"country_code_iso3,omitempty"`
+	CountryName               string `json:"country_name,omitempty"`
+	CountryPrefix             string `json:"country_prefix,omitempty"`
+}
+
 func (r *BasicInsightResponse) responseError() error {
 	if r.Status != 0 {
 		if r.StatusMessage != "" {
