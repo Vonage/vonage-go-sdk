@@ -111,8 +111,8 @@ func (a applicationAuth) generateToken() (string, error) {
 }
 
 type Credentials struct {
-	APIKey    string `url:"api_key"`
-	APISecret string `url:"api_secret"`
+	APIKey    string `json:"api_key" url:"api_key"`
+	APISecret string `json:"api_secret" url:"api_secret"`
 }
 
 func (c *Credentials) setApiCredentials(apiKey, apiSecret string) {
