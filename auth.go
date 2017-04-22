@@ -109,3 +109,13 @@ func (a applicationAuth) generateToken() (string, error) {
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("RS256"), claims)
 	return token.SignedString(a.privateKey)
 }
+
+type Credentials struct {
+	APIKey    string `url:"api_key"`
+	APISecret string `url:"api_secret"`
+}
+
+func (c *Credentials) setApiCredentials(apiKey, apiSecret string) {
+	c.APIKey = apiKey
+	c.APISecret = apiSecret
+}

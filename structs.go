@@ -28,7 +28,7 @@ type BasicInsightResponse struct {
 	Status                    int64  `json:"status,omitempty"`
 	StatusMessage             string `json:"status_message,omitempty"`
 	ErrorText                 string `json:"error_text,omitempty"`
-	RequestId                 string `json:"request_id,omitempty"`
+	RequestID                 string `json:"request_id,omitempty"`
 	InternationalFormatNumber string `json:"international_format_number,omitempty"`
 	NationalFormatNumber      string `json:"national_format_number,omitempty"`
 	CountryCode               string `json:"country_code,omitempty"`
@@ -194,4 +194,15 @@ type TalkRequest struct {
 
 type DTMFRequest struct {
 	Digits string `json:"digits"`
+}
+
+type GetBalanceResponse struct {
+	Value float64 `json:"value,omitempty"`
+}
+
+type GetPhoneOutboundPricingResponse struct {
+	Network     string `json:"network,omitempty"`
+	Phone       string `json:"phone,omitempty"`
+	CountryCode string `json:"country-code,omitempty"`
+	Price       string `json:"price,omitempty"`
 }
