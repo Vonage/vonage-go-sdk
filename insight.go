@@ -3,9 +3,6 @@ package nexmo
 import (
 	"net/http"
 
-	"github.com/judy2k/nexmo/sling"
-
-	"bytes"
 	"fmt"
 )
 
@@ -109,7 +106,7 @@ type AdvancedInsightResponse struct {
 		RoamingNetworkCode string `json:"roaming_network_code"`
 		RoamingNetworkName string `json:"roaming_network_name"`
 	} `json:"roaming"`
-	LookupOutcome        string `json:"lookup_outcome"`
+	LookupOutcome        int    `json:"lookup_outcome"`
 	LookupOutcomeMessage string `json:"lookup_outcome_message"`
 	IP                   string `json:"ip"`
 	IPWarnings           string `json:"ip_warnings"`
@@ -126,18 +123,4 @@ func (c *InsightService) GetAdvancedInsight(request AdvancedInsightRequest) (Adv
 		return *insightResponse, resp, err
 	}
 	return *insightResponse, resp, insightResponse.responseError()
-}
-
-func verboseReceive(s *sling.Sling, sV interface{}, eV interface{}) (*http.Response, error) {
-	httpReq, err := s.Request()
-	if err != nil {
-		return nil, err
-	}
-	httpRes, err := http.DefaultClient.Do(httpReq)
-	defer httpRes.Body.Close()
-	if err != nil {
-		return httpRes, err
-	}
-	var buf bytes.Buffer
-
 }
