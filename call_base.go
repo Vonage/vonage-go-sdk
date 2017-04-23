@@ -18,4 +18,3 @@ func newCallService(base *sling.Sling, authSet *AuthSet) *CallService {
 func (c *CallService) SetBaseURL(baseURL string) {
 	c.sling.Base(baseURL)
 }
-

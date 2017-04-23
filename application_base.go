@@ -18,4 +18,3 @@ func newApplicationService(base *sling.Sling, authSet *AuthSet) *ApplicationServ
 func (c *ApplicationService) SetBaseURL(baseURL string) {
 	c.sling.Base(baseURL)
 }
-

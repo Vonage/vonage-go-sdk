@@ -18,4 +18,3 @@ func newDeveloperService(base *sling.Sling, authSet *AuthSet) *DeveloperService 
 func (c *DeveloperService) SetBaseURL(baseURL string) {
 	c.sling.Base(baseURL)
 }
-

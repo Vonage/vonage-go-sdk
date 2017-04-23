@@ -18,4 +18,3 @@ func newInsightService(base *sling.Sling, authSet *AuthSet) *InsightService {
 func (c *InsightService) SetBaseURL(baseURL string) {
 	c.sling.Base(baseURL)
 }
-

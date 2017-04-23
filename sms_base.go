@@ -18,4 +18,3 @@ func newSMSService(base *sling.Sling, authSet *AuthSet) *SMSService {
 func (c *SMSService) SetBaseURL(baseURL string) {
 	c.sling.Base(baseURL)
 }
-

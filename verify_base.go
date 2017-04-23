@@ -18,4 +18,3 @@ func newVerifyService(base *sling.Sling, authSet *AuthSet) *VerifyService {
 func (c *VerifyService) SetBaseURL(baseURL string) {
 	c.sling.Base(baseURL)
 }
-

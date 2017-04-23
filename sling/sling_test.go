@@ -54,14 +54,14 @@ func TestSlingNew(t *testing.T) {
 	fakeBodyProvider := jsonBodyProvider{FakeModel{}}
 
 	cases := []*Sling{
-		&Sling{httpClient: &http.Client{}, method: "GET", rawURL: "http://example.com"},
-		&Sling{httpClient: nil, method: "", rawURL: "http://example.com"},
-		&Sling{queryStructs: make([]interface{}, 0)},
-		&Sling{queryStructs: []interface{}{paramsA}},
-		&Sling{queryStructs: []interface{}{paramsA, paramsB}},
-		&Sling{bodyProvider: fakeBodyProvider},
-		&Sling{bodyProvider: fakeBodyProvider},
-		&Sling{bodyProvider: nil},
+		{httpClient: &http.Client{}, method: "GET", rawURL: "http://example.com"},
+		{httpClient: nil, method: "", rawURL: "http://example.com"},
+		{queryStructs: make([]interface{}, 0)},
+		{queryStructs: []interface{}{paramsA}},
+		{queryStructs: []interface{}{paramsA, paramsB}},
+		{bodyProvider: fakeBodyProvider},
+		{bodyProvider: fakeBodyProvider},
+		{bodyProvider: nil},
 		New().Add("Content-Type", "application/json"),
 		New().Add("A", "B").Add("a", "c").New(),
 		New().Add("A", "B").New().Add("a", "c"),
@@ -209,14 +209,14 @@ func TestAddHeader(t *testing.T) {
 		sling          *Sling
 		expectedHeader map[string][]string
 	}{
-		{New().Add("authorization", "OAuth key=\"value\""), map[string][]string{"Authorization": []string{"OAuth key=\"value\""}}},
+		{New().Add("authorization", "OAuth key=\"value\""), map[string][]string{"Authorization": {"OAuth key=\"value\""}}},
 		// header keys should be canonicalized
-		{New().Add("content-tYPE", "application/json").Add("User-AGENT", "sling"), map[string][]string{"Content-Type": []string{"application/json"}, "User-Agent": []string{"sling"}}},
+		{New().Add("content-tYPE", "application/json").Add("User-AGENT", "sling"), map[string][]string{"Content-Type": {"application/json"}, "User-Agent": {"sling"}}},
 		// values for existing keys should be appended
-		{New().Add("A", "B").Add("a", "c"), map[string][]string{"A": []string{"B", "c"}}},
+		{New().Add("A", "B").Add("a", "c"), map[string][]string{"A": {"B", "c"}}},
 		// Add should add to values for keys added by parent Slings
-		{New().Add("A", "B").Add("a", "c").New(), map[string][]string{"A": []string{"B", "c"}}},
-		{New().Add("A", "B").New().Add("a", "c"), map[string][]string{"A": []string{"B", "c"}}},
+		{New().Add("A", "B").Add("a", "c").New(), map[string][]string{"A": {"B", "c"}}},
+		{New().Add("A", "B").New().Add("a", "c"), map[string][]string{"A": {"B", "c"}}},
 	}
 	for _, c := range cases {
 		// type conversion from header to alias'd map for deep equality comparison
@@ -233,11 +233,11 @@ func TestSetHeader(t *testing.T) {
 		expectedHeader map[string][]string
 	}{
 		// should replace existing values associated with key
-		{New().Add("A", "B").Set("a", "c"), map[string][]string{"A": []string{"c"}}},
-		{New().Set("content-type", "A").Set("Content-Type", "B"), map[string][]string{"Content-Type": []string{"B"}}},
+		{New().Add("A", "B").Set("a", "c"), map[string][]string{"A": {"c"}}},
+		{New().Set("content-type", "A").Set("Content-Type", "B"), map[string][]string{"Content-Type": {"B"}}},
 		// Set should replace values received by copying parent Slings
-		{New().Set("A", "B").Add("a", "c").New(), map[string][]string{"A": []string{"B", "c"}}},
-		{New().Add("A", "B").New().Set("a", "c"), map[string][]string{"A": []string{"c"}}},
+		{New().Set("A", "B").Add("a", "c").New(), map[string][]string{"A": {"B", "c"}}},
+		{New().Add("A", "B").New().Set("a", "c"), map[string][]string{"A": {"c"}}},
 	}
 	for _, c := range cases {
 		// type conversion from Header to alias'd map for deep equality comparison
@@ -542,20 +542,20 @@ func TestRequest_headers(t *testing.T) {
 		sling          *Sling
 		expectedHeader map[string][]string
 	}{
-		{New().Add("authorization", "OAuth key=\"value\""), map[string][]string{"Authorization": []string{"OAuth key=\"value\""}}},
+		{New().Add("authorization", "OAuth key=\"value\""), map[string][]string{"Authorization": {"OAuth key=\"value\""}}},
 		// header keys should be canonicalized
-		{New().Add("content-tYPE", "application/json").Add("User-AGENT", "sling"), map[string][]string{"Content-Type": []string{"application/json"}, "User-Agent": []string{"sling"}}},
+		{New().Add("content-tYPE", "application/json").Add("User-AGENT", "sling"), map[string][]string{"Content-Type": {"application/json"}, "User-Agent": {"sling"}}},
 		// values for existing keys should be appended
-		{New().Add("A", "B").Add("a", "c"), map[string][]string{"A": []string{"B", "c"}}},
+		{New().Add("A", "B").Add("a", "c"), map[string][]string{"A": {"B", "c"}}},
 		// Add should add to values for keys added by parent Slings
-		{New().Add("A", "B").Add("a", "c").New(), map[string][]string{"A": []string{"B", "c"}}},
-		{New().Add("A", "B").New().Add("a", "c"), map[string][]string{"A": []string{"B", "c"}}},
+		{New().Add("A", "B").Add("a", "c").New(), map[string][]string{"A": {"B", "c"}}},
+		{New().Add("A", "B").New().Add("a", "c"), map[string][]string{"A": {"B", "c"}}},
 		// Add and Set
-		{New().Add("A", "B").Set("a", "c"), map[string][]string{"A": []string{"c"}}},
-		{New().Set("content-type", "A").Set("Content-Type", "B"), map[string][]string{"Content-Type": []string{"B"}}},
+		{New().Add("A", "B").Set("a", "c"), map[string][]string{"A": {"c"}}},
+		{New().Set("content-type", "A").Set("Content-Type", "B"), map[string][]string{"Content-Type": {"B"}}},
 		// Set should replace values received by copying parent Slings
-		{New().Set("A", "B").Add("a", "c").New(), map[string][]string{"A": []string{"B", "c"}}},
-		{New().Add("A", "B").New().Set("a", "c"), map[string][]string{"A": []string{"c"}}},
+		{New().Set("A", "B").Add("a", "c").New(), map[string][]string{"A": {"B", "c"}}},
+		{New().Add("A", "B").New().Set("a", "c"), map[string][]string{"A": {"c"}}},
 	}
 	for _, c := range cases {
 		req, _ := c.sling.Request()
