@@ -367,10 +367,11 @@ func (s *Sling) Do(req *http.Request, successV, failureV interface{}) (*http.Res
 	// Decode from json
 	if successV != nil || failureV != nil {
 		err = decodeResponseJSON(resp.StatusCode, body, successV, failureV)
+		if err != nil {
+			log.Println("Could not decode:", buf.String())
+		}
 	}
-	if err != nil {
-		log.Println("Could not decode:", buf.String())
-	}
+
 	return resp, err
 }
 
