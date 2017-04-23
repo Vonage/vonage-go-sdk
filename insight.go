@@ -3,7 +3,7 @@ package nexmo
 import (
 	"net/http"
 
-	"github.com/dghubble/sling"
+	"github.com/judy2k/nexmo/sling"
 
 	"bytes"
 	"fmt"

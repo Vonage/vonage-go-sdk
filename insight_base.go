@@ -1,6 +1,6 @@
 package nexmo
 
-import "github.com/dghubble/sling"
+import "github.com/judy2k/nexmo/sling"
 
 type InsightService struct {
 	sling   *sling.Sling
