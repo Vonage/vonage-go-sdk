@@ -7,6 +7,10 @@ import (
 	"net/http"
 	"net/url"
 
+	"bytes"
+
+	"log"
+
 	goquery "github.com/google/go-querystring/query"
 )
 
@@ -352,6 +356,9 @@ func (s *Sling) Do(req *http.Request, successV, failureV interface{}) (*http.Res
 	// when err is nil, resp contains a non-nil resp.Body which must be closed
 	defer resp.Body.Close()
 
+	var buf bytes.Buffer
+	body := io.TeeReader(resp.Body, &buf)
+
 	// Don't try to decode on 204s
 	if resp.StatusCode == 204 {
 		return resp, nil
@@ -359,7 +366,10 @@ func (s *Sling) Do(req *http.Request, successV, failureV interface{}) (*http.Res
 
 	// Decode from json
 	if successV != nil || failureV != nil {
-		err = decodeResponseJSON(resp, successV, failureV)
+		err = decodeResponseJSON(resp.StatusCode, body, successV, failureV)
+	}
+	if err != nil {
+		log.Println("Could not decode:", buf.String())
 	}
 	return resp, err
 }
@@ -369,14 +379,14 @@ func (s *Sling) Do(req *http.Request, successV, failureV interface{}) (*http.Res
 // otherwise. If the successV or failureV argument to decode into is nil,
 // decoding is skipped.
 // Caller is responsible for closing the resp.Body.
-func decodeResponseJSON(resp *http.Response, successV, failureV interface{}) error {
-	if code := resp.StatusCode; 200 <= code && code <= 299 {
+func decodeResponseJSON(statusCode int, body io.Reader, successV, failureV interface{}) error {
+	if 200 <= statusCode && statusCode <= 299 {
 		if successV != nil {
-			return decodeResponseBodyJSON(resp, successV)
+			return decodeResponseBodyJSON(body, successV)
 		}
 	} else {
 		if failureV != nil {
-			return decodeResponseBodyJSON(resp, failureV)
+			return decodeResponseBodyJSON(body, failureV)
 		}
 	}
 	return nil
@@ -385,6 +395,6 @@ func decodeResponseJSON(resp *http.Response, successV, failureV interface{}) err
 // decodeResponseBodyJSON JSON decodes a Response Body into the value pointed
 // to by v.
 // Caller must provide a non-nil v and close the resp.Body.
-func decodeResponseBodyJSON(resp *http.Response, v interface{}) error {
-	return json.NewDecoder(resp.Body).Decode(v)
+func decodeResponseBodyJSON(body io.Reader, v interface{}) error {
+	return json.NewDecoder(body).Decode(v)
 }
