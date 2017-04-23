@@ -2,9 +2,10 @@
 
 This library is moving towards a full client implementation of the
 [Nexmo](https://www.nexmo.com/) APIs. The library is not currently officially
-supported by Nexmo, but the author, [@judy2k] works in Nexmo's Developer
-Relations team. The hope is that this library will become popular enough to
-justify becoming an officially supported Nexmo library.
+supported by Nexmo, but the author, [@judy2k](https://twitter.com/judy2k)
+works in Nexmo's Developer Relations team. The hope is that this library will 
+become popular enough to justify becoming an officially supported
+Nexmo library.
 
 The library currently has high coverage for the following APIs:
 
