@@ -3,7 +3,6 @@ To Do List
 
 ## Important
 
-- Add LICENSE
 - Write tests using modified VCR
 - Write response parser that will handle different error types.
 
@@ -19,6 +18,7 @@ To Do List
 - Hide AuthSet struct inside Client
 - Rename structs so they appear near their Services by name.
 - Rename `NewClient` to `New`
+- Documentation!
 
 ## Future
 
