@@ -4,13 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"log"
-
-	"io"
-	"os"
-
-	"github.com/dghubble/sling"
 )
 
 type CreateApplicationRequest struct {
@@ -31,7 +24,7 @@ type ApplicationConfiguration struct {
 			EndpointType string `json:"endpoint_type"`
 			Endpoint     string `json:"endpoint"`
 			HTTPMethod   string `json:"http_method"`
-		} `json:"webhooks`
+		} `json:"webhooks"`
 	}
 	Keys struct {
 		PublicKey  string `json:"public_key"`
@@ -121,22 +114,7 @@ func (s *ApplicationService) DeleteApplication(id string) (*http.Response, error
 	return httpResponse, err
 }
 
-func verbalRequest(s *sling.Sling, sV interface{}) (*http.Response, error) {
-	// TODO: Need to remove this function
-	req, err := s.Request()
-	if err != nil {
-		return nil, err
-	}
-	log.Println("HTTP Request:", req)
-	res, err := http.DefaultClient.Do(req)
-	defer res.Body.Close()
-	if err != nil {
-		return res, err
-	}
-	io.Copy(os.Stdout, res.Body)
-	return res, err
-}
-
+// TODO: This is vaguely useful. Work out what to do with it.
 func jsonError(e interface{}) error {
 	// TODO: Need to remove this function
 	rep, err := json.MarshalIndent(e, "", "  ")
