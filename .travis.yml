@@ -16,7 +16,7 @@ matrix:
 before_script:
   - go get github.com/mattn/goveralls
 script:
-  - $HOME/gopath/bin/goveralls
+  - $HOME/gopath/bin/goveralls -service=travis-ci
 #  - go test -v -covermode=count -coverprofile=coverage.out
 #  - go build
   - diff -u <(echo -n) <(gofmt -d -s .)
