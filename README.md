@@ -21,6 +21,8 @@ The library currently has high coverage for the following APIs:
 It currently has only a handful of Developer endpoints implemented, and no
 webhook support.
 
+Current API Coverage can be found in [this spreadsheet](https://docs.google.com/spreadsheets/d/19lsAoW2oiGMK7Xg0dOw5KPdOOix1Oo-GaTWkRyVRMXI/pubhtml#)
+
 ## Usage
 
 Usage looks a bit like this:
