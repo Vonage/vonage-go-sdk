@@ -1,6 +1,6 @@
 package nexmo
 
-import "github.com/judy2k/nexmo/sling"
+import "github.com/judy2k/nexmo-go/sling"
 
 type SMSService struct {
 	sling   *sling.Sling

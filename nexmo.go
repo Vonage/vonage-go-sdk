@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/judy2k/nexmo/sling"
+	"github.com/judy2k/nexmo-go/sling"
 )
 
 type Client struct {
