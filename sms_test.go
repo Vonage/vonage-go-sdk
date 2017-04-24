@@ -2,6 +2,11 @@ package nexmo
 
 import "testing"
 
-func TestZZZ(t *testing.T) {
-	// pass
+func TestSendSMS(t *testing.T) {
+	_client.SMS.SendSMS(SendSMSRequest{
+		To:   "447520615146",
+		From: "NEXMOTEST",
+		Text: "Nêxmö Tėšt",
+		Type: "unicode",
+	})
 }
