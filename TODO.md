@@ -12,8 +12,8 @@ To Do List
 - Add WebHook support
 
 ## Housekeeping
-- Add Travis config
-- Run quality tests using [Go Report Card](https://goreportcard.com/report/github.com/judy2k/nexmo-go)
+- Use a serializeable date type in structs?
+- Add 'enums' for enumerated types.
 - Rename Voice calls `client.Calls.Create()` etc.
 - Hide AuthSet struct inside Client
 - Rename structs so they appear near their Services by name.
