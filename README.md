@@ -1,5 +1,7 @@
 # Nexmo Client Library For Go
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/judy2k/nexmo-go)](https://goreportcard.com/report/github.com/judy2k/nexmo-go)
+
 This library is moving towards a full client implementation of the
 [Nexmo](https://www.nexmo.com/) APIs. The library is not currently officially
 supported by Nexmo, but the author, [@judy2k](https://twitter.com/judy2k)
