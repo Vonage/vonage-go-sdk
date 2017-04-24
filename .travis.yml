@@ -1,0 +1,22 @@
+---
+language: go
+
+matrix:
+  include:
+    - go: 1.4.3
+      env: NOVET=true # No bundled vet.
+    - go: 1.5.4
+    - go: 1.6.4
+    - go: 1.7.5
+    - go: 1.8
+    - go: tip
+  allow_failures:
+    - go: tip
+
+script:
+  - go test -v . ./sling
+  - go build
+  - diff -u <(echo -n) <(gofmt -d -s .)
+  - if [ -z $NOVET ]; then
+      diff -u <(echo -n) <(go tool vet . 2>&1 | grep -vE 'ExampleCommand|bash_completions.*Fprint');
+    fi
