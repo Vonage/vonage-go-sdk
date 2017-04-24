@@ -2,6 +2,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/judy2k/nexmo-go)](https://goreportcard.com/report/github.com/judy2k/nexmo-go)
 [![Build Status](https://travis-ci.org/judy2k/nexmo-go.svg?branch=master)](https://travis-ci.org/judy2k/nexmo-go)
+[![Coverage Status](https://coveralls.io/repos/github/judy2k/nexmo-go/badge.svg)](https://coveralls.io/github/judy2k/nexmo-go)
 
 This library is moving towards a full client implementation of the
 [Nexmo](https://www.nexmo.com/) APIs. The library is not currently officially

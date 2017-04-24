@@ -1,10 +1,11 @@
 ---
 language: go
+sudo: false
 
 matrix:
   include:
-    - go: 1.4.3
-      env: NOVET=true # No bundled vet.
+#    - go: 1.4.3
+#      env: NOVET=true # No bundled vet.
     - go: 1.5.4
     - go: 1.6.4
     - go: 1.7.5
@@ -12,10 +13,12 @@ matrix:
     - go: tip
   allow_failures:
     - go: tip
-
+before_script:
+  - go get github.com/mattn/goveralls
 script:
-  - go test -v ./...
-  - go build
+  - $HOME/gopath/bin/goveralls -service=travis-ci
+#  - go test -v -covermode=count -coverprofile=coverage.out
+#  - go build
   - diff -u <(echo -n) <(gofmt -d -s .)
   - if [ -z $NOVET ]; then
       diff -u <(echo -n) <(go tool vet . 2>&1 | grep -vE 'ExampleCommand|bash_completions.*Fprint');
