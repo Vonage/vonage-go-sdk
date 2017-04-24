@@ -34,7 +34,7 @@ import (
 
 	"log"
 
-	"github.com/judy2k/nexmo"
+	"github.com/judy2k/nexmo-go"
 )
 
 func main() {
