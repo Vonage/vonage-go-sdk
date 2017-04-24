@@ -4,8 +4,8 @@ sudo: false
 
 matrix:
   include:
-    - go: 1.4.3
-      env: NOVET=true # No bundled vet.
+#    - go: 1.4.3
+#      env: NOVET=true # No bundled vet.
     - go: 1.5.4
     - go: 1.6.4
     - go: 1.7.5
