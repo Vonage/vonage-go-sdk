@@ -2,7 +2,8 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/judy2k/nexmo-go)](https://goreportcard.com/report/github.com/judy2k/nexmo-go)
 [![Build Status](https://travis-ci.org/judy2k/nexmo-go.svg?branch=master)](https://travis-ci.org/judy2k/nexmo-go)
-[![Coverage Status](https://coveralls.io/repos/github/judy2k/nexmo-go/badge.svg?branch=master)](https://coveralls.io/github/judy2k/nexmo-go?branch=master)
+[![Coverage](https://codecov.io/gh/judy2k/nexmo-go/branch/master/graph/badge.svg)](https://codecov.io/gh/judy2k/nexmo-go)
+
 
 This library is moving towards a full client implementation of the
 [Nexmo](https://www.nexmo.com/) APIs. The library is not currently officially
@@ -11,15 +12,17 @@ works in Nexmo's Developer Relations team. The hope is that this library will
 become popular enough to justify becoming an officially supported
 Nexmo library.
 
-The library currently has high coverage for the following APIs:
+The library currently has good coverage for the following APIs:
 
-* Voice
-* SMS
-* Insight
-* Verify
-* Application
+API         | Coverage
+------------|---------:
+Voice       | (9/9)
+SMS         | (1/4) 
+Insight     | (3/4)
+Verify      | (4/4)
+Application | (5/5)
 
-It currently has only a handful of Developer endpoints implemented, and no
+It currently has only a handful of Developer (5/15) endpoints implemented, and no
 webhook support.
 
 Current API Coverage can be found in [this spreadsheet](https://docs.google.com/spreadsheets/d/19lsAoW2oiGMK7Xg0dOw5KPdOOix1Oo-GaTWkRyVRMXI/pubhtml#)
@@ -43,8 +46,7 @@ import (
 func main() {
 	auth := nexmo.NewAuthSet()
 	auth.SetAPISecret(API_KEY, API_SECRET)
-	httpClient := http.Client{}
-	client := nexmo.NewClient(&httpClient, auth)
+	client := nexmo.NewClient(http.DefaultClient, auth)
 	insight, _, err := client.Insight.GetBasicInsight(nexmo.BasicInsightRequest{
 		Number: PHONE_NUMBER,
 	})
