@@ -1,0 +1,12 @@
+---
+codecov:
+  notify:
+    require_ci_to_pass: yes
+coverage:
+  round: down
+  precision: 0
+  range: 50..75
+  status:
+    project: yes
+    patch: yes
+    changes: no
