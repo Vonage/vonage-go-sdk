@@ -78,7 +78,7 @@ type CreateCallRequest struct {
 	From             interface{}   `json:"from"`
 	AnswerURL        []string      `json:"answer_url"`
 	AnswerMethod     string        `json:"answer_method,omitempty"`
-	EventURL         string        `json:"event_url,omitempty"`
+	EventURL         []string      `json:"event_url,omitempty"`
 	EventMethod      string        `json:"event_method,omitempty"`
 	MachineDetection string        `json:"machine_detection,omitempty"`
 	LengthTimer      int64         `json:"length_timer,omitempty"`
