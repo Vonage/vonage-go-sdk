@@ -27,6 +27,16 @@ webhook support.
 
 Current API Coverage can be found in [this spreadsheet](https://docs.google.com/spreadsheets/d/19lsAoW2oiGMK7Xg0dOw5KPdOOix1Oo-GaTWkRyVRMXI/pubhtml#)
 
+## Installation
+
+To install the package, use `go get`:
+
+```
+go get github.com/nexmo-community/nexmo-go
+```
+
+Or import the package into your project and then do `go get .`.
+
 ## Usage
 
 Usage looks a bit like this:
@@ -40,7 +50,7 @@ import (
 
 	"log"
 
-	"github.com/judy2k/nexmo-go"
+	"github.com/nexmo-community/nexmo-go"
 )
 
 func main() {
