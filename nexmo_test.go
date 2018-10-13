@@ -75,7 +75,7 @@ func initClient() *Client {
 	httpClient := http.Client{
 		Transport: _recorder,
 	}
-	_client = NewClient(&httpClient, auth)
+	_client = New(&httpClient, auth)
 	return _client
 }
 

@@ -56,7 +56,7 @@ import (
 func main() {
 	auth := nexmo.NewAuthSet()
 	auth.SetAPISecret(API_KEY, API_SECRET)
-	client := nexmo.NewClient(http.DefaultClient, auth)
+	client := nexmo.New(http.DefaultClient, auth)
 	insight, _, err := client.Insight.GetBasicInsight(nexmo.BasicInsightRequest{
 		Number: PHONE_NUMBER,
 	})

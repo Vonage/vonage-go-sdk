@@ -19,7 +19,6 @@ To Do List
 - Rename structs so they appear near their Services by name.
 - Move structs.go contents into separate API files.
 - Move unnecessary named structs into parent structs as anonymous structs.
-- Rename `NewClient` to `New`
 - Documentation!
 
 ## Future

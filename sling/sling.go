@@ -265,8 +265,7 @@ func (s *Sling) Request() (*http.Request, error) {
 		return nil, err
 	}
 
-	err = addQueryStructs(reqURL, s.queryStructs)
-	if err != nil {
+	if err = addQueryStructs(reqURL, s.queryStructs); err != nil {
 		return nil, err
 	}
 

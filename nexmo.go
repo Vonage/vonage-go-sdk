@@ -32,6 +32,9 @@ func NewClient(httpClient *http.Client, authSet *AuthSet) *Client {
 	}
 }
 
+func New(httpClient *http.Client, authSet *AuthSet) *Client {
+	return NewClient(httpClient, authSet)
+}
 type APIError struct {
 	Status       int64
 	ErrorMessage string
