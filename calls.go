@@ -70,7 +70,7 @@ func (c *CallService) Talk(uuid string, request TalkRequest) (*ModifyCallRespons
 
 func (c *CallService) StopTalk(uuid string) (*ModifyCallResponse, *http.Response, error) {
 	sling := c.sling.New().Delete(fmt.Sprintf("%s/talk", uuid))
-	
+
 	callResponse := new(ModifyCallResponse)
 	httpResponse, err := c.makeRequest(sling, callResponse)
 	return callResponse, httpResponse, err
