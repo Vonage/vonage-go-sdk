@@ -31,25 +31,25 @@ type SIPCallEndpoint struct {
 }
 
 type SendSMSRequest struct {
-	APIKey          string `json:"api_key"`
-	APISecret       string `json:"api_secret"`
-	From            string `json:"from,omitempty"`
-	To              string `json:"to,omitempty"`
-	Type            string `json:"type,omitempty"`
-	Text            string `json:"text,omitempty"`
-	StatusReportReq int64  `json:"status-report-req,omitempty"`
-	ClientRef       string `json:"client-ref,omitempty"`
-	Vcard           string `json:"vcard,omitempty"`
-	Vcal            string `json:"vcal,omitempty"`
-	TTL             int64  `json:"ttl,omitempty"`
-	Callback        string `json:"callback,omitempty"`
-	MessageClass    int64  `json:"message-class,omitempty"`
-	Udh             string `json:"udh,omitempty"`
-	ProtocolID      int64  `json:"protocol-id,omitempty"`
-	Body            string `json:"body,omitempty"`
-	Title           string `json:"title,omitempty"`
-	URL             string `json:"url,omitempty"`
-	Validity        int64  `json:"validity,omitempty"`
+	APIKey          string      `json:"api_key"`
+	APISecret       string      `json:"api_secret"`
+	From            string      `json:"from,omitempty"`
+	To              string      `json:"to,omitempty"`
+	Type            MessageType `json:"type,omitempty"`
+	Text            string      `json:"text,omitempty"`
+	StatusReportReq int64       `json:"status-report-req,omitempty"`
+	ClientRef       string      `json:"client-ref,omitempty"`
+	Vcard           string      `json:"vcard,omitempty"`
+	Vcal            string      `json:"vcal,omitempty"`
+	TTL             int64       `json:"ttl,omitempty"`
+	Callback        string      `json:"callback,omitempty"`
+	MessageClass    int64       `json:"message-class,omitempty"`
+	Udh             string      `json:"udh,omitempty"`
+	ProtocolID      int64       `json:"protocol-id,omitempty"`
+	Body            string      `json:"body,omitempty"`
+	Title           string      `json:"title,omitempty"`
+	URL             string      `json:"url,omitempty"`
+	Validity        int64       `json:"validity,omitempty"`
 }
 
 func (r *SendSMSRequest) setApiCredentials(apiKey, apiSecret string) {

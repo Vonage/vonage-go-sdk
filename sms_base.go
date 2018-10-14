@@ -7,6 +7,15 @@ type SMSService struct {
 	authSet *AuthSet
 }
 
+type MessageType string
+
+const (
+	Text    MessageType = "text"
+	Binary  MessageType = "binary"
+	WAPPush MessageType = "wappush"
+	Unicode MessageType = "unicode"
+)
+
 func newSMSService(base *sling.Sling, authSet *AuthSet) *SMSService {
 	sling := base.Base("https://rest.nexmo.com/sms/")
 	return &SMSService{
