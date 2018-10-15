@@ -108,7 +108,6 @@ func (c *InsightService) GetStandardInsight(request StandardInsightRequest) (Sta
 	c.authSet.ApplyAPICredentials(&request)
 
 	insightResponse := new(StandardInsightResponse)
-	insightResponse.CurrentCarrier.NetworkType = "banana"
 	resp, err := c.sling.New().Post("standard/json").BodyJSON(request).ReceiveSuccess(insightResponse)
 	if err != nil {
 		return *insightResponse, resp, err
