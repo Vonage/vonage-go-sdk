@@ -10,10 +10,10 @@ type SMSService struct {
 type MessageType string
 
 const (
-	Text    MessageType = "text"
-	Binary  MessageType = "binary"
-	WAPPush MessageType = "wappush"
-	Unicode MessageType = "unicode"
+	MessageTypeText    MessageType = "text"
+	MessageTypeBinary  MessageType = "binary"
+	MessageTypeWAPPush MessageType = "wappush"
+	MessageTypeUnicode MessageType = "unicode"
 )
 
 func newSMSService(base *sling.Sling, authSet *AuthSet) *SMSService {

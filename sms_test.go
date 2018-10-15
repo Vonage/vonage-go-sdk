@@ -7,6 +7,6 @@ func TestSendSMS(t *testing.T) {
 		To:   "447520615146",
 		From: "NEXMOTEST",
 		Text: "Nêxmö Tėšt",
-		Type: Unicode,
+		Type: MessageTypeUnicode,
 	})
 }
