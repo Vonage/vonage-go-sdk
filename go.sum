@@ -1,0 +1,14 @@
+github.com/dgrijalva/jwt-go v3.2.0+incompatible h1:7qlOGliEKZXTDg6OTjfoBKDXWrumCAMpl/TFQ4/5kLM=
+github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
+github.com/dnaeon/go-vcr v0.0.0-20180920040454-5637cf3d8a31 h1:Dzuw9GtbmllUqEcoHfScT9YpKFUssSiZ5PgZkIGf/YQ=
+github.com/dnaeon/go-vcr v0.0.0-20180920040454-5637cf3d8a31/go.mod h1:aBB1+wY4s93YsC3HHjMBMrwTj2R9FHDzUr9KyGc8n1E=
+github.com/google/go-querystring v1.0.0 h1:Xkwi/a1rcvNg1PPYe5vI8GbeBY/jrVuDX5ASuANWTrk=
+github.com/google/go-querystring v1.0.0/go.mod h1:odCYkC5MyYFN7vkCjXpyrEuKhc/BUO6wN/zVPAxq5ck=
+github.com/judy2k/go-vcr v0.0.0-20170423203337-0f4bcdc832ae h1:96+qNPLk4pvDOsKdZLZSSEB85huhDGVYIBGJucGojLM=
+github.com/judy2k/go-vcr v0.0.0-20170423203337-0f4bcdc832ae/go.mod h1:b0cx+UPd07rpFvorg16wdRufTncow0l968HAWDIA0lQ=
+github.com/judy2k/nexmo-go v0.0.0-20181011103223-13abe96e3299 h1:dhweQPPtp6z9+ojIBOrPySy/2hEUt7pNdW6ql+2GDfU=
+github.com/judy2k/nexmo-go v0.0.0-20181011103223-13abe96e3299/go.mod h1:/fbuqQKPJksJW5+Yajv7BiAe+dAydY3b9XPS6FOYuLk=
+gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=
+gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+gopkg.in/yaml.v2 v2.2.1 h1:mUhvW9EsL+naU5Q3cakzfE91YhliOondGd6ZrsDBHQE=
+gopkg.in/yaml.v2 v2.2.1/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
