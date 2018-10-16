@@ -1,4 +1,4 @@
-module nexmo-go
+module github.com/nexmo-community/nexmo-go
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
