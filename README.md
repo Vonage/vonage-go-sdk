@@ -39,7 +39,9 @@ Or import the package into your project and then do `go get .`.
 
 ## Usage
 
-Usage looks a bit like this:
+Here are some simple examples to get you started. If there's anything else you'd like to see here, please open an issue and let us know!
+
+### Number Insight
 
 ```golang
 package main
@@ -69,7 +71,61 @@ func main() {
 }
 ```
 
-More documentation will be coming as the API stabilises! Things are still in flux.
+### Sending SMS
+
+```golang
+package main
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/nexmo-community/nexmo-go"
+)
+
+func main() {
+	auth := nexmo.NewAuthSet()
+	auth.SetAPISecret(API_KEY, API_SECRET)
+
+	client := nexmo.NewClient(http.DefaultClient, auth)
+	var smsReq nexmo.SendSMSRequest
+	smsReq.From = FROM_NUMBER
+	smsReq.To = TO_NUMBER
+	smsReq.Text = "This message comes to you from Nexmo via Golang"
+	callR, _, err := client.SMS.SendSMS(smsReq)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("%+v", callR)
+}
+```
+
+### Receiving SMS
+
+```golang
+package main
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+)
+
+func main() {
+
+	http.HandleFunc("/webhooks/inbound-sms", func(w http.ResponseWriter, r *http.Request) {
+		params := r.URL.Query()
+		fmt.Println("SMS from " + params["msisdn"][0] + ": " + string(params["text"][0]))
+	})
+
+	http.ListenAndServe(":8080", nil)
+}
+```
+
 
 ## To Do
 
