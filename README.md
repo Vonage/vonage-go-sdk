@@ -39,7 +39,7 @@ Or import the package into your project and then do `go get .`.
 
 ## Usage
 
-Here are some simple examples to get you started. If there's anything else you'd like to see here, please open an issue and let us know!
+Here are some simple examples to get you started. If there's anything else you'd like to see here, please open an issue and let us know! Be aware that this library is still at an alpha stage so things may change between versions.
 
 ### Number Insight
 
