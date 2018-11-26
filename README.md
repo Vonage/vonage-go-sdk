@@ -90,10 +90,12 @@ func main() {
 	auth.SetAPISecret(API_KEY, API_SECRET)
 
 	client := nexmo.NewClient(http.DefaultClient, auth)
-	var smsReq nexmo.SendSMSRequest
-	smsReq.From = FROM_NUMBER
-	smsReq.To = TO_NUMBER
-	smsReq.Text = "This message comes to you from Nexmo via Golang"
+	smsReq := nexmo.SendSMSRequest {
+	    From = FROM_NUMBER,
+	    To = TO_NUMBER,
+	    Text = "This message comes to you from Nexmo via Golang",
+    }
+
 	callR, _, err := client.SMS.SendSMS(smsReq)
 
 	if err != nil {
