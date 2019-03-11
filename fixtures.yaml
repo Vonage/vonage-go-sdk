@@ -9,7 +9,7 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - nexmo-go/2.0 (judy2k)
+      - nexmo-go/2.0 (nexmo-community)
     url: https://api.nexmo.com/ni/basic/json
     method: POST
   response:
@@ -57,7 +57,7 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - nexmo-go/2.0 (judy2k)
+      - nexmo-go/2.0 (nexmo-community)
     url: https://api.nexmo.com/ni/standard/json
     method: POST
   response:
@@ -115,7 +115,7 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - nexmo-go/2.0 (judy2k)
+      - nexmo-go/2.0 (nexmo-community)
     url: https://api.nexmo.com/ni/advanced/json
     method: POST
   response:

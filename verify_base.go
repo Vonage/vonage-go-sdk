@@ -1,6 +1,6 @@
 package nexmo
 
-import "github.com/judy2k/nexmo-go/sling"
+import "github.com/nexmo-community/nexmo-go/sling"
 
 type VerifyService struct {
 	sling   *sling.Sling
