@@ -128,6 +128,69 @@ func main() {
 }
 ```
 
+### Starting a Verify Request
+
+
+```golang
+    package main
+
+    import (
+        "fmt"
+        "github.com/nexmo-community/nexmo-go"
+        "log"
+        "net/http"
+    )
+
+    func verify_start() {
+        auth := nexmo.NewAuthSet()
+        auth.SetAPISecret(API_KEY, API_SECRET)
+        client := nexmo.NewClient(http.DefaultClient, auth)
+        verification, _, err := client.Verify.Start(nexmo.StartVerificationRequest{
+            Number: PHONE_NUMBER,
+            Brand:  "Golang Docs",
+        })
+        if err != nil {
+            log.Fatal(err)
+        }
+        fmt.Println("Request ID:", verification.RequestID)
+    }
+
+    func main() {
+        verify_start()
+    }
+```
+
+### Confirming a Verify Code
+
+```golang
+    package main
+
+    import (
+        "fmt"
+        "github.com/nexmo-community/nexmo-go"
+        "log"
+        "net/http"
+    )
+
+    func verify_check() {
+        auth := nexmo.NewAuthSet()
+        auth.SetAPISecret(API_KEY, API_SECRET)
+        client := nexmo.NewClient(http.DefaultClient, auth)
+        response, _, err := client.Verify.Check(nexmo.CheckVerificationRequest{
+            RequestID: REQUEST_ID,
+            Code:      CODE,
+        })
+        if err != nil {
+            log.Fatal(err)
+        }
+        fmt.Println("Status:", response.Status)
+        fmt.Println("Cost:", response.Price)
+    }
+
+    func main() {
+        verify_check()
+    }
+```
 
 ## To Do
 
