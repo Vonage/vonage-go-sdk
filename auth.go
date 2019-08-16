@@ -24,6 +24,7 @@ const (
 	JwtAuth
 )
 
+// API credentials to access the Nexmo APIs
 type AuthSet struct {
 	apiSecret *apiSecretAuth
 	appAuth   *applicationAuth

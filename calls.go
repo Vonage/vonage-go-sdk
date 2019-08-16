@@ -29,6 +29,7 @@ func (c *CallService) SearchCalls(request SearchCallsRequest) (*SearchCallsRespo
 	return callResponse, httpResponse, err
 }
 
+// Get information about a current or past call by call ID
 func (c *CallService) GetCallInfo(uuid string) (*CallInfo, *http.Response, error) {
 	sling := c.sling.New().Get(uuid)
 
@@ -37,6 +38,7 @@ func (c *CallService) GetCallInfo(uuid string) (*CallInfo, *http.Response, error
 	return callResponse, httpResponse, err
 }
 
+// Change the in-progress call by performing an action, such as hangup, transfer, mute, etc. See the API reference: https://developer.nexmo.com/api/voice#updateCall
 func (c *CallService) ModifyCall(uuid string, request interface{}) (*ModifyCallResponse, *http.Response, error) {
 	sling := c.sling.New().Put(uuid).BodyJSON(request)
 
@@ -45,6 +47,7 @@ func (c *CallService) ModifyCall(uuid string, request interface{}) (*ModifyCallR
 	return callResponse, httpResponse, err
 }
 
+// Start playing an audio file into a call
 func (c *CallService) Stream(uuid string, request StreamRequest) (*ModifyCallResponse, *http.Response, error) {
 	sling := c.sling.New().Put(fmt.Sprintf("%s/stream", uuid)).BodyJSON(request)
 
@@ -53,6 +56,7 @@ func (c *CallService) Stream(uuid string, request StreamRequest) (*ModifyCallRes
 	return callResponse, httpResponse, err
 }
 
+// Stop the audio stream from playing in a call
 func (c *CallService) StopStream(uuid string) (*ModifyCallResponse, *http.Response, error) {
 	sling := c.sling.New().Delete(fmt.Sprintf("%s/stream", uuid))
 	callResponse := new(ModifyCallResponse)
@@ -60,6 +64,7 @@ func (c *CallService) StopStream(uuid string) (*ModifyCallResponse, *http.Respon
 	return callResponse, httpResponse, err
 }
 
+// Send text-to-speech into a call
 func (c *CallService) Talk(uuid string, request TalkRequest) (*ModifyCallResponse, *http.Response, error) {
 	sling := c.sling.New().Put(fmt.Sprintf("%s/talk", uuid)).BodyJSON(request)
 
@@ -68,6 +73,7 @@ func (c *CallService) Talk(uuid string, request TalkRequest) (*ModifyCallRespons
 	return callResponse, httpResponse, err
 }
 
+// Stop the text-to-speech that is currently being sent into a call
 func (c *CallService) StopTalk(uuid string) (*ModifyCallResponse, *http.Response, error) {
 	sling := c.sling.New().Delete(fmt.Sprintf("%s/talk", uuid))
 	callResponse := new(ModifyCallResponse)
@@ -75,6 +81,7 @@ func (c *CallService) StopTalk(uuid string) (*ModifyCallResponse, *http.Response
 	return callResponse, httpResponse, err
 }
 
+// Play DTMF tones into a call
 func (c *CallService) SendDTMF(uuid string, request DTMFRequest) (*ModifyCallResponse, *http.Response, error) {
 	sling := c.sling.New().Put(fmt.Sprintf("%s/dtmf", uuid)).BodyJSON(request)
 

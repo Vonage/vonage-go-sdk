@@ -16,6 +16,7 @@ func newInsightService(base *sling.Sling, authSet *AuthSet) *InsightService {
 	}
 }
 
+// Set the base URL for the API request. This is mostly useful for testing.
 func (c *InsightService) SetBaseURL(baseURL string) {
 	c.sling.Base(baseURL)
 }

@@ -35,6 +35,7 @@ type ApplicationConfiguration struct {
 
 type CreateApplicationResponse ApplicationConfiguration
 
+// Create a new application in your Nexmo account
 func (s *ApplicationService) CreateApplication(request CreateApplicationRequest) (*CreateApplicationResponse, *http.Response, error) {
 	s.authSet.ApplyAPICredentials(&request)
 	response := new(CreateApplicationResponse)
@@ -60,6 +61,7 @@ type ListApplicationsResponse struct {
 	Links Links `json:"_links"`
 }
 
+// List the applications on the Nexmo account
 func (s *ApplicationService) ListApplications(request ListApplicationsRequest) (*ListApplicationsResponse, *http.Response, error) {
 	s.authSet.ApplyAPICredentials(&request)
 	response := new(ListApplicationsResponse)
@@ -78,6 +80,7 @@ type GetApplicationRequest struct {
 
 type GetApplicationResponse ApplicationConfiguration
 
+// Fetch a specific application's details
 func (s *ApplicationService) GetApplication(id string) (*GetApplicationResponse, *http.Response, error) {
 	request := GetApplicationRequest{}
 	s.authSet.ApplyAPICredentials(&request)
@@ -93,6 +96,7 @@ type ModifyApplicationRequest CreateApplicationRequest
 
 type ModifyApplicationResponse ApplicationConfiguration
 
+// Update an existing application by applying changed config to it
 func (s *ApplicationService) ModifyApplication(id string, request ModifyApplicationRequest) (*ModifyApplicationResponse, *http.Response, error) {
 	s.authSet.ApplyAPICredentials(&request)
 	response := new(ModifyApplicationResponse)
@@ -104,6 +108,7 @@ func (s *ApplicationService) ModifyApplication(id string, request ModifyApplicat
 	return response, httpResponse, err
 }
 
+// Destroy an application
 func (s *ApplicationService) DeleteApplication(id string) (*http.Response, error) {
 	credentials := Credentials{}
 	s.authSet.ApplyAPICredentials(&credentials)

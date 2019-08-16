@@ -16,6 +16,7 @@ func newCallService(base *sling.Sling, authSet *AuthSet) *CallService {
 	}
 }
 
+// Set the base URL for the API requests. Mostly useful for testing.
 func (c *CallService) SetBaseURL(baseURL string) {
 	c.sling.Base(baseURL)
 }
