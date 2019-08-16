@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/judy2k/nexmo-go/sling"
+	"github.com/nexmo-community/nexmo-go/sling"
 )
 
 type Client struct {
@@ -20,7 +20,7 @@ type Client struct {
 func NewClient(httpClient *http.Client, authSet *AuthSet) *Client {
 	base := sling.New().
 		Client(httpClient).
-		Set("User-Agent", "nexmo-go/2.0 (judy2k)")
+		Set("User-Agent", "nexmo-go/2.0 (nexmo-community)")
 	return &Client{
 		sling:       base,
 		Insight:     newInsightService(base.New(), authSet),
