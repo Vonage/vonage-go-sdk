@@ -2,6 +2,7 @@ package nexmo
 
 import "github.com/nexmo-community/nexmo-go/sling"
 
+// For working with the Voice API. More information about Voice: https://developer.nexmo.com/voice/voice-api/
 type CallService struct {
 	sling   *sling.Sling
 	authSet *AuthSet

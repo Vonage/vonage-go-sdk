@@ -2,6 +2,7 @@ package nexmo
 
 import "github.com/nexmo-community/nexmo-go/sling"
 
+// Use the Application API to create and manage your applications. More info: https://developer.nexmo.com/application
 type ApplicationService struct {
 	sling   *sling.Sling
 	authSet *AuthSet

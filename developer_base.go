@@ -2,6 +2,7 @@ package nexmo
 
 import "github.com/nexmo-community/nexmo-go/sling"
 
+// Developer API allows configuration of account and balance checking. See also: https://developer.nexmo.com/api/account
 type DeveloperService struct {
 	sling   *sling.Sling
 	authSet *AuthSet

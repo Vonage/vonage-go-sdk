@@ -2,6 +2,7 @@ package nexmo
 
 import "github.com/nexmo-community/nexmo-go/sling"
 
+// Use Verify API for 2FA, passwordless login, or confirming that a user has given a correct phone number. More information: https://developer.nexmo.com/verify
 type VerifyService struct {
 	sling   *sling.Sling
 	authSet *AuthSet
