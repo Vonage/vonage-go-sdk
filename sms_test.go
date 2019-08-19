@@ -15,9 +15,6 @@ func TestSendSMS(t *testing.T) {
 
 	httpmock.RegisterResponder("POST", "https://rest.nexmo.com/sms/json",
 		func(req *http.Request) (*http.Response, error) {
-
-			assert.Equal(t, req.Method, "POST")
-
 			return httpmock.NewStringResponse(200, `{
 				"message-count": "1",
 				"messages": [{
@@ -35,7 +32,7 @@ func TestSendSMS(t *testing.T) {
 		To:   "447520615146",
 		From: "NEXMOTEST",
 		Text: "Nêxmö Tėšt",
-		Type: MessageTypeUnicode,
+		Type: "unicode",
 	})
 
 	assert.Nil(t, err)
