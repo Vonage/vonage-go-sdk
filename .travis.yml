@@ -6,10 +6,11 @@ matrix:
   include:
 #    - go: 1.4.3
 #      env: NOVET=true # No bundled vet.
-    - go: 1.5.4
-    - go: 1.6.4
-    - go: 1.7.5
-    - go: 1.8
+    - go: 1.8.7
+    - go: 1.9.7
+    - go: 1.10.8
+    - go: 1.11.13
+    - go: 1.12.9
     - go: tip
   allow_failures:
     - go: tip
@@ -17,7 +18,7 @@ script:
   - go test -v -covermode=atomic -coverprofile=coverage.out
   - diff -u <(echo -n) <(gofmt -d -s .)
   - if [ -z $NOVET ]; then
-      diff -u <(echo -n) <(go tool vet . 2>&1 | grep -vE 'ExampleCommand|bash_completions.*Fprint');
+      diff -u <(echo -n) <(go vet . 2>&1 | grep -vE 'ExampleCommand|bash_completions.*Fprint');
     fi
 after_success:
   - bash <(curl -s https://codecov.io/bash)
