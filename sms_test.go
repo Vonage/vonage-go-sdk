@@ -2,7 +2,6 @@ package nexmo
 
 import (
 	"encoding/json"
-	"net/http"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
@@ -14,8 +13,7 @@ func TestSendSMS(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	httpmock.RegisterResponder("POST", "https://rest.nexmo.com/sms/json",
-		func(req *http.Request) (*http.Response, error) {
-			return httpmock.NewStringResponse(200, `{
+		httpmock.NewStringResponder(200, `{
 				"message-count": "1",
 				"messages": [{
 					"to": "447520615146",
@@ -25,8 +23,7 @@ func TestSendSMS(t *testing.T) {
 					"message-price": "0.03330000",
 					"network": "23409"
 				}]
-			}`), nil
-		})
+			}`))
 
 	response, _, err := _client.SMS.SendSMS(SendSMSRequest{
 		To:   "447520615146",

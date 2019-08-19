@@ -1,7 +1,6 @@
 package nexmo
 
 import (
-	"net/http"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
@@ -12,8 +11,7 @@ func TestBasicInsight(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	httpmock.RegisterResponder("POST", "https://api.nexmo.com/ni/basic/json",
-		func(req *http.Request) (*http.Response, error) {
-			return httpmock.NewStringResponse(200, `{
+		httpmock.NewStringResponder(200, `{
 				"status": 0,
 				"status_message": "Success",
 				"request_id": "261050f4-5126-43ab-b6cf-7cb2ce341c8b",
@@ -23,8 +21,7 @@ func TestBasicInsight(t *testing.T) {
 				"country_code_iso3": "GBR",
 				"country_name": "United Kingdom",
 				"country_prefix": "44"
-			}`), nil
-		})
+			}`))
 
 	ar, _, err := _client.Insight.GetBasicInsight(BasicInsightRequest{
 		Number: "447520615146",
@@ -42,8 +39,7 @@ func TestStandardInsight(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	httpmock.RegisterResponder("POST", "https://api.nexmo.com/ni/standard/json",
-		func(req *http.Request) (*http.Response, error) {
-			return httpmock.NewStringResponse(200, `{
+		httpmock.NewStringResponder(200, `{
 				"status": 0,
 				"status_message": "Success",
 				"request_id": "e983e5c2-03d3-4432-8487-b14834eda8c9",
@@ -69,8 +65,7 @@ func TestStandardInsight(t *testing.T) {
 				},
 				"ported": "assumed_not_ported",
 				"roaming": {"status": "unknown"}
-			}`), nil
-		})
+			}`))
 
 	ar, _, err := _client.Insight.GetStandardInsight(StandardInsightRequest{
 		Number: "447520615146",
@@ -89,8 +84,7 @@ func TestAdvancedInsight(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	httpmock.RegisterResponder("POST", "https://api.nexmo.com/ni/advanced/json",
-		func(req *http.Request) (*http.Response, error) {
-			return httpmock.NewStringResponse(200, `{
+		httpmock.NewStringResponder(200, `{
 				"status": 0,
 				"status_message": "Success",
 				"lookup_outcome": 0,
@@ -121,8 +115,7 @@ func TestAdvancedInsight(t *testing.T) {
 				"ported": "not_ported",
 				"roaming": {"status": "not_roaming"},
 				"ip_warnings": "unknown"
-			}`), nil
-		})
+			}`))
 
 	ar, _, err := _client.Insight.GetAdvancedInsight(AdvancedInsightRequest{
 		Number: "447520615146",
