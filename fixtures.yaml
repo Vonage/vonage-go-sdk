@@ -1,6 +1,5 @@
 ---
 version: 1
-rwmutex: {}
 interactions:
 - request:
     body: '{"number":"447520615146"}'
@@ -17,7 +16,7 @@ interactions:
       {
           "status": 0,
           "status_message": "Success",
-          "request_id": "55de2fa2-41ab-4bb6-ba1b-a58398d50bb8",
+          "request_id": "261050f4-5126-43ab-b6cf-7cb2ce341c8b",
           "international_format_number": "447520615146",
           "national_format_number": "07520 615146",
           "country_code": "GB",
@@ -35,7 +34,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 24 Apr 2017 20:30:45 GMT
+      - Mon, 19 Aug 2019 10:35:20 GMT
       Server:
       - nginx
       Strict-Transport-Security:
@@ -45,11 +44,12 @@ interactions:
       X-Frame-Options:
       - deny
       X-Nexmo-Trace-Id:
-      - 9e9ff27efde021aa9af02a3ec354e98a
+      - baea48e9b7a33793952bba7a1ae1ad70
       X-Xss-Protection:
       - 1; mode=block;
     status: 200 OK
     code: 200
+    duration: ""
 - request:
     body: '{"number":"447520615146"}'
     form: {}
@@ -63,9 +63,9 @@ interactions:
   response:
     body: |-
       {
-          "status": 44,
-          "status_message": "Lookup Handler unable to handle request",
-          "request_id": "5d75659b-ff45-4804-b77f-b0a7ff0a678a",
+          "status": 0,
+          "status_message": "Success",
+          "request_id": "e983e5c2-03d3-4432-8487-b14834eda8c9",
           "international_format_number": "447520615146",
           "national_format_number": "07520 615146",
           "country_code": "GB",
@@ -73,15 +73,21 @@ interactions:
           "country_name": "United Kingdom",
           "country_prefix": "44",
           "request_price": "0.00500000",
-          "refund_price": "0.00500000",
-          "remaining_balance": "24.0081195",
+          "remaining_balance": "54.49271782",
+          "current_carrier": {
+              "network_code": "23409",
+              "name": "Tismi BV",
+              "country": "GB",
+              "network_type": "mobile"
+          },
           "original_carrier": {
               "network_code": "23409",
               "name": "Tismi BV",
               "country": "GB",
               "network_type": "mobile"
           },
-          "ported": "unknown"
+          "ported": "assumed_not_ported",
+          "roaming": {"status": "unknown"}
       }
     headers:
       Cache-Control:
@@ -89,11 +95,11 @@ interactions:
       Content-Disposition:
       - attachment; filename="api.txt"
       Content-Length:
-      - "649"
+      - "783"
       Content-Type:
       - application/json
       Date:
-      - Mon, 24 Apr 2017 20:30:53 GMT
+      - Mon, 19 Aug 2019 10:35:20 GMT
       Server:
       - nginx
       Strict-Transport-Security:
@@ -103,11 +109,12 @@ interactions:
       X-Frame-Options:
       - deny
       X-Nexmo-Trace-Id:
-      - 797443417f72f46e045ddb959682921c
+      - d427942e1a8b9f238e643804f030c8dd
       X-Xss-Protection:
       - 1; mode=block;
     status: 200 OK
     code: 200
+    duration: ""
 - request:
     body: '{"number":"447520615146"}'
     form: {}
@@ -121,11 +128,11 @@ interactions:
   response:
     body: |-
       {
-          "status": 44,
-          "status_message": "Lookup Handler unable to handle request",
-          "lookup_outcome": 1,
-          "lookup_outcome_message": "Partial success - some fields populated",
-          "request_id": "55cca8b6-da99-4f43-98c7-9a59db6b3315",
+          "status": 0,
+          "status_message": "Success",
+          "lookup_outcome": 0,
+          "lookup_outcome_message": "Success",
+          "request_id": "62242e49-a824-42aa-8d04-3772eb9ae315",
           "international_format_number": "447520615146",
           "national_format_number": "07520 615146",
           "country_code": "GB",
@@ -133,7 +140,7 @@ interactions:
           "country_name": "United Kingdom",
           "country_prefix": "44",
           "request_price": "0.03000000",
-          "remaining_balance": "23.9831195",
+          "remaining_balance": "54.46271782",
           "current_carrier": {
               "network_code": "23409",
               "name": "Tismi BV",
@@ -146,9 +153,11 @@ interactions:
               "country": "GB",
               "network_type": "mobile"
           },
-          "valid_number": "unknown",
-          "reachable": "unknown",
-          "ported": "assumed_not_ported"
+          "valid_number": "valid",
+          "reachable": "reachable",
+          "ported": "not_ported",
+          "roaming": {"status": "not_roaming"},
+          "ip_warnings": "unknown"
       }
     headers:
       Cache-Control:
@@ -160,7 +169,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 24 Apr 2017 20:31:03 GMT
+      - Mon, 19 Aug 2019 10:35:21 GMT
       Server:
       - nginx
       Strict-Transport-Security:
@@ -170,8 +179,54 @@ interactions:
       X-Frame-Options:
       - deny
       X-Nexmo-Trace-Id:
-      - 4baa072621890b3f2420a18815607b25
+      - fe0f741a9b8aa34ecf69cacda980eee5
       X-Xss-Protection:
       - 1; mode=block;
     status: 200 OK
     code: 200
+    duration: ""
+- request:
+    body: '{"from":"NEXMOTEST","text":"Nêxmö Tėšt","to":"447520615146","type":"unicode"}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - nexmo-go/2.0 (nexmo-community)
+    url: https://rest.nexmo.com/sms/json
+    method: POST
+  response:
+    body: |-
+      {
+          "message-count": "1",
+          "messages": [{
+              "to": "447520615146",
+              "message-id": "140000005494DDEB",
+              "status": "0",
+              "remaining-balance": "54.42941782",
+              "message-price": "0.03330000",
+              "network": "23409"
+          }]
+      }
+    headers:
+      Cache-Control:
+      - max-age=1
+      Content-Disposition:
+      - attachment; filename="api.txt"
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 19 Aug 2019 10:35:22 GMT
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains
+      X-Frame-Options:
+      - deny
+      X-Nexmo-Trace-Id:
+      - b5cfffb0c844ea043dda83d76b0d3281
+      X-Xss-Protection:
+      - 1; mode=block;
+    status: 200 OK
+    code: 200
+    duration: ""
