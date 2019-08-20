@@ -1,28 +1,13 @@
-# Nexmo Client Library For Go
+# Nexmo Server SDK For Go
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/nexmo-community/nexmo-go)](https://goreportcard.com/report/github.com/nexmo-community/nexmo-go)
 [![Build Status](https://travis-ci.org/nexmo-community/nexmo-go.svg?branch=master)](https://travis-ci.org/nexmo-community/nexmo-go)
 [![Coverage](https://codecov.io/gh/nexmo-community/nexmo-go/branch/master/graph/badge.svg)](https://codecov.io/gh/nexmo-community/nexmo-go)
 [![GoDoc](https://godoc.org/github.com/nexmo-community/nexmo-go?status.svg)](https://godoc.org/github.com/nexmo-community/nexmo-go) 
 
-This library is moving towards a full client implementation of the
-[Nexmo](https://www.nexmo.com/) APIs. The library is
-supported by Nexmo.
+This is the definitely-unofficial Golang library for [Nexmo](https://nexmo.com). It has support for most of our APIs, but is still under active development. Issues, pull requests and other input is very welcome.
 
-The library currently has good coverage for the following APIs:
-
-API         | Coverage
-------------|---------:
-Voice       | (9/9)
-SMS         | (1/4) 
-Insight     | (3/4)
-Verify      | (4/4)
-Application | (5/5)
-
-It currently has only a handful of Developer (5/15) endpoints implemented, and no
-webhook support.
-
-Current API Coverage can be found in [this spreadsheet](https://docs.google.com/spreadsheets/d/19lsAoW2oiGMK7Xg0dOw5KPdOOix1Oo-GaTWkRyVRMXI/pubhtml#)
+If you don't already know Nexmo: We make telephony APIs. If you need to make a call, check a phone number, or send an SMS then you are in the right place! If you don't have a Nexmo yet, you can [sign up for a Nexmo account](https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&amp;utm_medium=github&amp;utm_campaign=nexmo-go) and get some free credit to get you started.
 
 ## Installation
 
@@ -189,33 +174,16 @@ func main() {
     }
 ```
 
-## To Do
 
-Lots has been done, but there's still lots left to do! If you'd like to help,
-please get in touch **first**! Progress is moving swiftly and I wouldn't want
-to waste your time!
-
-### Testing
-
-There isn't any testing yet! A test harness is currently in the works, to
-allow some quality tests to be written. Every API call has been tested
-manually during development, so they *do* work, but there's more work to
-be done.
-
-### Error Handling
-
-Error responses from Nexmo APIs are not currently dealt with very gracefully.
-Fortunately, much of the work can be done in one place (inside the custom fork
-of [Sling](https://github.com/dghubble/sling) - which is why I forked it).
-This comes directly after testing, so I can ensure that all the different
-error responses in different parts of the API are dealt with properly.
-
-### Remaining Endpoints
-
-Coverage is actually really high. 90% of Voice, SMS, Insight, Verify &
-Application APIs are covered, with some of the Developer API as well.
-
-### Webhook Support
-
-Support for webhook parsing and validation. Made easier because Golang has
-a widely-used request/response API!
+## Getting Help
+ 
+We love to hear from you so if you have questions, comments or find a bug in the project, let us know! You can either:
+ 
+* Open an issue on this repository
+* Tweet at us! We're [@NexmoDev on Twitter](https://twitter.com/NexmoDev)
+* Or [join the Nexmo Community Slack](https://developer.nexmo.com/community/slack)
+ 
+## Further Reading
+ 
+* Check out the Developer Documentation at <https://developer.nexmo.com> - you'll find the API references for all the APIs there as well
+* The documentation for the library: <https://godoc.org/github.com/nexmo-community/nexmo-go>
