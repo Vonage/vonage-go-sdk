@@ -25,6 +25,7 @@ type BasicInsightResponse struct {
 	CountryPrefix             string `json:"country_prefix,omitempty"`
 }
 
+// Returns a formatted error if there is an error, or nil otherwise
 func (r *BasicInsightResponse) responseError() error {
 	if r.Status != 0 && r.Status != 43 && r.Status != 44 && r.Status != 45 {
 		if r.StatusMessage != "" {
@@ -35,6 +36,7 @@ func (r *BasicInsightResponse) responseError() error {
 	return nil
 }
 
+// Perform a Number Insight request at a basic level of detail
 func (c *InsightService) GetBasicInsight(request BasicInsightRequest) (BasicInsightResponse, *http.Response, error) {
 	c.authSet.ApplyAPICredentials(&request)
 
@@ -104,6 +106,7 @@ type CarrierRecord struct {
 	NetworkType NetworkType `json:"network_type"`
 }
 
+// Perform a Number Insight request at a standard level of detail
 func (c *InsightService) GetStandardInsight(request StandardInsightRequest) (StandardInsightResponse, *http.Response, error) {
 	c.authSet.ApplyAPICredentials(&request)
 
@@ -181,6 +184,7 @@ type AdvancedInsightResponse struct {
 	IPCountry            string        `json:"ip_country"`
 }
 
+// Perform a Number Insight request at an advanced level of detail
 func (c *InsightService) GetAdvancedInsight(request AdvancedInsightRequest) (AdvancedInsightResponse, *http.Response, error) {
 	c.authSet.ApplyAPICredentials(&request)
 

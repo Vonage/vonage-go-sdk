@@ -24,6 +24,7 @@ type StartVerificationResponse struct {
 	ErrorText string `json:"error_text"`
 }
 
+// Begin the process of verifying a phone number, you probably want to capture the request_id
 func (s *VerifyService) Start(request StartVerificationRequest) (*StartVerificationResponse, *http.Response, error) {
 	s.authSet.ApplyAPICredentials(&request)
 	response := new(StartVerificationResponse)
@@ -49,6 +50,7 @@ type CheckVerificationResponse struct {
 	ErrorText string `json:"error_text"`
 }
 
+// Check if the code the user supplied is correct for this request
 func (s *VerifyService) Check(request CheckVerificationRequest) (*CheckVerificationResponse, *http.Response, error) {
 	s.authSet.ApplyAPICredentials(&request)
 	response := new(CheckVerificationResponse)
@@ -88,6 +90,7 @@ type SearchVerificationResponse struct {
 	} `json:"verification_requests"`
 }
 
+// Search for current or past verify requests, their costs and statuses
 func (s *VerifyService) Search(request SearchVerificationRequest) (*SearchVerificationResponse, *http.Response, error) {
 	s.authSet.ApplyAPICredentials(&request)
 	response := new(SearchVerificationResponse)
@@ -113,6 +116,7 @@ type ControlVerificationResponse struct {
 	ErrorText string `json:"error_text"`
 }
 
+// The control endpoint allows cancellation of a request or moving to the next verification stage
 func (s *VerifyService) Control(request ControlVerificationRequest) (*ControlVerificationResponse, *http.Response, error) {
 	s.authSet.ApplyAPICredentials(&request)
 	response := new(ControlVerificationResponse)

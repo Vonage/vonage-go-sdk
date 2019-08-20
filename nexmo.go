@@ -1,3 +1,4 @@
+// Simple client for using Nexmo's communication APIs. See https://nexmo.com for more information about the APIs.
 package nexmo
 
 import (
@@ -7,6 +8,7 @@ import (
 	"github.com/nexmo-community/nexmo-go/sling"
 )
 
+// The main client object
 type Client struct {
 	sling       *sling.Sling
 	Insight     *InsightService
@@ -17,6 +19,7 @@ type Client struct {
 	Application *ApplicationService
 }
 
+// Get a new Client object with the auth configured
 func NewClient(httpClient *http.Client, authSet *AuthSet) *Client {
 	base := sling.New().
 		Client(httpClient).

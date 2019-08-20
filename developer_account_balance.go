@@ -4,6 +4,7 @@ import (
 	"net/http"
 )
 
+// Get the current balance of your account
 func (s *DeveloperService) GetBalance() (*GetBalanceResponse, *http.Response, error) {
 	request := new(Credentials)
 	s.authSet.ApplyAPICredentials(request)

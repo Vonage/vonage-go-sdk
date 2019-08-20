@@ -2,6 +2,7 @@ package nexmo
 
 import "github.com/nexmo-community/nexmo-go/sling"
 
+// Use the Application API to create and manage your applications. More info: https://developer.nexmo.com/application
 type ApplicationService struct {
 	sling   *sling.Sling
 	authSet *AuthSet
@@ -15,6 +16,7 @@ func newApplicationService(base *sling.Sling, authSet *AuthSet) *ApplicationServ
 	}
 }
 
+// Set the base URL for the API calls. Useful for testing.
 func (c *ApplicationService) SetBaseURL(baseURL string) {
 	c.sling.Base(baseURL)
 }
