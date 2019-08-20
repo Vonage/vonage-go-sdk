@@ -1,6 +1,7 @@
 package nexmo
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
@@ -127,4 +128,15 @@ func TestAdvancedInsight(t *testing.T) {
 	if ar.CountryCode != "GB" {
 		t.Errorf("Country code should have been \"GB\", instead was %v", ar.CountryCode)
 	}
+}
+
+func ExampleInsightService_GetBasicInsight() {
+	insightResponse, _, err := _client.Insight.GetBasicInsight(BasicInsightRequest{
+		Number: "447520615146",
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("The number is from: %s\n", insightResponse.CountryCode)
+	// Output: The number is from: GB
 }
