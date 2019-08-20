@@ -22,4 +22,5 @@ We run the tests when we build the project, including when you open a pull reque
 go test
 ```
  
+**Pro tip:** if you get an error about a missing module or a newer version of Go being required, try setting your `GO111MODULE` environment variable to `"on"`.
 
