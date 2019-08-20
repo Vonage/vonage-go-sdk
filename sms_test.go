@@ -41,7 +41,7 @@ func TestSMSRequest(t *testing.T) {
 		To:   "447520615146",
 		From: "NEXMOTEST",
 		Text: "Nêxmö Tėšt",
-		Type: "unicode",
+		Type: MessageTypeUnicode,
 	})
 	assert.NoError(t, err)
 
