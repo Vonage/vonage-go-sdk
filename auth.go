@@ -9,7 +9,7 @@ import (
 	"fmt"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/judy2k/nexmo-go/sling"
+	"github.com/nexmo-community/nexmo-go/sling"
 )
 
 type AuthType uint8

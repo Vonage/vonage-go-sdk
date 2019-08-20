@@ -1,16 +1,13 @@
 # Nexmo Client Library For Go
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/judy2k/nexmo-go)](https://goreportcard.com/report/github.com/judy2k/nexmo-go)
-[![Build Status](https://travis-ci.org/judy2k/nexmo-go.svg?branch=master)](https://travis-ci.org/judy2k/nexmo-go)
-[![Coverage](https://codecov.io/gh/judy2k/nexmo-go/branch/master/graph/badge.svg)](https://codecov.io/gh/judy2k/nexmo-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/nexmo-community/nexmo-go)](https://goreportcard.com/report/github.com/nexmo-community/nexmo-go)
+[![Build Status](https://travis-ci.org/nexmo-community/nexmo-go.svg?branch=master)](https://travis-ci.org/nexmo-community/nexmo-go)
+[![Coverage](https://codecov.io/gh/nexmo-community/nexmo-go/branch/master/graph/badge.svg)](https://codecov.io/gh/nexmo-community/nexmo-go)
 
 
 This library is moving towards a full client implementation of the
-[Nexmo](https://www.nexmo.com/) APIs. The library is not currently officially
-supported by Nexmo, but the author, [@judy2k](https://twitter.com/judy2k)
-works in Nexmo's Developer Relations team. The hope is that this library will 
-become popular enough to justify becoming an officially supported
-Nexmo library.
+[Nexmo](https://www.nexmo.com/) APIs. The library is
+supported by Nexmo.
 
 The library currently has good coverage for the following APIs:
 
@@ -39,7 +36,9 @@ Or import the package into your project and then do `go get .`.
 
 ## Usage
 
-Usage looks a bit like this:
+Here are some simple examples to get you started. If there's anything else you'd like to see here, please open an issue and let us know! Be aware that this library is still at an alpha stage so things may change between versions.
+
+### Number Insight
 
 ```golang
 package main
@@ -69,7 +68,126 @@ func main() {
 }
 ```
 
-More documentation will be coming as the API stabilises! Things are still in flux.
+### Sending SMS
+
+```golang
+package main
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/nexmo-community/nexmo-go"
+)
+
+func main() {
+	auth := nexmo.NewAuthSet()
+	auth.SetAPISecret(API_KEY, API_SECRET)
+
+	client := nexmo.NewClient(http.DefaultClient, auth)
+	smsReq := nexmo.SendSMSRequest {
+	    From = FROM_NUMBER,
+	    To = TO_NUMBER,
+	    Text = "This message comes to you from Nexmo via Golang",
+    }
+
+	callR, _, err := client.SMS.SendSMS(smsReq)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("%+v", callR)
+}
+```
+
+### Receiving SMS
+
+```golang
+package main
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+)
+
+func main() {
+
+	http.HandleFunc("/webhooks/inbound-sms", func(w http.ResponseWriter, r *http.Request) {
+		params := r.URL.Query()
+		fmt.Println("SMS from " + params["msisdn"][0] + ": " + string(params["text"][0]))
+	})
+
+	http.ListenAndServe(":8080", nil)
+}
+```
+
+### Starting a Verify Request
+
+
+```golang
+    package main
+
+    import (
+        "fmt"
+        "github.com/nexmo-community/nexmo-go"
+        "log"
+        "net/http"
+    )
+
+    func verify_start() {
+        auth := nexmo.NewAuthSet()
+        auth.SetAPISecret(API_KEY, API_SECRET)
+        client := nexmo.NewClient(http.DefaultClient, auth)
+        verification, _, err := client.Verify.Start(nexmo.StartVerificationRequest{
+            Number: PHONE_NUMBER,
+            Brand:  "Golang Docs",
+        })
+        if err != nil {
+            log.Fatal(err)
+        }
+        fmt.Println("Request ID:", verification.RequestID)
+    }
+
+    func main() {
+        verify_start()
+    }
+```
+
+### Confirming a Verify Code
+
+```golang
+    package main
+
+    import (
+        "fmt"
+        "github.com/nexmo-community/nexmo-go"
+        "log"
+        "net/http"
+    )
+
+    func verify_check() {
+        auth := nexmo.NewAuthSet()
+        auth.SetAPISecret(API_KEY, API_SECRET)
+        client := nexmo.NewClient(http.DefaultClient, auth)
+        response, _, err := client.Verify.Check(nexmo.CheckVerificationRequest{
+            RequestID: REQUEST_ID,
+            Code:      CODE,
+        })
+        if err != nil {
+            log.Fatal(err)
+        }
+        fmt.Println("Status:", response.Status)
+        fmt.Println("Cost:", response.Price)
+    }
+
+    func main() {
+        verify_check()
+    }
+```
 
 ## To Do
 
