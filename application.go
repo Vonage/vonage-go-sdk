@@ -100,7 +100,6 @@ type ModifyApplicationResponse ApplicationConfiguration
 func (s *ApplicationService) ModifyApplication(id string, request ModifyApplicationRequest) (*ModifyApplicationResponse, *http.Response, error) {
 	s.authSet.ApplyAPICredentials(&request)
 	response := new(ModifyApplicationResponse)
-
 	httpResponse, err := s.sling.New().
 		Put(id).
 		BodyJSON(request).

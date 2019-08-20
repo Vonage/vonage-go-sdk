@@ -265,8 +265,7 @@ func (s *Sling) Request() (*http.Request, error) {
 		return nil, err
 	}
 
-	err = addQueryStructs(reqURL, s.queryStructs)
-	if err != nil {
+	if err = addQueryStructs(reqURL, s.queryStructs); err != nil {
 		return nil, err
 	}
 
@@ -366,8 +365,7 @@ func (s *Sling) Do(req *http.Request, successV, failureV interface{}) (*http.Res
 
 	// Decode from json
 	if successV != nil || failureV != nil {
-		err = decodeResponseJSON(resp.StatusCode, body, successV, failureV)
-		if err != nil {
+		if err = decodeResponseJSON(resp.StatusCode, body, successV, failureV); err != nil {
 			log.Println("Could not decode:", buf.String())
 		}
 	}

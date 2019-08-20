@@ -25,6 +25,7 @@ func initClient() *Client {
 
 	auth := NewAuthSet()
 	auth.SetAPISecret(apiKey, apiSecret)
-	_client = NewClient(nil, auth)
+	_client = New(nil, auth)
+
 	return _client
 }

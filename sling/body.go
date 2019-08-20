@@ -42,8 +42,7 @@ func (p jsonBodyProvider) ContentType() string {
 
 func (p jsonBodyProvider) Body() (io.Reader, error) {
 	buf := &bytes.Buffer{}
-	err := json.NewEncoder(buf).Encode(p.payload)
-	if err != nil {
+	if err := json.NewEncoder(buf).Encode(p.payload); err != nil {
 		return nil, err
 	}
 	return buf, nil

@@ -107,7 +107,7 @@ func (s *DeveloperService) GetPhoneOutboundPricing(request GetPhoneOutboundPrici
 	s.authSet.ApplyAPICredentials(&request)
 	response := new(GetPhoneOutboundPricingResponse)
 	httpResponse, err := s.sling.New().
-		Get(fmt.Sprintf("account/get-phone-pricing/outbound/%s", request.Product)).
+		Get("account/get-phone-pricing/outbound/" + request.Product).
 		QueryStruct(request).
 		ReceiveSuccess(response)
 	return response, httpResponse, err
