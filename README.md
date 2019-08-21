@@ -99,7 +99,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("%+v", callR)
+	fmt.Println("Status:", callR.Messages[0].Status)
 }
 ```
 
