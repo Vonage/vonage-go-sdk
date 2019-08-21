@@ -88,9 +88,9 @@ func main() {
 
 	client := nexmo.NewClient(http.DefaultClient, auth)
 	smsReq := nexmo.SendSMSRequest {
-	    From = FROM_NUMBER,
-	    To = TO_NUMBER,
-	    Text = "This message comes to you from Nexmo via Golang",
+	    From: FROM_NUMBER,
+	    To: TO_NUMBER,
+	    Text: "This message comes to you from Nexmo via Golang",
     }
 
 	callR, _, err := client.SMS.SendSMS(smsReq)
