@@ -1,7 +1,6 @@
 package nexmo
 
 import (
-	"fmt"
 	"os"
 	"testing"
 )
@@ -30,14 +29,3 @@ func initClient() *Client {
 
 	return _client
 }
-
-/*
-func TestUserAgentHeader(t *testing.T) {
-	_client = initClient()
-	fmt.Printf("%+v", _client.sling)
-	fmt.Println("THEN")
-	// fmt.Print(_client.sling.method)
-	var ua = _client.sling.Get("User-Agent")
-	fmt.Println(ua)
-}
-*/
