@@ -4,6 +4,7 @@ package nexmo
 import (
 	"fmt"
 	"net/http"
+	"runtime"
 
 	"github.com/nexmo-community/nexmo-go/sling"
 )
@@ -23,7 +24,7 @@ type Client struct {
 func NewClient(httpClient *http.Client, authSet *AuthSet) *Client {
 	base := sling.New().
 		Client(httpClient).
-		Set("User-Agent", "nexmo-go/2.0 (nexmo-community)")
+		Set("User-Agent", "nexmo-go/beta Go/"+runtime.Version())
 	return &Client{
 		sling:       base,
 		Insight:     newInsightService(base.New(), authSet),
