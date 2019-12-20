@@ -174,6 +174,42 @@ func main() {
     }
 ```
 
+### Make a Phone Call
+
+The Voice API uses applications and private keys for authentication. To use this snippet you will need a Nexmo number (for the "from" field), and an application with an ID and a private key. You can [learn more about creating applications](https://developer.nexmo.com/application/overview#creating-applications) on the Developer Portal.
+
+```golang
+	// get the private key ready, assume file name private.key
+	file, file_err := os.Open("private.key")
+	if file_err != nil {
+		log.Fatal(file_err)
+	}
+	defer file.Close()
+
+	key, _ := ioutil.ReadAll(file)
+
+	auth := nexmo.NewAuthSet()
+	auth.SetApplicationAuth(APPLICATION_ID, key)
+	client := nexmo.NewClient(http.DefaultClient, auth)
+
+	to := make([]interface{}, 1)
+	to[0] = nexmo.PhoneCallEndpoint{
+		Type:   "phone",
+		Number: TO_NUMBER,
+	}
+
+	response, _, err := client.Call.CreateCall(nexmo.CreateCallRequest{
+		From:      nexmo.PhoneCallEndpoint{"phone", NEXMO_NUMBER, ""},
+		To:        to,
+		AnswerURL: []string{ANSWER_URL},
+		EventURL:  []string{EVENT_URL},
+	})
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Status:", response.Status)
+```
 
 ## Getting Help
  
