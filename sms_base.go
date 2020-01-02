@@ -1,6 +1,6 @@
 package nexmo
 
-import "github.com/nexmo-community/nexmo-go/sling"
+import "github.com/dghubble/sling"
 
 // Work with the SMS API to send SMS messges. More information about this API: https://developer.nexmo.com/messaging/sms
 type SMSService struct {
