@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"runtime"
 
-	"github.com/nexmo-community/nexmo-go/sling"
+	"github.com/dghubble/sling"
 )
 
 // The main client object
