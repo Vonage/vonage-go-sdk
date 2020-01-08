@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// StartVerificationRequest is the struct for initiating verification process for a phone number
 type StartVerificationRequest struct {
 	Credentials
 	Number        string `json:"number"`
@@ -16,15 +17,18 @@ type StartVerificationRequest struct {
 	RequireType   string `json:"require_type,omitempty"`
 	PINExpiry     int16  `json:"pin_expiry,omitempty"`
 	NextEventWait int16  `json:"next_event_wait,omitempty"`
+	WorkflowID    int    `json:"workflow_id,omitempty"`
+	PINCode       string `json:"pin_code,omitempty"`
 }
 
+// StartVerificationResponse is the struct for the response for the initiation of verification to a phone number
 type StartVerificationResponse struct {
 	RequestID string `json:"request_id"`
 	Status    string `json:"status"`
 	ErrorText string `json:"error_text"`
 }
 
-// Begin the process of verifying a phone number, you probably want to capture the request_id
+// Start is to begin the process of verifying a phone number, you probably want to capture the request_id
 func (s *VerifyService) Start(request StartVerificationRequest) (*StartVerificationResponse, *http.Response, error) {
 	s.authSet.ApplyAPICredentials(&request)
 	response := new(StartVerificationResponse)
@@ -35,6 +39,7 @@ func (s *VerifyService) Start(request StartVerificationRequest) (*StartVerificat
 	return response, httpResponse, err
 }
 
+// CheckVerificationRequest verifies the phone number
 type CheckVerificationRequest struct {
 	Credentials
 	RequestID string `json:"request_id"`
@@ -42,6 +47,7 @@ type CheckVerificationRequest struct {
 	IPAddress string `json:"ip_address,omitempty"`
 }
 
+// CheckVerificationResponse is the response to the verify phone number request
 type CheckVerificationResponse struct {
 	RequestID string `json:"event_id"`
 	Status    string `json:"status"`
@@ -61,11 +67,13 @@ func (s *VerifyService) Check(request CheckVerificationRequest) (*CheckVerificat
 	return response, httpResponse, err
 }
 
+// SearchVerificationRequest is sent to search the status of a verification request
 type SearchVerificationRequest struct {
 	Credentials
 	RequestIDs []string `json:"request_ids" url:"request_ids"`
 }
 
+// SearchVerificationResponse is the response to a search verification request
 type SearchVerificationResponse struct {
 	Status               string `json:"status"`
 	ErrorText            string `json:"error_text"`
@@ -104,19 +112,21 @@ func (s *VerifyService) Search(request SearchVerificationRequest) (*SearchVerifi
 	return response, httpResponse, err
 }
 
+// ControlVerificationRequest is the request struct to send a control verification
 type ControlVerificationRequest struct {
 	Credentials
 	RequestID string `json:"request_id"`
 	Command   string `json:"cmd"`
 }
 
+// ControlVerificationResponse is the response to a control verification request
 type ControlVerificationResponse struct {
 	Status    string `json:"status"`
 	Command   string `json:"command"`
 	ErrorText string `json:"error_text"`
 }
 
-// The control endpoint allows cancellation of a request or moving to the next verification stage
+// Control endpoint allows cancellation of a request or moving to the next verification stage
 func (s *VerifyService) Control(request ControlVerificationRequest) (*ControlVerificationResponse, *http.Response, error) {
 	s.authSet.ApplyAPICredentials(&request)
 	response := new(ControlVerificationResponse)
