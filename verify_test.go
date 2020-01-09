@@ -18,7 +18,7 @@ func TestStartVerify(t *testing.T) {
 				"error_text": " "
 			}`))
 
-	_, _, err := _client.Verify.Start(StartVerificationRequest{
+	response, _, err := _client.Verify.Start(StartVerificationRequest{
 		Number:      "447520615146",
 		Brand:       "NEXMOTEST",
 		PINCode:     "1234",
@@ -27,4 +27,5 @@ func TestStartVerify(t *testing.T) {
 	})
 
 	assert.Nil(t, err)
+	assert.Equal(t, "0", response.Status)
 }
