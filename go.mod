@@ -1,6 +1,6 @@
-module github.com/nexmo-community/nexmo-go
+module github.com/Remitly/nexmo-go
 
-go 1.11
+go 1.13
 
 require (
 	github.com/dghubble/sling v1.3.0
