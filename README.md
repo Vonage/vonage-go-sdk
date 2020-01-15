@@ -11,6 +11,18 @@ If you don't already know Nexmo: We make telephony APIs. If you need to make a c
 
 ## Installation
 
+Find current and past releases on the [releases page](https://github.com/nexmo-community/nexmo-go/releases).
+
+## Recommended process (Go 1.13+)
+
+Import the package and use it:
+
+```
+import ("github.com/nexmo-community/nexmo-go")
+```
+
+## Older versions of Go (<= 1.12)
+
 To install the package, use `go get`:
 
 ```
