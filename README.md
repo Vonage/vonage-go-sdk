@@ -9,6 +9,8 @@ This is the community-supported Golang library for [Nexmo](https://nexmo.com). I
 
 If you don't already know Nexmo: We make telephony APIs. If you need to make a call, check a phone number, or send an SMS then you are in the right place! If you don't have a Nexmo yet, you can [sign up for a Nexmo account](https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&amp;utm_medium=github&amp;utm_campaign=nexmo-go) and get some free credit to get you started.
 
+> Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by its terms.
+
 ## Installation
 
 Find current and past releases on the [releases page](https://github.com/nexmo-community/nexmo-go/releases).
