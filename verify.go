@@ -17,7 +17,7 @@ type StartVerificationRequest struct {
 	RequireType   string `json:"require_type,omitempty"`
 	PINExpiry     int16  `json:"pin_expiry,omitempty"`
 	NextEventWait int16  `json:"next_event_wait,omitempty"`
-	WorkflowID    int    `json:"workflow_id,omitempty"`
+	WorkflowID    int8   `json:"workflow_id,omitempty"`
 	PINCode       string `json:"pin_code,omitempty"`
 }
 
