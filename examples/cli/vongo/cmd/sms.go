@@ -18,7 +18,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/lornajane/goclient-lib"
+	"github.com/nexmo-community/nexmo-go"
 	"github.com/spf13/cobra"
 )
 

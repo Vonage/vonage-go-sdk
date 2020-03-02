@@ -1,4 +1,4 @@
-module github.com/lornajane/goclient-lib
+module github.com/nexmo-community/nexmo-go
 
 go 1.13
 
