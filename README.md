@@ -52,7 +52,7 @@ import (
 
 func main() {
 	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	smsClient := nexmo.NewNexmoSMSClient(auth)
+	smsClient := nexmo.NewSMSClient(auth)
 	response, err := smsClient.Send("NexmoGolang", "44777000777", "This is a message from golang", nexmo.SMSClientOpts{})
 
 	if err != nil {
@@ -107,7 +107,7 @@ func main() {
 	fmt.Println("Hello")
 
 	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	smsClient := nexmo.NewNexmoSMSClient(auth)
+	smsClient := nexmo.NewSMSClient(auth)
 
 	smsConfig := sms.NewConfiguration()
 	// for local Prism testing

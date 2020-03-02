@@ -7,9 +7,9 @@ import (
 	"github.com/jarcoal/httpmock"
 )
 
-func TestNewNexmoSMSClient(*testing.T) {
+func TestNewSMSClient(*testing.T) {
 	auth := CreateAuthFromKeySecret("123", "456")
-	NewNexmoSMSClient(auth)
+	NewSMSClient(auth)
 }
 
 func TestSend(t *testing.T) {
@@ -42,7 +42,7 @@ func TestSend(t *testing.T) {
 	)
 
 	auth := CreateAuthFromKeySecret("12345678", "456")
-	client := NewNexmoSMSClient(auth)
+	client := NewSMSClient(auth)
 	_, err := client.Send("44777000777", "44777000888", "hello", SMSClientOpts{})
 
 	if err != nil {
@@ -74,7 +74,7 @@ func TestSendFail(t *testing.T) {
 	)
 
 	auth := CreateAuthFromKeySecret("12345678", "456")
-	client := NewNexmoSMSClient(auth)
+	client := NewSMSClient(auth)
 	_, err := client.Send("44777000777", "44777000888", "hello", SMSClientOpts{})
 
 	if err == nil {
