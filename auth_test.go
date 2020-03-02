@@ -5,7 +5,7 @@ import "testing"
 func TestGetCreds(t *testing.T) {
 	// create the auth struct
 	myAuth := CreateAuthFromKeySecret("123", "456")
-	myCreds := myAuth.getCreds()
+	myCreds := myAuth.GetCreds()
 
 	if myCreds[0] != "123" {
 		t.Error("Key creds are incorrect")
