@@ -39,36 +39,6 @@ Or import the package into your project and then do `go get .`.
 
 Here are some simple examples to get you started. If there's anything else you'd like to see here, please open an issue and let us know! Be aware that this library is still at an alpha stage so things may change between versions.
 
-### Number Insight
-
-```golang
-package main
-
-import (
-	"fmt"
-	"net/http"
-
-	"log"
-
-	"github.com/nexmo-community/nexmo-go"
-)
-
-func main() {
-	auth := nexmo.NewAuthSet()
-	auth.SetAPISecret(API_KEY, API_SECRET)
-	client := nexmo.New(http.DefaultClient, auth)
-	insight, _, err := client.Insight.GetBasicInsight(nexmo.BasicInsightRequest{
-		Number: PHONE_NUMBER,
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Country Name:", insight.CountryName)
-	fmt.Println("Local Formatting:", insight.NationalFormatNumber)
-	fmt.Println("International Formatting:", insight.InternationalFormatNumber)
-}
-```
-
 ### Sending SMS
 
 ```golang
@@ -76,31 +46,23 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"net/http"
-	"os"
 
-	"github.com/nexmo-community/nexmo-go"
+	"github.com/lornajane/goclient-lib/nexmo"
+	"github.com/spf13/viper"
 )
 
 func main() {
-	auth := nexmo.NewAuthSet()
-	auth.SetAPISecret(API_KEY, API_SECRET)
-
-	client := nexmo.NewClient(http.DefaultClient, auth)
-	smsReq := nexmo.SendSMSRequest {
-	    From: FROM_NUMBER,
-	    To: TO_NUMBER,
-	    Text: "This message comes to you from Nexmo via Golang",
-    }
-
-	callR, _, err := client.SMS.SendSMS(smsReq)
+	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	smsClient := nexmo.NewNexmoSMSClient(auth)
+	response, err := smsClient.Send("NexmoGolang", "44777000777", "This is a message from golang", nexmo.SMSClientOpts{})
 
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
-	fmt.Println("Status:", callR.Messages[0].Status)
+	if response.Messages[0].Status == "0" {
+		fmt.Println("Account Balance: " + response.Messages[0].RemainingBalance)
+	}
 }
 ```
 
@@ -124,107 +86,6 @@ func main() {
 
 	http.ListenAndServe(":8080", nil)
 }
-```
-
-### Starting a Verify Request
-
-
-```golang
-    package main
-
-    import (
-        "fmt"
-        "github.com/nexmo-community/nexmo-go"
-        "log"
-        "net/http"
-    )
-
-    func verify_start() {
-        auth := nexmo.NewAuthSet()
-        auth.SetAPISecret(API_KEY, API_SECRET)
-        client := nexmo.NewClient(http.DefaultClient, auth)
-        verification, _, err := client.Verify.Start(nexmo.StartVerificationRequest{
-            Number: PHONE_NUMBER,
-            Brand:  "Golang Docs",
-        })
-        if err != nil {
-            log.Fatal(err)
-        }
-        fmt.Println("Request ID:", verification.RequestID)
-    }
-
-    func main() {
-        verify_start()
-    }
-```
-
-### Confirming a Verify Code
-
-```golang
-    package main
-
-    import (
-        "fmt"
-        "github.com/nexmo-community/nexmo-go"
-        "log"
-        "net/http"
-    )
-
-    func verify_check() {
-        auth := nexmo.NewAuthSet()
-        auth.SetAPISecret(API_KEY, API_SECRET)
-        client := nexmo.NewClient(http.DefaultClient, auth)
-        response, _, err := client.Verify.Check(nexmo.CheckVerificationRequest{
-            RequestID: REQUEST_ID,
-            Code:      CODE,
-        })
-        if err != nil {
-            log.Fatal(err)
-        }
-        fmt.Println("Status:", response.Status)
-        fmt.Println("Cost:", response.Price)
-    }
-
-    func main() {
-        verify_check()
-    }
-```
-
-### Make a Phone Call
-
-The Voice API uses applications and private keys for authentication. To use this snippet you will need a Nexmo number (for the "from" field), and an application with an ID and a private key. You can [learn more about creating applications](https://developer.nexmo.com/application/overview#creating-applications) on the Developer Portal.
-
-```golang
-	// get the private key ready, assume file name private.key
-	file, file_err := os.Open("private.key")
-	if file_err != nil {
-		log.Fatal(file_err)
-	}
-	defer file.Close()
-
-	key, _ := ioutil.ReadAll(file)
-
-	auth := nexmo.NewAuthSet()
-	auth.SetApplicationAuth(APPLICATION_ID, key)
-	client := nexmo.NewClient(http.DefaultClient, auth)
-
-	to := make([]interface{}, 1)
-	to[0] = nexmo.PhoneCallEndpoint{
-		Type:   "phone",
-		Number: TO_NUMBER,
-	}
-
-	response, _, err := client.Call.CreateCall(nexmo.CreateCallRequest{
-		From:      nexmo.PhoneCallEndpoint{"phone", NEXMO_NUMBER, ""},
-		To:        to,
-		AnswerURL: []string{ANSWER_URL},
-		EventURL:  []string{EVENT_URL},
-	})
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Status:", response.Status)
 ```
 
 ## Getting Help
