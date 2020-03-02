@@ -1,87 +1,83 @@
 package nexmo
 
 import (
-	"encoding/json"
 	"net/http"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
-	"github.com/stretchr/testify/assert"
 )
 
-func TestSendSMS(t *testing.T) {
+func TestNewNexmoSMSClient(*testing.T) {
+	auth := CreateAuthFromKeySecret("123", "456")
+	NewNexmoSMSClient(auth)
+}
+
+func TestSend(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
 	httpmock.RegisterResponder("POST", "https://rest.nexmo.com/sms/json",
-		httpmock.NewStringResponder(200, `{
-				"message-count": "1",
-				"messages": [{
-					"to": "447520615146",
-					"message-id": "140000005494DDEB",
-					"status": "0",
-					"remaining-balance": "54.42941782",
-					"message-price": "0.03330000",
-					"network": "23409"
-				}]
-			}`))
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+	{
+	  "message-count": "1",
+	  "messages": [
+	    {
+	      "to": "447700900000",
+	      "message-id": "0A0000000123ABCD1",
+	      "status": "0",
+	      "remaining-balance": "3.14159265",
+	      "message-price": "0.03330000",
+	      "network": "12345",
+	      "account-ref": "customer1234"
+	    }
+	  ]
+	}
+	`,
+			)
 
-	response, _, err := _client.SMS.SendSMS(SendSMSRequest{
-		To:   "447520615146",
-		From: "NEXMOTEST",
-		Text: "Nêxmö Tėšt",
-		Type: "unicode",
-	})
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
 
-	assert.Nil(t, err)
-	assert.Equal(t, "1", response.MessageCount)
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewNexmoSMSClient(auth)
+	_, err := client.Send("44777000777", "44777000888", "hello", SMSClientOpts{})
+
+	if err != nil {
+		t.Error("Test SMS not sent")
+	}
 }
 
-func TestSMSRequest(t *testing.T) {
-	b, err := json.Marshal(SendSMSRequest{
-		To:   "447520615146",
-		From: "NEXMOTEST",
-		Text: "Nêxmö Tėšt",
-		Type: MessageTypeUnicode,
-	})
-	assert.NoError(t, err)
-
-	var j map[string]interface{}
-	err = json.Unmarshal(b, &j)
-	assert.NoError(t, err)
-	assert.Equal(t, "unicode", j["type"])
-	assert.Equal(t, "Nêxmö Tėšt", j["text"])
-}
-
-func TestUserAgentHeader(t *testing.T) {
+func TestSendFail(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("POST", "https://rest.nexmo.com/sms/json", func(req *http.Request) (*http.Response, error) {
-		assert.Equal(t, 1, len(req.Header["User-Agent"]))
-		assert.Regexpf(t, "nexmo-go/[^ ]* Go/", req.Header["User-Agent"][0], "Unexpected User-Agent format")
+	httpmock.RegisterResponder("POST", "https://rest.nexmo.com/sms/json",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+	{
+	  "message-count": "1",
+	  "messages": [
+	    {
+	      "status": "4"
+	    }
+	  ]
+	}
+	`,
+			)
 
-		return httpmock.NewStringResponse(200, `{
-				"message-count": "1",
-				"messages": [{
-					"to": "447520615146",
-					"message-id": "140000005494DDEB",
-					"status": "0",
-					"remaining-balance": "54.42941782",
-					"message-price": "0.03330000",
-					"network": "23409"
-				}]
-			}`), nil
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
 
-	})
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewNexmoSMSClient(auth)
+	_, err := client.Send("44777000777", "44777000888", "hello", SMSClientOpts{})
 
-	response, _, err := _client.SMS.SendSMS(SendSMSRequest{
-		To:   "447520615146",
-		From: "NEXMOTEST",
-		Text: "Nêxmö Tėšt",
-		Type: "unicode",
-	})
-
-	assert.Nil(t, err)
-	assert.Equal(t, "1", response.MessageCount)
+	if err == nil {
+		t.Error("The failure failed")
+	}
 }
