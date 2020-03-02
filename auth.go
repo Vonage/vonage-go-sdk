@@ -6,7 +6,7 @@ package nexmo
 
 // All the various Auth types support a common interface
 type Auth interface {
-	getCreds() []string
+	GetCreds() []string
 }
 
 // Auth to represent the API key and API secret combination
@@ -15,7 +15,7 @@ type KeySecretAuth struct {
 	apiSecret string
 }
 
-func (auth *KeySecretAuth) getCreds() []string {
+func (auth *KeySecretAuth) GetCreds() []string {
 	creds := []string{auth.apiKey, auth.apiSecret}
 	return creds
 }

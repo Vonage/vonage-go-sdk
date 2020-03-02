@@ -16,7 +16,7 @@ type NexmoSMSClient struct {
 // Create a new SMS Client, supplying an Auth to work with
 func NewNexmoSMSClient(Auth Auth) *NexmoSMSClient {
 	client := new(NexmoSMSClient)
-	creds := Auth.getCreds()
+	creds := Auth.GetCreds()
 	client.apiKey = creds[0]
 	client.apiSecret = creds[1]
 	return client
