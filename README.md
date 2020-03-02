@@ -44,7 +44,6 @@ import (
 	"fmt"
 
 	"github.com/lornajane/goclient-lib/nexmo"
-	"github.com/spf13/viper"
 )
 
 func main() {
@@ -83,6 +82,50 @@ func main() {
 	http.ListenAndServe(":8080", nil)
 }
 ```
+
+## Tips, Tricks and Troubleshooting
+
+### Changing the Base URL
+
+If you want to point your API calls to an alternative endpoint (for geographical or local testing reasons this can be useful) try this:
+
+```golang
+package main
+
+import (
+	"fmt"
+
+	"github.com/lornajane/goclient-lib/nexmo"
+	"github.com/lornajane/goclient-lib/sms"
+)
+
+func main() {
+	fmt.Println("Hello")
+
+	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	smsClient := nexmo.NewNexmoSMSClient(auth)
+
+	smsConfig := sms.NewConfiguration()
+	// for local Prism testing
+	smsConfig.BasePath = "http://localhost:4010"
+
+	response, err := smsClient.Send("NexmoGolang", "44777000777", "This is a message from golang", nexmo.SMSClientOpts{Config: smsConfig})
+
+	if err != nil {
+		panic(err)
+	}
+
+	if response.Messages[0].Status == "0" {
+		fmt.Println("Account Balance: " + response.Messages[0].RemainingBalance)
+	}
+}
+
+_(The example above shows using the library with [Prism](https://github.com/stoplightio/prism), which we find useful at development time)_
+
+The fields for configuration are:
+- `BasePath` (shown in the example above) overrides where the requests should be sent to
+- `DefaultHeader` is a map, add any custom headers you need here
+- `HTTPClient` is a pointer to an httpClient if you need to change any networking settings
 
 ## Getting Help
  
