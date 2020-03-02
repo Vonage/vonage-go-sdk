@@ -43,7 +43,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/lornajane/goclient-lib/nexmo"
+	"github.com/nexmo-community/nexmo-go/nexmo"
 )
 
 func main() {
@@ -95,8 +95,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/lornajane/goclient-lib/nexmo"
-	"github.com/lornajane/goclient-lib/sms"
+	"github.com/nexmo-community/nexmo-go/nexmo"
+	"github.com/nexmo-community/nexmo-go/sms"
 )
 
 func main() {
