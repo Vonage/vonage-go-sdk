@@ -42,7 +42,7 @@ use these features to get started and/or test your setup`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		auth := nexmo.CreateAuthFromKeySecret(Key, Secret)
-		smsClient := nexmo.NewNexmoSMSClient(auth)
+		smsClient := nexmo.NewSMSClient(auth)
 
 		response, err := smsClient.Send(From, To, Message, nexmo.SMSClientOpts{})
 		fmt.Printf("%#v\n", response)

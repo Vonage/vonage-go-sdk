@@ -8,14 +8,14 @@ import (
 )
 
 // Client for working with the SMS API
-type NexmoSMSClient struct {
+type SMSClient struct {
 	apiKey    string
 	apiSecret string
 }
 
 // Create a new SMS Client, supplying an Auth to work with
-func NewNexmoSMSClient(Auth Auth) *NexmoSMSClient {
-	client := new(NexmoSMSClient)
+func NewSMSClient(Auth Auth) *SMSClient {
+	client := new(SMSClient)
 	creds := Auth.GetCreds()
 	client.apiKey = creds[0]
 	client.apiSecret = creds[1]
@@ -29,7 +29,7 @@ type SMSClientOpts struct {
 // Send an SMS. Give some text to send and the number to send to - there are
 // some restrictions on what you can send from, to be safe try using a Nexmo
 // number associated with your account
-func (client *NexmoSMSClient) Send(from string, to string, text string, opts SMSClientOpts) (sms.Sms, error) {
+func (client *SMSClient) Send(from string, to string, text string, opts SMSClientOpts) (sms.Sms, error) {
 
 	config := sms.NewConfiguration()
 
