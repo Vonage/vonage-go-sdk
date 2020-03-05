@@ -7,13 +7,13 @@ import (
 	"github.com/nexmo-community/nexmo-go/sms"
 )
 
-// Client for working with the SMS API
+// SMSClient for working with the SMS API
 type SMSClient struct {
 	apiKey    string
 	apiSecret string
 }
 
-// Create a new SMS Client, supplying an Auth to work with
+// NewSMSClient Creates a new SMS Client, supplying an Auth to work with
 func NewSMSClient(Auth Auth) *SMSClient {
 	client := new(SMSClient)
 	creds := Auth.GetCreds()
@@ -22,6 +22,7 @@ func NewSMSClient(Auth Auth) *SMSClient {
 	return client
 }
 
+// SMSClientOpts holds any config desired to work with SMS
 type SMSClientOpts struct {
 	Config *sms.Configuration
 }

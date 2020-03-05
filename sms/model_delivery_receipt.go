@@ -9,6 +9,7 @@
  */
 
 package sms
+
 // DeliveryReceipt struct for DeliveryReceipt
 type DeliveryReceipt struct {
 	// The number the message was sent to. Numbers are specified in E.164 format.
@@ -23,7 +24,7 @@ type DeliveryReceipt struct {
 	Price string `json:"price,omitempty"`
 	// A code that explains where the message is in the delivery process.
 	Status string `json:"status,omitempty"`
-	// When the DLR was recieved from the carrier in the following format `YYMMDDHHMM`. For example, `2001011400` is at `2020-01-01 14:00`
+	// When the DLR was received from the carrier in the following format `YYMMDDHHMM`. For example, `2001011400` is at `2020-01-01 14:00`
 	Scts string `json:"scts,omitempty"`
 	// The status of the request. Will be a non `0` value if there has been an error. See the [Delivery Receipt documentation](https://developer.nexmo.com/messaging/sms/guides/delivery-receipts#dlr-error-codes) for more details
 	ErrCode string `json:"err-code,omitempty"`

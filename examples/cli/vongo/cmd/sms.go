@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
+// Package cmd is an example app
 package cmd
 
 import (
@@ -30,8 +32,13 @@ var smsCmd = &cobra.Command{
 use these features to get started and/or test your setup`,
 }
 
+// To sets who to send the message to
 var To string
+
+// From sets who the sender should be (restrictions vary by geography/carrier)
 var From string
+
+// Message to send
 var Message string
 
 var smsSendCmd = &cobra.Command{

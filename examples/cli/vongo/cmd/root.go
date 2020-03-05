@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
+// Package cmd is an example app
 package cmd
 
 import (
@@ -22,7 +24,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Key is the user's API key
 var Key string
+
+// Secret is the user's API secret
 var Secret string
 
 // rootCmd represents the base command when called without any subcommands
