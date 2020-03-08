@@ -35,7 +35,9 @@ Or import the package into your project and then do `go get .`.
 
 Here are some simple examples to get you started. If there's anything else you'd like to see here, please open an issue and let us know! Be aware that this library is still at an alpha stage so things may change between versions.
 
-### Sending SMS
+### Send SMS
+
+To send an SMS, try the code below:
 
 ```golang
 package main
@@ -49,7 +51,7 @@ import (
 func main() {
 	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
 	smsClient := nexmo.NewSMSClient(auth)
-	response, err := smsClient.Send("NexmoGolang", "44777000777", "This is a message from golang", nexmo.SMSClientOpts{})
+	response, err := smsClient.Send("NexmoGolang", "44777000777", "This is a message from golang", nexmo.SMSOpts{})
 
 	if err != nil {
 		panic(err)
@@ -61,7 +63,37 @@ func main() {
 }
 ```
 
-### Receiving SMS
+### Send Unicode SMS
+
+Add `Type` to the `opts` parameter and set it to "unicode":
+
+```golang
+package main
+
+import (
+	"fmt"
+
+	"github.com/nexmo-community/nexmo-go/nexmo"
+)
+
+func main() {
+	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	smsClient := nexmo.NewSMSClient(auth)
+	response, err := smsClient.Send("NexmoGolang", "44777000777", "こんにちは世界", nexmo.SMSOpts{Type: "unicode"})
+
+	if err != nil {
+		panic(err)
+	}
+
+	if response.Messages[0].Status == "0" {
+		fmt.Println("Account Balance: " + response.Messages[0].RemainingBalance)
+	}
+}
+```
+
+### Receive SMS
+
+To receive an SMS, you will need to run a local webserver and expose the URL publicly (you can use a tool such as [ngrok](https://ngrok.com).
 
 ```golang
 package main
@@ -96,7 +128,6 @@ import (
 	"fmt"
 
 	"github.com/nexmo-community/nexmo-go/nexmo"
-	"github.com/nexmo-community/nexmo-go/sms"
 )
 
 func main() {
@@ -104,12 +135,9 @@ func main() {
 
 	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
 	smsClient := nexmo.NewSMSClient(auth)
+    smsClient.Config.BasePath = "http://localhost:4010"
 
-	smsConfig := sms.NewConfiguration()
-	// for local Prism testing
-	smsConfig.BasePath = "http://localhost:4010"
-
-	response, err := smsClient.Send("NexmoGolang", "44777000777", "This is a message from golang", nexmo.SMSClientOpts{Config: smsConfig})
+	response, err := smsClient.Send("NexmoGolang", "44777000777", "This is a message from golang", nexmo.SMSOpts{})
 
 	if err != nil {
 		panic(err)
