@@ -43,7 +43,7 @@ func TestSend(t *testing.T) {
 
 	auth := CreateAuthFromKeySecret("12345678", "456")
 	client := NewSMSClient(auth)
-	_, err := client.Send("44777000777", "44777000888", "hello", SMSClientOpts{})
+	_, err := client.Send("44777000777", "44777000888", "hello", SMSOpts{})
 
 	if err != nil {
 		t.Error("Test SMS not sent")
@@ -75,7 +75,7 @@ func TestSendFail(t *testing.T) {
 
 	auth := CreateAuthFromKeySecret("12345678", "456")
 	client := NewSMSClient(auth)
-	_, err := client.Send("44777000777", "44777000888", "hello", SMSClientOpts{})
+	_, err := client.Send("44777000777", "44777000888", "hello", SMSOpts{})
 
 	if err == nil {
 		t.Error("The failure failed")

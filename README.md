@@ -119,6 +119,30 @@ func main() {
 }
 ```
 
+### Verify a User's Phone Number
+
+This is a multi-step process. First: request that the number be verified and state what "brand" is asking.
+
+```golang
+package main
+
+import (
+	"fmt"
+
+	"github.com/nexmo-community/nexmo-go"
+)
+
+func main() {
+	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	verifyClient := nexmo.NewVerifyClient(auth)
+
+	response, err := verifyClient.Request("447846810475", "GoTest")
+	fmt.Printf("%#v\n", response)
+	fmt.Printf("%#v\n", err)
+}
+
+
+
 ## Tips, Tricks and Troubleshooting
 
 ### Changing the Base URL
