@@ -12,13 +12,13 @@ package verify
 
 import (
 	_context "context"
+	"fmt"
+	"github.com/antihax/optional"
 	_ioutil "io/ioutil"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"fmt"
-	"strings"
-	"github.com/antihax/optional"
 	"reflect"
+	"strings"
 )
 
 // Linger please
@@ -31,7 +31,7 @@ type DefaultApiService service
 
 // VerifyCheckOpts Optional parameters for the method 'VerifyCheck'
 type VerifyCheckOpts struct {
-    IpAddress optional.String
+	IpAddress optional.String
 }
 
 /*
@@ -44,16 +44,16 @@ Use Verify check to confirm that the PIN you received from your user matches the
  * @param code The verification code entered by your user.
  * @param optional nil or *VerifyCheckOpts - Optional Parameters:
  * @param "IpAddress" (optional.String) -  (This field is no longer used)
-@return OneOfcheckResponsecheckErrorResponse
+@return CheckResponse
 */
-func (a *DefaultApiService) VerifyCheck(ctx _context.Context, format string, apiSecret string, requestId string, code string, localVarOptionals *VerifyCheckOpts) (OneOfcheckResponsecheckErrorResponse, *_nethttp.Response, error) {
+func (a *DefaultApiService) VerifyCheck(ctx _context.Context, format string, apiSecret string, requestId string, code string, localVarOptionals *VerifyCheckOpts) (CheckResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  OneOfcheckResponsecheckErrorResponse
+		localVarReturnValue  CheckResponse
 	)
 
 	// create path and map variables
@@ -130,7 +130,7 @@ func (a *DefaultApiService) VerifyCheck(ctx _context.Context, format string, api
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 200 {
-			var v OneOfcheckResponsecheckErrorResponse
+			var v CheckResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -161,16 +161,16 @@ Control the progress of your Verify requests. To cancel an existing Verify reque
  * @param apiSecret You can find your API secret in your Nexmo account [developer dashboard](https://dashboard.nexmo.com)
  * @param requestId The `request_id` you received in the response to the Verify request.
  * @param cmd The command to execute, depending on whether you want to cancel the verification process, or advance to the next verification event. Cancellation is only possible 30 seconds after the start of the verification request and before the second event (either TTS or SMS) has taken place.
-@return OneOfcontrolResponsecontrolErrorResponse
+@return ControlResponse
 */
-func (a *DefaultApiService) VerifyControl(ctx _context.Context, format string, apiSecret string, requestId string, cmd string) (OneOfcontrolResponsecontrolErrorResponse, *_nethttp.Response, error) {
+func (a *DefaultApiService) VerifyControl(ctx _context.Context, format string, apiSecret string, requestId string, cmd string) (ControlResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  OneOfcontrolResponsecontrolErrorResponse
+		localVarReturnValue  ControlResponse
 	)
 
 	// create path and map variables
@@ -235,7 +235,7 @@ func (a *DefaultApiService) VerifyControl(ctx _context.Context, format string, a
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 200 {
-			var v OneOfcontrolResponsecontrolErrorResponse
+			var v ControlResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -260,13 +260,13 @@ func (a *DefaultApiService) VerifyControl(ctx _context.Context, format string, a
 
 // VerifyRequestOpts Optional parameters for the method 'VerifyRequest'
 type VerifyRequestOpts struct {
-    Country optional.String
-    SenderId optional.String
-    CodeLength optional.Int32
-    Lg optional.String
-    PinExpiry optional.Int32
-    NextEventWait optional.Int32
-    WorkflowId optional.Int32
+	Country       optional.String
+	SenderId      optional.String
+	CodeLength    optional.Int32
+	Lg            optional.String
+	PinExpiry     optional.Int32
+	NextEventWait optional.Int32
+	WorkflowId    optional.Int32
 }
 
 /*
@@ -285,16 +285,16 @@ Use Verify request to generate and send a PIN to your user:  1. Create a request
  * @param "PinExpiry" (optional.Int32) -  How long the generated verification code is valid for, in seconds. When you specify both `pin_expiry` and `next_event_wait` then `pin_expiry` must be an integer multiple of `next_event_wait` otherwise `pin_expiry` is defaulted to equal next_event_wait. See [changing the event timings](https://developer.nexmo.com/verify/guides/changing-default-timings).
  * @param "NextEventWait" (optional.Int32) -  Specifies the wait time in seconds between attempts to deliver the verification code.
  * @param "WorkflowId" (optional.Int32) -  Selects the predefined sequence of SMS and TTS (Text To Speech) actions to use in order to convey the PIN to your user. For example, an id of 1 identifies the workflow SMS - TTS - TTS. For a list of all workflows and their associated ids, please visit the [developer portal](https://developer.nexmo.com/verify/guides/workflows-and-events).
-@return OneOfrequestResponserequestErrorResponse
+@return RequestResponse
 */
-func (a *DefaultApiService) VerifyRequest(ctx _context.Context, format string, apiSecret string, number string, brand string, localVarOptionals *VerifyRequestOpts) (OneOfrequestResponserequestErrorResponse, *_nethttp.Response, error) {
+func (a *DefaultApiService) VerifyRequest(ctx _context.Context, format string, apiSecret string, number string, brand string, localVarOptionals *VerifyRequestOpts) (RequestResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  OneOfrequestResponserequestErrorResponse
+		localVarReturnValue  RequestResponse
 	)
 
 	// create path and map variables
@@ -383,7 +383,7 @@ func (a *DefaultApiService) VerifyRequest(ctx _context.Context, format string, a
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 200 {
-			var v OneOfrequestResponserequestErrorResponse
+			var v RequestResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -408,8 +408,8 @@ func (a *DefaultApiService) VerifyRequest(ctx _context.Context, format string, a
 
 // VerifySearchOpts Optional parameters for the method 'VerifySearch'
 type VerifySearchOpts struct {
-    RequestId optional.String
-    RequestIds optional.Interface
+	RequestId  optional.String
+	RequestIds optional.Interface
 }
 
 /*
@@ -421,16 +421,16 @@ Use Verify search to check the status of past or current verification requests: 
  * @param optional nil or *VerifySearchOpts - Optional Parameters:
  * @param "RequestId" (optional.String) -  The `request_id` you received in the Verify Request Response.
  * @param "RequestIds" (optional.Interface of []string) -  More than one `request_id`. Each `request_id` is a new parameter in the Verify Search request.
-@return OneOfsearchResponsesearchErrorResponse
+@return SearchResponse
 */
-func (a *DefaultApiService) VerifySearch(ctx _context.Context, format string, apiSecret string, localVarOptionals *VerifySearchOpts) (OneOfsearchResponsesearchErrorResponse, *_nethttp.Response, error) {
+func (a *DefaultApiService) VerifySearch(ctx _context.Context, format string, apiSecret string, localVarOptionals *VerifySearchOpts) (SearchResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  OneOfsearchResponsesearchErrorResponse
+		localVarReturnValue  SearchResponse
 	)
 
 	// create path and map variables
@@ -446,7 +446,7 @@ func (a *DefaultApiService) VerifySearch(ctx _context.Context, format string, ap
 		localVarQueryParams.Add("request_id", parameterToString(localVarOptionals.RequestId.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.RequestIds.IsSet() {
-		t:=localVarOptionals.RequestIds.Value()
+		t := localVarOptionals.RequestIds.Value()
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
 			for i := 0; i < s.Len(); i++ {
@@ -507,7 +507,7 @@ func (a *DefaultApiService) VerifySearch(ctx _context.Context, format string, ap
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 200 {
-			var v OneOfsearchResponsesearchErrorResponse
+			var v SearchResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
