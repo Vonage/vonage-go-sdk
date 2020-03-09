@@ -51,7 +51,7 @@ use these features to get started and/or test your setup`,
 		auth := nexmo.CreateAuthFromKeySecret(Key, Secret)
 		smsClient := nexmo.NewSMSClient(auth)
 
-		response, err := smsClient.Send(From, To, Message, nexmo.SMSClientOpts{})
+		response, err := smsClient.Send(From, To, Message, nexmo.SMSOpts{})
 		fmt.Printf("%#v\n", response)
 		fmt.Printf("%#v\n", err)
 
