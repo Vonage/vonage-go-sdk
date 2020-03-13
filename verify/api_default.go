@@ -11,14 +11,17 @@
 package verify
 
 import (
+	"bytes"
 	_context "context"
 	"fmt"
-	"github.com/antihax/optional"
+	"io/ioutil"
 	_ioutil "io/ioutil"
 	_nethttp "net/http"
 	_neturl "net/url"
 	"reflect"
 	"strings"
+
+	"github.com/antihax/optional"
 )
 
 // Linger please
@@ -120,6 +123,10 @@ func (a *DefaultApiService) VerifyCheck(ctx _context.Context, format string, api
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+
+	// hack to reinstate the body in case we need it
+	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -225,6 +232,10 @@ func (a *DefaultApiService) VerifyControl(ctx _context.Context, format string, a
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+
+	// hack to reinstate the body in case we need it
+	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -373,6 +384,10 @@ func (a *DefaultApiService) VerifyRequest(ctx _context.Context, format string, a
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+
+	// hack to reinstate the body in case we need it
+	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -497,6 +512,10 @@ func (a *DefaultApiService) VerifySearch(ctx _context.Context, format string, ap
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+
+	// hack to reinstate the body in case we need it
+	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}

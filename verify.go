@@ -2,8 +2,11 @@ package nexmo
 
 import (
 	"context"
+	"encoding/json"
+	"io/ioutil"
 	"runtime"
 
+	"github.com/antihax/optional"
 	"github.com/nexmo-community/nexmo-go/verify"
 )
 
@@ -26,70 +29,87 @@ func NewVerifyClient(Auth Auth) *VerifyClient {
 	return client
 }
 
-func (client *VerifyClient) Request(number string, brand string) (verify.RequestResponse, error) {
+// VerifyOpts holds all the optional arguments for the verify request function
+type VerifyOpts struct {
+	Country       string
+	SenderId      string
+	CodeLength    int32
+	Lg            string
+	PinExpiry     int32
+	NextEventWait int32
+	WorkflowId    int32
+}
+
+// Request a number is verified for ownership
+func (client *VerifyClient) Request(number string, brand string, opts VerifyOpts) (verify.RequestResponse, verify.RequestErrorResponse, error) {
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
 	// set up and then parse the options
 	verifyOpts := verify.VerifyRequestOpts{}
 
+	if opts.CodeLength != 0 {
+		verifyOpts.CodeLength = optional.NewInt32(opts.CodeLength)
+	}
+
+	if opts.Lg != "" {
+		verifyOpts.Lg = optional.NewString(opts.Lg)
+	}
+
+	if opts.WorkflowId != 0 {
+		verifyOpts.WorkflowId = optional.NewInt32(opts.WorkflowId)
+	}
+
 	// we need context for the API key
 	ctx := context.WithValue(context.Background(), verify.ContextAPIKey, verify.APIKey{
 		Key: client.apiKey,
 	})
 
-	result, _, err := verifyClient.DefaultApi.VerifyRequest(ctx, "json", client.apiSecret, number, brand, &verifyOpts)
+	result, resp, err := verifyClient.DefaultApi.VerifyRequest(ctx, "json", client.apiSecret, number, brand, &verifyOpts)
 
 	// catch HTTP errors
 	if err != nil {
-		return verify.RequestResponse{}, err
+		return verify.RequestResponse{}, verify.RequestErrorResponse{}, err
 	}
 
-	return result, nil
+	// non-zero statuses are also errors
+	if result.Status != "0" {
+		data, _ := ioutil.ReadAll(resp.Body)
+
+		var errResp verify.RequestErrorResponse
+		json.Unmarshal(data, &errResp)
+		return result, errResp, nil
+	}
+	return result, verify.RequestErrorResponse{}, nil
 }
 
-/*
-// Send an SMS. Give some text to send and the number to send to - there are
-// some restrictions on what you can send from, to be safe try using a Nexmo
-// number associated with your account
-func (client *SMSClient) Send(from string, to string, text string, opts SMSOpts) (sms.Sms, error) {
+// Check the user-supplied code for this request ID
+func (client *VerifyClient) Check(requestId string, code string) (verify.CheckResponse, verify.CheckErrorResponse, error) {
+	// create the client
+	verifyClient := verify.NewAPIClient(client.Config)
 
-	smsClient := sms.NewAPIClient(client.Config)
+	// we need context for the API key
+	ctx := context.WithValue(context.Background(), verify.ContextAPIKey, verify.APIKey{
+		Key: client.apiKey,
+	})
 
-	smsOpts := sms.SendAnSmsOpts{}
-	smsOpts.Text = optional.NewString(text)
-	smsOpts.ApiSecret = optional.NewString(client.apiSecret)
-
-	// check through the opts and send whatever was set
-	if opts.ClientRef != "" {
-		smsOpts.ClientRef = optional.NewString(opts.ClientRef)
-	}
-
-	if opts.Callback != "" {
-		smsOpts.Callback = optional.NewString(opts.Callback)
-	}
-
-	if opts.Type != "" {
-		smsOpts.Type_ = optional.NewString(opts.Type)
-	}
-
-	if opts.StatusReportReq != false {
-		smsOpts.StatusReportReq = optional.NewBool(opts.StatusReportReq)
-	}
-
-	// now send the SMS
-	result, _, err := smsClient.DefaultApi.SendAnSms(nil, "json", client.apiKey, from, to, &smsOpts)
+	// set up and then parse the options
+	verifyOpts := verify.VerifyCheckOpts{}
+	result, resp, err := verifyClient.DefaultApi.VerifyCheck(ctx, "json", client.apiSecret, requestId, code, &verifyOpts)
 
 	// catch HTTP errors
 	if err != nil {
-		return sms.Sms{}, err
+		return verify.CheckResponse{}, verify.CheckErrorResponse{}, err
 	}
 
-	// now worry about the status code in the response
-	if result.Messages[0].Status != "0" {
-		return result, errors.New("Status code: " + result.Messages[0].Status)
+	// non-zero statuses are also errors
+	if result.Status != "0" {
+		data, _ := ioutil.ReadAll(resp.Body)
+
+		var errResp verify.CheckErrorResponse
+		json.Unmarshal(data, &errResp)
+		return result, errResp, nil
 	}
 
-	return result, nil
+	return result, verify.CheckErrorResponse{}, nil
 }
-*/
