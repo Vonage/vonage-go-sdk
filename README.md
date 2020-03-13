@@ -132,12 +132,51 @@ func main() {
 	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
 	verifyClient := nexmo.NewVerifyClient(auth)
 
-	response, err := verifyClient.Request("447846810475", "GoTest")
-	fmt.Printf("%#v\n", response)
-	fmt.Printf("%#v\n", err)
+    response, errResp, err := verifyClient.Request("447846810475", "GoTest", nexmo.VerifyOpts{CodeLength: 6, Lg: "es-es", WorkflowId: 4})
+
+    if err != nil {
+        fmt.Printf("%#v\n", err)
+    } else if response.Status != "0" {
+        fmt.Println("Error status " + errResp.Status + ": " + errResp.ErrorText)
+    } else {
+        fmt.Println("Request started: " + response.RequestId)
+    }
 }
+```
 
+Copy the request ID; the user will receive a PIN code and when they have it, you can check the code (see next section)
 
+### Check Verification Code
+
+When a request is in progress, use the `requestId` and the PIN code sent by the user to check if it is correct:
+
+```golang
+package main
+
+import (
+	"fmt"
+
+	"github.com/nexmo-community/nexmo-go"
+)
+
+func main() {
+	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	verifyClient := nexmo.NewVerifyClient(auth)
+
+	response, errResp, err := verifyClient.Check(REQUEST_ID, PIN_CODE)
+
+	if err != nil {
+		fmt.Printf("%#v\n", err)
+	} else if response.Status != "0" {
+		fmt.Println("Error status " + errResp.Status + ": " + errResp.ErrorText)
+	} else {
+		// all good
+		fmt.Println("Request complete: " + response.RequestId)
+	}
+}
+```
+
+If status is zero, the code was correct and you have confirmed the user owns the number
 
 ## Tips, Tricks and Troubleshooting
 
