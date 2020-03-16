@@ -113,3 +113,35 @@ func (client *VerifyClient) Check(requestId string, code string) (verify.CheckRe
 
 	return result, verify.CheckErrorResponse{}, nil
 }
+
+// Search for an earlier request by id
+func (client *VerifyClient) Search(requestId string) (verify.SearchResponse, verify.SearchErrorResponse, error) {
+	// create the client
+	verifyClient := verify.NewAPIClient(client.Config)
+
+	// we need context for the API key
+	ctx := context.WithValue(context.Background(), verify.ContextAPIKey, verify.APIKey{
+		Key: client.apiKey,
+	})
+
+	// set up and then parse the options
+	verifyOpts := verify.VerifySearchOpts{}
+	verifyOpts.RequestId = optional.NewString(requestId)
+	result, resp, err := verifyClient.DefaultApi.VerifySearch(ctx, "json", client.apiSecret, &verifyOpts)
+
+	// catch HTTP errors
+	if err != nil {
+		return verify.SearchResponse{}, verify.SearchErrorResponse{}, err
+	}
+
+	// search statuses are strings
+	if result.Status != "SUCCESS" {
+		data, _ := ioutil.ReadAll(resp.Body)
+
+		var errResp verify.SearchErrorResponse
+		json.Unmarshal(data, &errResp)
+		return result, errResp, nil
+	}
+
+	return result, verify.SearchErrorResponse{}, nil
+}
