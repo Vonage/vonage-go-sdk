@@ -145,3 +145,61 @@ func (client *VerifyClient) Search(requestId string) (verify.SearchResponse, ver
 
 	return result, verify.SearchErrorResponse{}, nil
 }
+
+// Cancel an in-progress request (check API docs for when this is possible)
+func (client *VerifyClient) Cancel(requestId string) (verify.ControlResponse, verify.ControlErrorResponse, error) {
+	// create the client
+	verifyClient := verify.NewAPIClient(client.Config)
+
+	// we need context for the API key
+	ctx := context.WithValue(context.Background(), verify.ContextAPIKey, verify.APIKey{
+		Key: client.apiKey,
+	})
+
+	result, resp, err := verifyClient.DefaultApi.VerifyControl(ctx, "json", client.apiSecret, requestId, "cancel")
+
+	// catch HTTP errors
+	if err != nil {
+		return verify.ControlResponse{}, verify.ControlErrorResponse{}, err
+	}
+
+	// search statuses are strings
+	if result.Status != "0" {
+		data, _ := ioutil.ReadAll(resp.Body)
+
+		var errResp verify.ControlErrorResponse
+		json.Unmarshal(data, &errResp)
+		return result, errResp, nil
+	}
+
+	return result, verify.ControlErrorResponse{}, nil
+}
+
+// TriggerNextEvent moves on to the next event in the workflow
+func (client *VerifyClient) TriggerNextEvent(requestId string) (verify.ControlResponse, verify.ControlErrorResponse, error) {
+	// create the client
+	verifyClient := verify.NewAPIClient(client.Config)
+
+	// we need context for the API key
+	ctx := context.WithValue(context.Background(), verify.ContextAPIKey, verify.APIKey{
+		Key: client.apiKey,
+	})
+
+	result, resp, err := verifyClient.DefaultApi.VerifyControl(ctx, "json", client.apiSecret, requestId, "trigger_next_event")
+
+	// catch HTTP errors
+	if err != nil {
+		return verify.ControlResponse{}, verify.ControlErrorResponse{}, err
+	}
+
+	// search statuses are strings
+	if result.Status != "0" {
+		data, _ := ioutil.ReadAll(resp.Body)
+
+		var errResp verify.ControlErrorResponse
+		json.Unmarshal(data, &errResp)
+		return result, errResp, nil
+	}
+
+	return result, verify.ControlErrorResponse{}, nil
+}

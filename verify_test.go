@@ -267,3 +267,148 @@ func TestSearchError(t *testing.T) {
 		t.Error("Unexpected error response")
 	}
 }
+
+func TestCancel(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/control/json",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+{
+  "status": "0",
+  "command": "cancel"
+}
+	`,
+			)
+
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewVerifyClient(auth)
+	response, _, _ := client.Cancel("abcdef0123456789abcdef0123456789")
+
+	message := "Status: " + response.Status
+	if message != "Status: 0" {
+		t.Errorf("Verify cancel failed")
+	}
+}
+
+func TestCancelTooSoon(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/control/json",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+{
+    "status": "19",
+    "error_text": "Verification request ['abcdef0123456789abcdef0123456789'] can't be cancelled within the first 30 seconds."
+
+}`,
+			)
+
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewVerifyClient(auth)
+	_, errResp, _ := client.Cancel("abcdef0123456789abcdef0123456789")
+
+	message := "Status: " + errResp.Status
+	if message != "Status: 19" {
+		t.Errorf("Verify cancel 'too soon' failed")
+	}
+}
+
+func TestCancelNotNow(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/control/json",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+{
+  "status": "19",
+  "error_text": "Verification request  ['abcdef0123456789abcdef0123456789'] can't be cancelled now. Too many attempts to re-deliver have already been made."
+}
+`,
+			)
+
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewVerifyClient(auth)
+	_, errResp, _ := client.Cancel("abcdef0123456789abcdef0123456789")
+
+	message := "Status: " + errResp.Status
+	if message != "Status: 19" {
+		t.Errorf("Verify cancel 'not now' failed")
+	}
+}
+
+func TestTriggerNextEvent(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/control/json",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+{
+  "status": "0",
+  "command": "trigger_next_event"
+}
+	`,
+			)
+
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewVerifyClient(auth)
+	response, _, _ := client.TriggerNextEvent("abcdef0123456789abcdef0123456789")
+
+	message := "Status: " + response.Status
+	if message != "Status: 0" {
+		t.Errorf("Verify trigger next event failed")
+	}
+}
+
+func TestTriggerNextEventFail(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/control/json",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+{
+    "status": "1",
+    "error_text": "Throttled"
+}
+`,
+			)
+
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewVerifyClient(auth)
+	_, errResp, _ := client.Cancel("abcdef0123456789abcdef0123456789")
+
+	message := "Status: " + errResp.Status
+	if message != "Status: 1" {
+		t.Errorf("Verify throttled trigger next event failed")
+	}
+}
