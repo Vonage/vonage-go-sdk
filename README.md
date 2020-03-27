@@ -180,6 +180,38 @@ func main() {
 
 If status is zero, the code was correct and you have confirmed the user owns the number
 
+### Cancel a Verification
+
+### Trigger the Next Event
+
+### List the Numbers You Own
+
+To check on the numbers already associated with your account:
+
+```
+package main
+
+import (
+	"fmt"
+
+	"github.com/nexmo-community/nexmo-go"
+)
+
+func main() {
+	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	verifyClient := nexmo.NewVerifyClient(auth)
+	response, err := numbersClient.List()
+
+	if err != nil {
+		panic(err)
+	}
+
+	for _, number := range response.Numbers {
+		fmt.Println("Number: " + number.Msisdn + " (" + number.Country + ") with: " + strings.Join(number.Features, ", "))
+	}
+}
+```
+
 ## Tips, Tricks and Troubleshooting
 
 ### Changing the Base URL
