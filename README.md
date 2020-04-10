@@ -202,7 +202,33 @@ import (
 func main() {
 	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
 	verifyClient := nexmo.NewVerifyClient(auth)
-	response, err := numbersClient.List()
+	response, err := numbersClient.List(nexmo.NumbersOpts{})
+
+	if err != nil {
+		panic(err)
+	}
+
+	for _, number := range response.Numbers {
+		fmt.Println("Number: " + number.Msisdn + " (" + number.Country + ") with: " + strings.Join(number.Features, ", "))
+	}
+}
+```
+
+You can also filter by which applications a number is linked to (set the `ApplicationId` param) or as in the example below, by whether it is linked to an application at all:
+
+```
+package main
+
+import (
+	"fmt"
+
+	"github.com/nexmo-community/nexmo-go"
+)
+
+func main() {
+	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	verifyClient := nexmo.NewVerifyClient(auth)
+	response, err := numbersClient.List(nexmo.NumbersOpts{HasApplication: "false"})
 
 	if err != nil {
 		panic(err)

@@ -4,6 +4,7 @@ import (
 	"context"
 	"runtime"
 
+	"github.com/antihax/optional"
 	"github.com/nexmo-community/nexmo-go/numbers"
 )
 
@@ -29,11 +30,56 @@ func NewNumbersClient(Auth Auth) *NumbersClient {
 	return client
 }
 
-func (client *NumbersClient) List() (numbers.InboundNumbers, error) {
+// NumbersOpts sets the options to use in finding the numbers already in the user's account
+type NumbersOpts struct {
+	ApplicationId  string
+	HasApplication string // string because it's tri-state, not boolean
+	Country        string
+	Pattern        string
+	SearchPattern  int32
+	Size           int32
+	Index          int32
+}
+
+func (client *NumbersClient) List(opts NumbersOpts) (numbers.InboundNumbers, error) {
 
 	numbersClient := numbers.NewAPIClient(client.Config)
 
+	// set up the options and parse them
 	numbersOpts := numbers.GetOwnedNumbersOpts{}
+
+	if opts.ApplicationId != "" {
+		numbersOpts.ApplicationId = optional.NewString(opts.ApplicationId)
+	}
+
+	if opts.HasApplication != "" {
+		// if it's set at all, use the value and set it
+		if opts.HasApplication == "true" {
+			numbersOpts.HasApplication = optional.NewBool(true)
+		} else if opts.HasApplication == "false" {
+			numbersOpts.HasApplication = optional.NewBool(false)
+		}
+	}
+
+	if opts.Country != "" {
+		numbersOpts.Country = optional.NewString(opts.Country)
+	}
+
+	if opts.Pattern != "" {
+		numbersOpts.Pattern = optional.NewString(opts.Pattern)
+	}
+
+	if opts.SearchPattern != 0 {
+		numbersOpts.SearchPattern = optional.NewInt32(opts.SearchPattern)
+	}
+
+	if opts.Size != 0 {
+		numbersOpts.Size = optional.NewInt32(opts.Size)
+	}
+
+	if opts.Index != 0 {
+		numbersOpts.Index = optional.NewInt32(opts.Index)
+	}
 
 	// we need context for the API key
 	ctx := context.WithValue(context.Background(), numbers.ContextAPIKey, numbers.APIKey{
