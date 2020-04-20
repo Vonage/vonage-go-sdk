@@ -162,7 +162,7 @@ func TestCheckError(t *testing.T) {
 	}
 }
 
-func TestSearch(t *testing.T) {
+func TestVerifySearch(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -239,7 +239,7 @@ func TestSearch(t *testing.T) {
 	}
 }
 
-func TestSearchError(t *testing.T) {
+func TestVerifySearchError(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
