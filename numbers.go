@@ -240,3 +240,62 @@ func (client *NumbersClient) Cancel(country string, msisdn string, opts NumberCa
 
 	return result, NumbersErrorResponse{}, nil
 }
+
+// NumberUpdateOpts sets all the various fields for the number config
+type NumberUpdateOpts struct {
+	AppId                 string
+	MoHttpUrl             string
+	VoiceCallbackType     string
+	VoiceCallbackValue    string
+	VoiceStatusCallback   string
+	MessagesCallbackType  string
+	MessagesCallbackValue string
+}
+
+func (client *NumbersClient) Update(country string, msisdn string, opts NumberUpdateOpts) (numbers.Response, NumbersErrorResponse, error) {
+	numbersClient := numbers.NewAPIClient(client.Config)
+
+	// we need context for the API key
+	ctx := context.WithValue(context.Background(), numbers.ContextAPIKey, numbers.APIKey{
+		Key: client.apiKey,
+	})
+
+	numbersUpdateOpts := numbers.UpdateANumberOpts{}
+
+	if opts.AppId != "" {
+		numbersUpdateOpts.AppId = optional.NewString(opts.AppId)
+	}
+
+	if opts.MoHttpUrl != "" {
+		numbersUpdateOpts.MoHttpUrl = optional.NewString(opts.MoHttpUrl)
+	}
+
+	if opts.VoiceCallbackType != "" {
+		numbersUpdateOpts.VoiceCallbackType = optional.NewString(opts.VoiceCallbackType)
+	}
+
+	if opts.VoiceCallbackValue != "" {
+		numbersUpdateOpts.VoiceCallbackValue = optional.NewString(opts.VoiceCallbackValue)
+	}
+
+	if opts.VoiceStatusCallback != "" {
+		numbersUpdateOpts.VoiceStatusCallback = optional.NewString(opts.VoiceStatusCallback)
+	}
+
+	result, resp, err := numbersClient.DefaultApi.UpdateANumber(ctx, country, msisdn, &numbersUpdateOpts)
+	if err != nil {
+		return numbers.Response{}, NumbersErrorResponse{}, err
+	}
+
+	if resp.StatusCode != 200 {
+		// handle a 4xx error
+		e := err.(numbers.GenericOpenAPIError)
+		data := e.Body()
+
+		var errResp NumbersErrorResponse
+		json.Unmarshal(data, &errResp)
+		return result, errResp, nil
+	}
+
+	return result, NumbersErrorResponse{}, nil
+}

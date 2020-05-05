@@ -340,3 +340,63 @@ func TestNumberCancelFail(t *testing.T) {
 		t.Errorf("Number cannot cancel failed")
 	}
 }
+
+func TestNumberUpdate(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("POST", "https://rest.nexmo.com/number/update",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+{
+  "error-code": "200",
+  "error-code-label": "success"
+}
+	`,
+			)
+
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewNumbersClient(auth)
+	opts := NumberUpdateOpts{}
+	response, _, _ := client.Update("GB", "44770080000", opts)
+
+	message := "Result: " + response.ErrorCodeLabel
+	if message != "Result: success" {
+		t.Errorf("Number update failed")
+	}
+}
+
+func TestNumberUpdateFail(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("POST", "https://rest.nexmo.com/number/update",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+{
+  "error-code": "420",
+  "error-code-label": "method failed"
+}
+	`,
+			)
+
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewNumbersClient(auth)
+	opts := NumberUpdateOpts{}
+	response, _, _ := client.Update("GB", "44770080000", opts)
+
+	message := "Status: " + response.ErrorCode
+	if message != "Status: 420" {
+		t.Errorf("Number cannot update failed")
+	}
+}
