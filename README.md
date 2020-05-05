@@ -201,7 +201,7 @@ import (
 
 func main() {
 	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	verifyClient := nexmo.NewVerifyClient(auth)
+	numbersClient := nexmo.NewNumbersClient(auth)
 	response, err := numbersClient.List(nexmo.NumbersOpts{})
 
 	if err != nil {
@@ -227,7 +227,7 @@ import (
 
 func main() {
 	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	verifyClient := nexmo.NewVerifyClient(auth)
+	numbersClient := nexmo.NewNumbersClient(auth)
 	response, err := numbersClient.List(nexmo.NumbersOpts{HasApplication: "false"})
 
 	if err != nil {
@@ -237,6 +237,115 @@ func main() {
 	for _, number := range response.Numbers {
 		fmt.Println("Number: " + number.Msisdn + " (" + number.Country + ") with: " + strings.Join(number.Features, ", "))
 	}
+}
+```
+
+### Search for a number to buy
+
+You can programmatically add numbers to your account:
+
+```
+package main
+
+import (
+	"fmt"
+
+	"github.com/nexmo-community/nexmo-go"
+)
+
+func main() {
+	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	numbersClient := nexmo.NewNumbersClient(auth)
+    response, respErr, err := numbersClient.Search("GB", nexmo.NumberSearchOpts{Size: 10})
+    if err != nil {
+        panic(err)
+    }
+    if respErr.ErrorCode != "" {
+        fmt.Println("Error " + respErr.ErrorCode + ": " + respErr.ErrorCodeLabel)
+    }
+    for _, number := range response.Numbers {
+        fmt.Println("Number: " + number.Msisdn + " (" + number.Country + ") with: " + strings.Join(number.Features, ", "))
+    }
+}
+```
+
+### Buy a number
+
+Use the search to find a number that suits your needs (see the previous example), then buy it:
+
+```
+package main
+
+import (
+	"fmt"
+
+	"github.com/nexmo-community/nexmo-go"
+)
+
+func main() {
+	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	numbersClient := nexmo.NewNumbersClient(auth)
+
+    response, resp, err := numbersClient.Buy("GB", "44777000777", nexmo.NumberBuyOpts{})
+    if err != nil {
+        panic(err)
+    }
+    fmt.Printf("%#v\n", response)
+}
+```
+
+Failures in this action can indicate that more information is needed when buying the number. If you get a 420 status code, try buying via the dashboard <https://developer.nexmo.com>.
+
+### Update number configuration
+
+This endpoint is how you configure the number behaviour. There are a few properties you can set, they are named to match the [Number API Reference](https://developer.nexmo.com/api/number).
+
+* `MoHttpUrl` - The URL for incoming ("mobile originated", hence the name) SMS API webhooks.
+* `AppId` - The application ID to use for configuration (this is the most common setup for most apps)
+* `VoiceCallbackType` - Can be `tel` or `sip`
+* `VoiceCallbackValue` - The value 
+f telephone number or sip connection as appropriate
+
+```
+package main
+
+import (
+	"fmt"
+
+	"github.com/nexmo-community/nexmo-go"
+)
+
+func main() {
+	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	numbersClient := nexmo.NewNumbersClient(auth)
+	response, resp, err := numbersClient.Update("GB", "44777000777", nexmo.NumberUpdateOpts{AppId: " aaaaaaaa-bbbb-cccc-dddd-0123456789abc"})
+
+	fmt.Printf("%#v\n", response)
+}
+```
+
+### Cancel a bought number
+
+If you don't need a number any more, you can cancel it and stop paying the rental for it:
+
+```
+package main
+
+import (
+	"fmt"
+
+	"github.com/nexmo-community/nexmo-go"
+)
+
+func main() {
+	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	numbersClient := nexmo.NewNumbersClient(auth)
+
+    response, resp, err := numbersClient.Cancel("GB", "44777000777", nexmo.NumberCancelOpts{})
+    if err != nil {
+        panic(err)
+    }
+    fmt.Printf("%#v\n", response)
 }
 ```
 
