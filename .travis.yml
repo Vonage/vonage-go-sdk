@@ -13,9 +13,8 @@ matrix:
     - go: tip
 script:
   - go test -v -covermode=atomic -coverprofile=coverage.out
-  #   - diff -u <(echo -n) <(gofmt -d -s .)
-  - if [ -z $NOVET ]; then
-      diff -u <(echo -n) <(go vet . 2>&1 | grep -vE 'ExampleCommand|bash_completions.*Fprint');
-    fi
+  - gofmt -l *.go
+  - gofmt -l examples/
+  - golint *.go
 after_success:
   - bash <(curl -s https://codecov.io/bash)

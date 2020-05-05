@@ -32,12 +32,12 @@ func NewVerifyClient(Auth Auth) *VerifyClient {
 // VerifyOpts holds all the optional arguments for the verify request function
 type VerifyOpts struct {
 	Country       string
-	SenderId      string
+	SenderID      string
 	CodeLength    int32
 	Lg            string
 	PinExpiry     int32
 	NextEventWait int32
-	WorkflowId    int32
+	WorkflowID    int32
 }
 
 // Request a number is verified for ownership
@@ -56,8 +56,8 @@ func (client *VerifyClient) Request(number string, brand string, opts VerifyOpts
 		verifyOpts.Lg = optional.NewString(opts.Lg)
 	}
 
-	if opts.WorkflowId != 0 {
-		verifyOpts.WorkflowId = optional.NewInt32(opts.WorkflowId)
+	if opts.WorkflowID != 0 {
+		verifyOpts.WorkflowId = optional.NewInt32(opts.WorkflowID)
 	}
 
 	// we need context for the API key
@@ -84,7 +84,7 @@ func (client *VerifyClient) Request(number string, brand string, opts VerifyOpts
 }
 
 // Check the user-supplied code for this request ID
-func (client *VerifyClient) Check(requestId string, code string) (verify.CheckResponse, verify.CheckErrorResponse, error) {
+func (client *VerifyClient) Check(requestID string, code string) (verify.CheckResponse, verify.CheckErrorResponse, error) {
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
@@ -95,7 +95,7 @@ func (client *VerifyClient) Check(requestId string, code string) (verify.CheckRe
 
 	// set up and then parse the options
 	verifyOpts := verify.VerifyCheckOpts{}
-	result, resp, err := verifyClient.DefaultApi.VerifyCheck(ctx, "json", client.apiSecret, requestId, code, &verifyOpts)
+	result, resp, err := verifyClient.DefaultApi.VerifyCheck(ctx, "json", client.apiSecret, requestID, code, &verifyOpts)
 
 	// catch HTTP errors
 	if err != nil {
@@ -115,7 +115,7 @@ func (client *VerifyClient) Check(requestId string, code string) (verify.CheckRe
 }
 
 // Search for an earlier request by id
-func (client *VerifyClient) Search(requestId string) (verify.SearchResponse, verify.SearchErrorResponse, error) {
+func (client *VerifyClient) Search(requestID string) (verify.SearchResponse, verify.SearchErrorResponse, error) {
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
@@ -126,7 +126,7 @@ func (client *VerifyClient) Search(requestId string) (verify.SearchResponse, ver
 
 	// set up and then parse the options
 	verifyOpts := verify.VerifySearchOpts{}
-	verifyOpts.RequestId = optional.NewString(requestId)
+	verifyOpts.RequestId = optional.NewString(requestID)
 	result, resp, err := verifyClient.DefaultApi.VerifySearch(ctx, "json", client.apiSecret, &verifyOpts)
 
 	// catch HTTP errors
@@ -147,7 +147,7 @@ func (client *VerifyClient) Search(requestId string) (verify.SearchResponse, ver
 }
 
 // Cancel an in-progress request (check API docs for when this is possible)
-func (client *VerifyClient) Cancel(requestId string) (verify.ControlResponse, verify.ControlErrorResponse, error) {
+func (client *VerifyClient) Cancel(requestID string) (verify.ControlResponse, verify.ControlErrorResponse, error) {
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
@@ -156,7 +156,7 @@ func (client *VerifyClient) Cancel(requestId string) (verify.ControlResponse, ve
 		Key: client.apiKey,
 	})
 
-	result, resp, err := verifyClient.DefaultApi.VerifyControl(ctx, "json", client.apiSecret, requestId, "cancel")
+	result, resp, err := verifyClient.DefaultApi.VerifyControl(ctx, "json", client.apiSecret, requestID, "cancel")
 
 	// catch HTTP errors
 	if err != nil {
@@ -176,7 +176,7 @@ func (client *VerifyClient) Cancel(requestId string) (verify.ControlResponse, ve
 }
 
 // TriggerNextEvent moves on to the next event in the workflow
-func (client *VerifyClient) TriggerNextEvent(requestId string) (verify.ControlResponse, verify.ControlErrorResponse, error) {
+func (client *VerifyClient) TriggerNextEvent(requestID string) (verify.ControlResponse, verify.ControlErrorResponse, error) {
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
@@ -185,7 +185,7 @@ func (client *VerifyClient) TriggerNextEvent(requestId string) (verify.ControlRe
 		Key: client.apiKey,
 	})
 
-	result, resp, err := verifyClient.DefaultApi.VerifyControl(ctx, "json", client.apiSecret, requestId, "trigger_next_event")
+	result, resp, err := verifyClient.DefaultApi.VerifyControl(ctx, "json", client.apiSecret, requestID, "trigger_next_event")
 
 	// catch HTTP errors
 	if err != nil {

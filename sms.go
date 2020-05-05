@@ -30,26 +30,10 @@ func NewSMSClient(Auth Auth) *SMSClient {
 
 // SMSOpts holds all the optional values that can be set when sending an SMS, check the https://developer.nexmo.com/api/sms API reference for more information
 type SMSOpts struct {
-	// **Advanced**: The duration in milliseconds the delivery of an SMS will be attempted.§§ By default Nexmo attempt delivery for 72 hours, however the maximum effective value depends on the operator and is typically 24 - 48 hours. We recommend this value should be kept at its default or at least 30 minutes.
-	Ttl int32
-	// **Advanced**: Boolean indicating if you like to receive a [Delivery Receipt](https://developer.nexmo.com/messaging/sms/building-blocks/receive-a-delivery-receipt).
 	StatusReportReq bool
-	// **Advanced**: The webhook endpoint the delivery receipt for this sms is sent to. This parameter overrides the webhook endpoint you set in Dashboard.
-	Callback string
-	// **Advanced**: The Data Coding Scheme value of the message
-	MessageClass int32
-	// **Advanced**: The format of the message body
-	Type string
-	// **Advanced**: Hex encoded binary data. Depends on `type` parameter having the value `binary`.
-	Body string
-	// **Advanced**: Your custom Hex encoded [User Data Header](https://en.wikipedia.org/wiki/User_Data_Header). Depends on `type` parameter having the value `binary`.
-	Udh string
-	// **Advanced**: The value of the [protocol identifier](https://en.wikipedia.org/wiki/GSM_03.40#Protocol_Identifier) to use. Ensure that the value is aligned with `udh`.
-	ProtocolId int32
-	// **Advanced**: You can optionally include your own reference of up to 40 characters.
-	ClientRef string
-	// **Advanced**: An optional string used to identify separate accounts using the SMS endpoint for billing purposes. To use this feature, please email [support@nexmo.com](mailto:support@nexmo.com)
-	AccountRef string
+	Callback        string
+	Type            string
+	ClientRef       string
 }
 
 // Send an SMS. Give some text to send and the number to send to - there are
