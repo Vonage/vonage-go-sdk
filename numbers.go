@@ -39,7 +39,7 @@ type NumbersErrorResponse struct {
 
 // NumbersOpts sets the options to use in finding the numbers already in the user's account
 type NumbersOpts struct {
-	ApplicationId  string
+	ApplicationID  string
 	HasApplication string // string because it's tri-state, not boolean
 	Country        string
 	Pattern        string
@@ -56,8 +56,8 @@ func (client *NumbersClient) List(opts NumbersOpts) (numbers.InboundNumbers, err
 	// set up the options and parse them
 	numbersOpts := numbers.GetOwnedNumbersOpts{}
 
-	if opts.ApplicationId != "" {
-		numbersOpts.ApplicationId = optional.NewString(opts.ApplicationId)
+	if opts.ApplicationID != "" {
+		numbersOpts.ApplicationId = optional.NewString(opts.ApplicationID)
 	}
 
 	if opts.HasApplication != "" {
@@ -114,6 +114,7 @@ type NumberSearchOpts struct {
 	Index         int32
 }
 
+// Search lets you find a great phone number to use in your application
 func (client *NumbersClient) Search(country string, opts NumberSearchOpts) (numbers.AvailableNumbers, error) {
 
 	numbersClient := numbers.NewAPIClient(client.Config)
@@ -160,9 +161,10 @@ func (client *NumbersClient) Search(country string, opts NumberSearchOpts) (numb
 
 // NumberBuyOpts enables users to set the Target API Key (and any future params)
 type NumberBuyOpts struct {
-	TargetApiKey string
+	TargetAPIKey string
 }
 
+// Buy the best phone number to use in your app
 func (client *NumbersClient) Buy(country string, msisdn string, opts NumberBuyOpts) (numbers.Response, NumbersErrorResponse, error) {
 
 	numbersClient := numbers.NewAPIClient(client.Config)
@@ -174,8 +176,8 @@ func (client *NumbersClient) Buy(country string, msisdn string, opts NumberBuyOp
 
 	numbersBuyOpts := numbers.BuyANumberOpts{}
 
-	if opts.TargetApiKey != "" {
-		numbersBuyOpts.TargetApiKey = optional.NewString(opts.TargetApiKey)
+	if opts.TargetAPIKey != "" {
+		numbersBuyOpts.TargetApiKey = optional.NewString(opts.TargetAPIKey)
 	}
 
 	result, resp, err := numbersClient.DefaultApi.BuyANumber(ctx, country, msisdn, &numbersBuyOpts)
@@ -202,9 +204,10 @@ func (client *NumbersClient) Buy(country string, msisdn string, opts NumberBuyOp
 
 // NumberCancelOpts enables users to set the Target API Key (and any future params)
 type NumberCancelOpts struct {
-	TargetApiKey string
+	TargetAPIKey string
 }
 
+// Cancel a number already in your account
 func (client *NumbersClient) Cancel(country string, msisdn string, opts NumberCancelOpts) (numbers.Response, NumbersErrorResponse, error) {
 	numbersClient := numbers.NewAPIClient(client.Config)
 
@@ -215,8 +218,8 @@ func (client *NumbersClient) Cancel(country string, msisdn string, opts NumberCa
 
 	numbersCancelOpts := numbers.CancelANumberOpts{}
 
-	if opts.TargetApiKey != "" {
-		numbersCancelOpts.TargetApiKey = optional.NewString(opts.TargetApiKey)
+	if opts.TargetAPIKey != "" {
+		numbersCancelOpts.TargetApiKey = optional.NewString(opts.TargetAPIKey)
 	}
 
 	result, resp, err := numbersClient.DefaultApi.CancelANumber(ctx, country, msisdn, &numbersCancelOpts)
@@ -243,8 +246,8 @@ func (client *NumbersClient) Cancel(country string, msisdn string, opts NumberCa
 
 // NumberUpdateOpts sets all the various fields for the number config
 type NumberUpdateOpts struct {
-	AppId                 string
-	MoHttpUrl             string
+	AppID                 string
+	MoHTTPURL             string
 	VoiceCallbackType     string
 	VoiceCallbackValue    string
 	VoiceStatusCallback   string
@@ -252,6 +255,7 @@ type NumberUpdateOpts struct {
 	MessagesCallbackValue string
 }
 
+// Update the configuration for your number
 func (client *NumbersClient) Update(country string, msisdn string, opts NumberUpdateOpts) (numbers.Response, NumbersErrorResponse, error) {
 	numbersClient := numbers.NewAPIClient(client.Config)
 
@@ -262,12 +266,12 @@ func (client *NumbersClient) Update(country string, msisdn string, opts NumberUp
 
 	numbersUpdateOpts := numbers.UpdateANumberOpts{}
 
-	if opts.AppId != "" {
-		numbersUpdateOpts.AppId = optional.NewString(opts.AppId)
+	if opts.AppID != "" {
+		numbersUpdateOpts.AppId = optional.NewString(opts.AppID)
 	}
 
-	if opts.MoHttpUrl != "" {
-		numbersUpdateOpts.MoHttpUrl = optional.NewString(opts.MoHttpUrl)
+	if opts.MoHTTPURL != "" {
+		numbersUpdateOpts.MoHttpUrl = optional.NewString(opts.MoHTTPURL)
 	}
 
 	if opts.VoiceCallbackType != "" {

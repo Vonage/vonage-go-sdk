@@ -300,8 +300,8 @@ Failures in this action can indicate that more information is needed when buying
 
 This endpoint is how you configure the number behaviour. There are a few properties you can set, they are named to match the [Number API Reference](https://developer.nexmo.com/api/number).
 
-* `MoHttpUrl` - The URL for incoming ("mobile originated", hence the name) SMS API webhooks.
-* `AppId` - The application ID to use for configuration (this is the most common setup for most apps)
+* `MoHTTPURL` - The URL for incoming ("mobile originated", hence the name) SMS API webhooks.
+* `AppID` - The application ID to use for configuration (this is the most common setup for most apps)
 * `VoiceCallbackType` - Can be `tel` or `sip`
 * `VoiceCallbackValue` - The value 
 f telephone number or sip connection as appropriate
@@ -318,7 +318,7 @@ import (
 func main() {
 	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
 	numbersClient := nexmo.NewNumbersClient(auth)
-	response, resp, err := numbersClient.Update("GB", "44777000777", nexmo.NumberUpdateOpts{AppId: " aaaaaaaa-bbbb-cccc-dddd-0123456789abc"})
+	response, resp, err := numbersClient.Update("GB", "44777000777", nexmo.NumberUpdateOpts{AppID: " aaaaaaaa-bbbb-cccc-dddd-0123456789abc"})
 
 	fmt.Printf("%#v\n", response)
 }

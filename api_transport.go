@@ -2,6 +2,7 @@ package nexmo
 
 import "net/http"
 
+// APITransport lets us add extra HTTP features and pass them around elegantly
 type APITransport struct {
 	APISecret string
 
@@ -24,6 +25,7 @@ func (t *APITransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	return t.transport().RoundTrip(req)
 }
 
+// Client is our HTTP Client with custom rountripper set
 func (t *APITransport) Client() *http.Client {
 	return &http.Client{Transport: t}
 }
