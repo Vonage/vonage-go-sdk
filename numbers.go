@@ -3,7 +3,6 @@ package nexmo
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
 	"runtime"
 
 	"github.com/antihax/optional"
@@ -183,12 +182,8 @@ func (client *NumbersClient) Buy(country string, msisdn string, opts NumberBuyOp
 	// check for non-200 status codes first, err will be set but we handle these specifically
 	if resp.StatusCode != 200 {
 		// handle a 4xx error
-
-		// err seems to be GenericOpenAPIError, has body of type []Uiint8 rather than []byte but how to access this field??
-		// fmt.Printf("%#v\n", err)
-
-		// can only read from Body with a hack in api_default.go
-		data, _ := ioutil.ReadAll(resp.Body)
+		e := err.(numbers.GenericOpenAPIError)
+		data := e.Body()
 
 		var errResp NumbersErrorResponse
 		json.Unmarshal(data, &errResp)
@@ -227,9 +222,8 @@ func (client *NumbersClient) Cancel(country string, msisdn string, opts NumberCa
 	result, resp, err := numbersClient.DefaultApi.CancelANumber(ctx, country, msisdn, &numbersCancelOpts)
 	if resp.StatusCode != 200 {
 		// handle a 4xx error
-
-		// can only read from Body with a hack in api_default.go
-		data, _ := ioutil.ReadAll(resp.Body)
+		e := err.(numbers.GenericOpenAPIError)
+		data := e.Body()
 
 		var errResp NumbersErrorResponse
 		json.Unmarshal(data, &errResp)
