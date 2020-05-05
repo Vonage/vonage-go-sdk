@@ -11,7 +11,6 @@
 package numbers
 
 import (
-	"bytes"
 	_context "context"
 	_ioutil "io/ioutil"
 	_nethttp "net/http"
@@ -124,10 +123,6 @@ func (a *DefaultApiService) BuyANumber(ctx _context.Context, country string, msi
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-
-	// hack to reinstate the body in case we need it
-	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
-
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -258,10 +253,6 @@ func (a *DefaultApiService) CancelANumber(ctx _context.Context, country string, 
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-
-	// hack to reinstate the body in case we need it
-	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
-
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
