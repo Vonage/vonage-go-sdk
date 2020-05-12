@@ -379,7 +379,7 @@ func main() {
 		fmt.Println("Account Balance: " + response.Messages[0].RemainingBalance)
 	}
 }
-
+```
 _(The example above shows using the library with [Prism](https://github.com/stoplightio/prism), which we find useful at development time)_
 
 The fields for configuration are:
