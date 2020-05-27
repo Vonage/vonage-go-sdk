@@ -15,6 +15,5 @@ script:
   - go test -v -covermode=atomic -coverprofile=coverage.out
   - gofmt -l *.go
   - gofmt -l examples/
-  - golint *.go
 after_success:
   - bash <(curl -s https://codecov.io/bash)
