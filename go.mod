@@ -4,7 +4,8 @@ go 1.13
 
 require (
 	github.com/antihax/optional v1.0.0
-	github.com/google/uuid v1.1.1 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/google/uuid v1.1.1
 	github.com/jarcoal/httpmock v1.0.4
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pelletier/go-toml v1.6.0 // indirect
