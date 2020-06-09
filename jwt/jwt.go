@@ -8,21 +8,24 @@ import (
 	"github.com/google/uuid"
 )
 
+// Path represents each path in the ACL structure
 type Path struct {
 	Path string
 }
 
+// Generator is what makes a token. Set the fields you need, then generate. The token is also stored in `token` once generated.
 type Generator struct {
 	ApplicationID string
 	PrivateKey    []byte
-	TTL           int
+	TTL           time.Duration
 	Subject       string
 	Paths         []Path
-	JTI           string
+	JTI           uuid.UUID
 	NBF           int64
 	token         *jwt.Token
 }
 
+// NewGenerator takes your application ID and private key to create a generator
 func NewGenerator(ApplicationID string, PrivateKey []byte) *Generator {
 	g := new(Generator)
 	g.ApplicationID = ApplicationID
@@ -30,6 +33,7 @@ func NewGenerator(ApplicationID string, PrivateKey []byte) *Generator {
 	return g
 }
 
+// NewGeneratorFromFilename takes your application ID and the filename of your private key to create a token generator
 func NewGeneratorFromFilename(ApplicationID string, PrivateKeyFileName string) (*Generator, error) {
 	key, err := ioutil.ReadFile(PrivateKeyFileName)
 	if err != nil {
@@ -40,36 +44,13 @@ func NewGeneratorFromFilename(ApplicationID string, PrivateKeyFileName string) (
 	return g, nil
 }
 
+// AddPath adds an entry to the ACL "paths" field
 func (g *Generator) AddPath(path Path) *Generator {
 	g.Paths = append(g.Paths, path)
 	return g
 }
 
-func (g *Generator) SetPaths(paths []Path) *Generator {
-	g.Paths = paths
-	return g
-}
-
-func (g *Generator) SetTTL(ttl int) *Generator {
-	g.TTL = ttl
-	return g
-}
-
-func (g *Generator) SetJTI(jti string) *Generator {
-	g.JTI = jti
-	return g
-}
-
-func (g *Generator) SetNBF(nbf int64) *Generator {
-	g.NBF = nbf
-	return g
-}
-
-func (g *Generator) SetSubject(subject string) *Generator {
-	g.Subject = subject
-	return g
-}
-
+// GenerateToken assembles and returns the JWT token
 func (g *Generator) GenerateToken() (string, error) {
 	// build the JWT up: First: non-editable fields
 	atClaims := jwt.MapClaims{}
@@ -78,21 +59,17 @@ func (g *Generator) GenerateToken() (string, error) {
 	// fields set on the generator
 	atClaims["application_id"] = g.ApplicationID
 
-	ttl := 15 // recommended token lifetime, in minutes
+	ttl := time.Minute * time.Duration(15) // recommended token lifetime 15 min
 	if g.TTL != 0 {
 		ttl = g.TTL
 	}
-	atClaims["exp"] = time.Now().Add(time.Minute * time.Duration(ttl)).Unix()
+	atClaims["exp"] = time.Now().Add(ttl).Unix()
 
-	initJTI := uuid.New()
-	atClaims["jti"] = initJTI
-	if g.JTI != "" {
-		jti, jtiErr := uuid.Parse(g.JTI)
-		if jtiErr != nil {
-			jti = uuid.New()
-		}
-		atClaims["jti"] = jti
+	jti := uuid.New()
+	if g.JTI != uuid.Nil {
+		jti = g.JTI
 	}
+	atClaims["jti"] = jti
 
 	if g.NBF != 0 {
 		atClaims["nbf"] = g.NBF
@@ -123,6 +100,7 @@ func (g *Generator) GenerateToken() (string, error) {
 	return token, nil
 }
 
+// getACL is a helper function to build the ACL claim from our Paths structs
 func (g *Generator) getACL() map[string]map[string]map[string]string {
 	// aiming for {"paths": ["thing": {}, "otherThing": {}]}
 	mymap := map[string]map[string]map[string]string{}
@@ -135,10 +113,12 @@ func (g *Generator) getACL() map[string]map[string]map[string]string {
 	return mymap
 }
 
+// GetHeader gives access to the header fields `alg` and `typ` of the generated token
 func (g *Generator) GetHeader() map[string]interface{} {
 	return g.token.Header
 }
 
+// GetClaims returns the body claims for the generated token
 func (g *Generator) GetClaims() jwt.MapClaims {
 	claims := g.token.Claims
 

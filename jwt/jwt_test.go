@@ -2,8 +2,6 @@ package jwt
 
 import (
 	"testing"
-
-	"github.com/google/uuid"
 )
 
 func TestNewGenerator(t *testing.T) {
@@ -19,49 +17,11 @@ func TestOnePath(t *testing.T) {
 	g.AddPath(Path{Path: "/*/users/**"})
 
 	token, _ := g.GenerateToken()
-	// just check we got vaguely a token
-	if len(token) < 400 {
-		t.Errorf("Token may not have been generated")
-	}
-}
-
-func TestChainedMethods(t *testing.T) {
-	g := NewGenerator("aaaaaaaa-bbbb-cccc-dddd-0123456789ab", []byte(getPrivateKey()))
-	g.SetTTL(60).SetJTI("01234567-aaaa-bbbb-cccc-0123456789ab").SetSubject("janedoe")
-
-	token, _ := g.GenerateToken()
-	// just check we got vaguely a token
+	// start with checking we got vaguely a token
 	if len(token) < 400 {
 		t.Errorf("Token may not have been generated")
 	}
 
-	claims := g.GetClaims()
-	found_jti := 0
-	found_sub := 0
-	for k, v := range claims {
-		if k == "jti" {
-			found_jti = 1
-			value := v.(uuid.UUID)
-			if value.String() != "01234567-aaaa-bbbb-cccc-0123456789ab" {
-				t.Errorf("JTI not set correctly in chained test. Value: " + value.String())
-			}
-		}
-
-		if k == "sub" {
-			found_sub = 1
-			if v != "janedoe" {
-				t.Errorf("Subject not set correctly in chained test")
-			}
-		}
-	}
-
-	if found_jti == 0 {
-		t.Errorf("JTI is missing in chained test")
-	}
-
-	if found_sub == 0 {
-		t.Errorf("Subject is missing in chained test")
-	}
 }
 
 func getPrivateKey() string {
