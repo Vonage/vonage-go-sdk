@@ -52,8 +52,6 @@ use these features to get started and/or test your setup`,
 		smsClient := nexmo.NewSMSClient(auth)
 
 		response, err := smsClient.Send(From, To, Message, nexmo.SMSOpts{})
-		fmt.Printf("%#v\n", response)
-		fmt.Printf("%#v\n", err)
 
 		if err != nil {
 			panic(err)
@@ -61,6 +59,7 @@ use these features to get started and/or test your setup`,
 
 		fmt.Println("I'm sending an SMS from " + From + " to " + To)
 		fmt.Println("It says: " + Message)
+		fmt.Println("Status: " + response.Messages[0].Status)
 	},
 }
 

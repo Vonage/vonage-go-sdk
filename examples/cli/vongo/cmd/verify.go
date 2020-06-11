@@ -94,7 +94,7 @@ var verifyCheckCmd = &cobra.Command{
 				fmt.Println("Request ID: " + respErr.RequestId)
 			}
 		} else {
-			fmt.Println("Request ID: " + response.RequestId)
+			fmt.Println("Request completed (Request ID: " + response.RequestId + ")")
 		}
 
 	},
