@@ -12,7 +12,8 @@ package voice
 
 // CreateCallRequest struct for CreateCallRequest
 type CreateCallRequest struct {
-	// To []OneOfEndpointPhoneEndpointSipEndpointWebsocketEndpointVbcExtension `json:"to"`
+	// hack to work around the OneOf that this generator doesn't support
+	To   interface{}   `json:"to"`
 	From EndpointPhone `json:"from"`
 	// **Required** unless `answer_url` is provided.  The [Nexmo Call Control Object](/voice/voice-api/ncco-reference) to use for this call.
 	Ncco []map[string]interface{} `json:"ncco,omitempty"`

@@ -5,10 +5,7 @@
 package nexmo
 
 import (
-	"time"
-
-	"github.com/dgrijalva/jwt-go"
-	"github.com/google/uuid"
+	"github.com/nexmo-community/nexmo-go/jwt"
 )
 
 // Auth types are various but support a common interface
@@ -47,19 +44,8 @@ func (auth *JWTAuth) GetCreds() []string {
 }
 
 func CreateAuthFromAppPrivateKey(appID string, privateKey []byte) (*JWTAuth, error) {
-	atClaims := jwt.MapClaims{}
-	atClaims["application_id"] = appID
-	atClaims["exp"] = time.Now().Add(time.Minute * 15).Unix()
-	atClaims["jti"] = uuid.New()
-	atClaims["iat"] = time.Now().Unix()
-	at := jwt.NewWithClaims(jwt.SigningMethodRS256, atClaims)
-
-	signWith, keyErr := jwt.ParseRSAPrivateKeyFromPEM(privateKey)
-	if keyErr != nil {
-		return &JWTAuth{}, keyErr
-	}
-
-	token, tokenErr := at.SignedString(signWith)
+	jwtGen := jwt.NewGenerator(appID, privateKey)
+	token, tokenErr := jwtGen.GenerateToken()
 	if tokenErr != nil {
 		return &JWTAuth{}, tokenErr
 	}
