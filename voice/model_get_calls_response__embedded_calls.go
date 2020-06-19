@@ -16,10 +16,8 @@ type GetCallsResponseEmbeddedCalls struct {
 	Uuid string `json:"uuid,omitempty"`
 	// The unique identifier for the conversation this call leg is part of.
 	ConversationUuid string `json:"conversation_uuid,omitempty"`
-	// The single or mixed collection of endpoint types you connected to
-	To []map[string]interface{} `json:"to,omitempty"`
-	// The endpoint you called from. Possible values are the same as `to`.
-	From []map[string]interface{} `json:"from,omitempty"`
+	To To `json:"to,omitempty"`
+	From From `json:"from,omitempty"`
 	// The status of the call. [See possible values](https://developer.nexmo.com/voice/voice-api/guides/call-flow#event-objects)
 	Status string `json:"status,omitempty"`
 	Direction Direction `json:"direction,omitempty"`
