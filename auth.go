@@ -38,11 +38,15 @@ type JWTAuth struct {
 	JWT string
 }
 
+// GetCreds returns an array of strings, this time just one element which is
+// the JWT token
 func (auth *JWTAuth) GetCreds() []string {
 	creds := []string{auth.JWT}
 	return creds
 }
 
+// CreateAuthFromAppPrivateKey is a helper method to generate auth from an
+// Application ID and a []byte of the private key (use with ioutil.ReadFile)
 func CreateAuthFromAppPrivateKey(appID string, privateKey []byte) (*JWTAuth, error) {
 	jwtGen := jwt.NewGenerator(appID, privateKey)
 	token, tokenErr := jwtGen.GenerateToken()
@@ -53,4 +57,12 @@ func CreateAuthFromAppPrivateKey(appID string, privateKey []byte) (*JWTAuth, err
 	auth := new(JWTAuth)
 	auth.JWT = token
 	return auth, nil
+}
+
+// CreateAuthFromJwtTokenGenerator accepts a token generator struct, use this
+// to set more of the options on the generator.
+func CreateAuthFromJwtTokenGenerator(generator jwt.Generator) *JWTAuth {
+	auth := new(JWTAuth)
+	auth.JWT, _ = generator.GenerateToken()
+	return auth
 }
