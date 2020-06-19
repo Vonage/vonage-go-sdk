@@ -16,7 +16,7 @@ type CreateCallRequest struct {
 	To   interface{}   `json:"to"`
 	From EndpointPhone `json:"from"`
 	// **Required** unless `answer_url` is provided.  The [Nexmo Call Control Object](/voice/voice-api/ncco-reference) to use for this call.
-	Ncco []map[string]interface{} `json:"ncco,omitempty"`
+	Ncco []interface{} `json:"ncco,omitempty"`
 	// **Required** unless `ncco` is provided.  The webhook endpoint where you provide the [Nexmo Call Control Object](/voice/voice-api/ncco-reference) that governs this call.
 	AnswerUrl []string `json:"answer_url,omitempty"`
 	// The HTTP method used to send event information to answer_url.
