@@ -134,13 +134,13 @@ func (client *VerifyClient) Search(requestID string) (verify.SearchResponse, ver
 		return verify.SearchResponse{}, verify.SearchErrorResponse{}, err
 	}
 
-	// search statuses are strings
-	if result.Status != "SUCCESS" {
+	// search failed if we didn't get a request ID
+	if result.RequestId == "" {
 		data, _ := ioutil.ReadAll(resp.Body)
 
 		var errResp verify.SearchErrorResponse
 		json.Unmarshal(data, &errResp)
-		return result, errResp, nil
+		return verify.SearchResponse{}, errResp, nil
 	}
 
 	return result, verify.SearchErrorResponse{}, nil
