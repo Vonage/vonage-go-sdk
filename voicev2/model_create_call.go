@@ -9,17 +9,19 @@
  */
 
 package voicev2
+
 // CreateCall struct for CreateCall
 type CreateCall struct {
-	To []OneOfobjectobjectobjectobjectobject `json:"to"`
+	// Temporarily removed, this causes syntax invalidation
+	// To []OneOfobjectobjectobjectobjectobject `json:"to"`
 	From CreateCallFrom `json:"from"`
-	// **Required** unless `answer_url` is provided.  The [Nexmo Call Control Object](/voice/voice-api/ncco-reference) to use for this call. 
+	// **Required** unless `answer_url` is provided.  The [Nexmo Call Control Object](/voice/voice-api/ncco-reference) to use for this call.
 	Ncco []map[string]interface{} `json:"ncco,omitempty"`
-	// **Required** unless `ncco` is provided.  The webhook endpoint where you provide the [Nexmo Call Control Object](/voice/voice-api/ncco-reference) that governs this call. 
+	// **Required** unless `ncco` is provided.  The webhook endpoint where you provide the [Nexmo Call Control Object](/voice/voice-api/ncco-reference) that governs this call.
 	AnswerUrl []string `json:"answer_url,omitempty"`
 	// The HTTP method used to send event information to answer_url.
 	AnswerMethod string `json:"answer_method,omitempty"`
-	// **Required** unless `event_url` is configured at the application level, see [Create an Application](/api/application.v2#createApplication)  The webhook endpoint where call progress events are sent to. For more information about the values sent, see [Event webhook](/voice/voice-api/webhook-reference#event-webhook). 
+	// **Required** unless `event_url` is configured at the application level, see [Create an Application](/api/application.v2#createApplication)  The webhook endpoint where call progress events are sent to. For more information about the values sent, see [Event webhook](/voice/voice-api/webhook-reference#event-webhook).
 	EventUrl []string `json:"event_url"`
 	// The HTTP method used to send event information to event_url.
 	EventMethod string `json:"event_method,omitempty"`
