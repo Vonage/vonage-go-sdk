@@ -3,7 +3,6 @@ package nexmo
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"runtime"
 
 	"github.com/antihax/optional"
