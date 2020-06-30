@@ -45,7 +45,7 @@ type CheckVerificationRequest struct {
 
 type CheckVerificationResponse struct {
 	RequestID string `json:"request_id"`
-        EventID   string `json:"event_id"`
+	EventID   string `json:"event_id"`
 	Status    string `json:"status"`
 	Price     string `json:"price"`
 	Currency  string `json:"currency"`
