@@ -63,3 +63,23 @@ func (a NotifyAction) prepare() Action {
 	a.Action = "notify"
 	return a
 }
+
+// RecordAction to start a recording at this point in the call
+type RecordAction struct {
+	Action       string   `json:"action,omitempty"`
+	Format       string   `json:"format,omitempty"`
+	Split        string   `json:"split,omitempty"`
+	Channels     int      `json:"channels,omitempty"`
+	EndOnSilence int      `json:"endOnSilence,omitempty"`
+	EndOnKey     string   `json:"endOnKey,omitempty"`
+	TimeOut      string   `json:"timeOut,omitempty"`
+	BeepStart    bool     `json:"beepStart,omitempty"`
+	EventUrl     []string `json:"eventUrl,omitempty"`
+	EventMethod  string   `json:"eventMethod,omitempty"`
+}
+
+// prepare for the RecordAction
+func (a RecordAction) prepare() Action {
+	a.Action = "record"
+	return a
+}
