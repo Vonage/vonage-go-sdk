@@ -37,7 +37,8 @@ Or import the package into your project and then do `go get .`.
 
 Here are some simple examples to get you started. If there's anything else you'd like to see here, please open an issue and let us know! Be aware that this library is still at an alpha stage so things may change between versions.
 
-### Send SMS
+## SMS API
+#### Send SMS
 
 To send an SMS, try the code below:
 
@@ -65,7 +66,7 @@ func main() {
 }
 ```
 
-### Send Unicode SMS
+#### Send Unicode SMS
 
 Add `Type` to the `opts` parameter and set it to "unicode":
 
@@ -93,7 +94,7 @@ func main() {
 }
 ```
 
-### Receive SMS
+#### Receive SMS
 
 To receive an SMS, you will need to run a local webserver and expose the URL publicly (you can use a tool such as [ngrok](https://ngrok.com).
 
@@ -117,7 +118,10 @@ func main() {
 }
 ```
 
-### Verify a User's Phone Number
+
+### Verify API
+
+#### Verify a User's Phone Number
 
 This is a multi-step process. First: request that the number be verified and state what "brand" is asking.
 
@@ -148,7 +152,7 @@ func main() {
 
 Copy the request ID; the user will receive a PIN code and when they have it, you can check the code (see next section)
 
-### Check Verification Code
+#### Check Verification Code
 
 When a request is in progress, use the `requestId` and the PIN code sent by the user to check if it is correct:
 
@@ -180,7 +184,7 @@ func main() {
 
 If status is zero, the code was correct and you have confirmed the user owns the number
 
-### Cancel a Verification
+#### Cancel a Verification
 
 If you have a verification in progress, and no longer wish to proceed, you can cancel it. This can be done from 30 seconds after the verification was requested, until the second event occurs.
 
@@ -209,7 +213,7 @@ func main() {
 }
 ```
 
-### Trigger the Next Event in a Verification
+#### Trigger the Next Event in a Verification
 
 If for example, an SMS has been sent, and you'd immediately like to have the user get a TTS call (depending on the [workflow](https://developer.nexmo.com/verify/guides/workflows-and-events) in use), it's possible to make the next event happen on demand:
 
@@ -238,7 +242,7 @@ func main() {
 }
 ```
 
-### Search for a Verification
+#### Search for a Verification
 
 You can check on an in-progress or completely (either successfully or not) verification by its request ID:
 
@@ -268,7 +272,9 @@ func main() {
 ```
 
 
-### List the Numbers You Own
+### Number Management
+
+#### List the Numbers You Own
 
 To check on the numbers already associated with your account:
 
@@ -322,7 +328,7 @@ func main() {
 }
 ```
 
-### Search for a number to buy
+#### Search for a number to buy
 
 You can programmatically add numbers to your account:
 
@@ -351,7 +357,7 @@ func main() {
 }
 ```
 
-### Buy a number
+#### Buy a number
 
 Use the search to find a number that suits your needs (see the previous example), then buy it:
 
@@ -378,7 +384,7 @@ func main() {
 
 Failures in this action can indicate that more information is needed when buying the number. If you get a 420 status code, try buying via the dashboard <https://developer.nexmo.com>.
 
-### Update number configuration
+#### Update number configuration
 
 This endpoint is how you configure the number behaviour. There are a few properties you can set, they are named to match the [Number API Reference](https://developer.nexmo.com/api/number).
 
@@ -406,7 +412,7 @@ func main() {
 }
 ```
 
-### Cancel a bought number
+#### Cancel a bought number
 
 If you don't need a number any more, you can cancel it and stop paying the rental for it:
 
@@ -431,7 +437,9 @@ func main() {
 }
 ```
 
-### Generate a Basic JWT
+
+### JWT Authentication
+#### Generate a Basic JWT
 
 Generate a JSON Web Token (JWT) for the APIs that use that. You usually won't need to do this if you're using the library but if you need to make a custom request or want to use a JWT for something else, you can use this.
 
@@ -453,7 +461,7 @@ func main() {
 }
 ```
 
-### Generate a JWT with more options
+#### Generate a JWT with more options
 
 You can also set up the generator with the options needed on your token, such as expiry time or ACLs.
 
@@ -468,6 +476,47 @@ You can also set up the generator with the options needed on your token, such as
 
     token, _ := g.GenerateToken()
     fmt.Println(token)
+```
+
+
+### NCCOs
+
+NCCO (Nexmo Call Control Object) is the format for describing the various actions that will take place during a call. Check the [NCCO reference on the developer portal](https://developer.nexmo.com/voice/voice-api/ncco-reference) for full details, but examples of each action are included in the sections below.
+
+The basic approach is to create an NCCO, then create actions to add into it:
+
+```go
+	ncco := nexmo.Ncco{}
+	talk := nexmo.TalkAction{Text: "Greetings from the golang library", VoiceName: "Nicole"}
+	ncco.AddAction(talk)
+```
+
+#### Talk Action
+
+Create a `talk` action to read some text into the call:
+
+```go
+	talk := nexmo.TalkAction{Text: "Greetings from the golang library", VoiceName: "Nicole"}
+```
+
+#### Notify Action
+
+Use `notify` to send a particular data payload to a nominated URL:
+
+```go
+	url := make([]string, 1)
+	url[0] = "https://example.com/webhooks/notify"
+	data := make(map[string]string)
+	data["stage"] = "Registration"
+	ping := nexmo.NotifyAction{EventUrl: url, Payload: data}
+```
+
+#### RecordAction
+
+Send a `record` action to start a recording:
+
+```go
+    record := nexmo.RecordAction{BeepStart: true}
 ```
 
 ## Tips, Tricks and Troubleshooting
