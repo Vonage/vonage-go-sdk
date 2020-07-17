@@ -1,6 +1,9 @@
 package nexmo
 
-import "strconv"
+import (
+	"strconv"
+	"strings"
+)
 
 // Action is an interface to ensure all Actions have a prepare()
 type Action interface {
@@ -72,7 +75,7 @@ type RecordAction struct {
 	Channels     int      `json:"channels,omitempty"`
 	EndOnSilence int      `json:"endOnSilence,omitempty"`
 	EndOnKey     string   `json:"endOnKey,omitempty"`
-	TimeOut      string   `json:"timeOut,omitempty"`
+	TimeOut      int      `json:"timeOut,omitempty"`
 	BeepStart    bool     `json:"beepStart,omitempty"`
 	EventUrl     []string `json:"eventUrl,omitempty"`
 	EventMethod  string   `json:"eventMethod,omitempty"`
@@ -102,7 +105,7 @@ func (a ConversationAction) prepare() Action {
 	// boolean fields default to false, but startOnEnter defaults to true
 	// look at the value of string StartOnEnter, set false if string "false" is given
 	a.CalculatedStartOnEnterValue = true
-	if a.StartOnEnter == "false" {
+	if strings.ToLower(a.StartOnEnter) == "false" {
 		a.CalculatedStartOnEnterValue = false
 	}
 	return a
