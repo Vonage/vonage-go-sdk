@@ -138,7 +138,7 @@ func main() {
 	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
 	verifyClient := nexmo.NewVerifyClient(auth)
 
-    response, errResp, err := verifyClient.Request("447846810475", "GoTest", nexmo.VerifyOpts{CodeLength: 6, Lg: "es-es", WorkflowId: 4})
+    response, errResp, err := verifyClient.Request("44777000777", "GoTest", nexmo.VerifyOpts{CodeLength: 6, Lg: "es-es", WorkflowId: 4})
 
     if err != nil {
         fmt.Printf("%#v\n", err)
@@ -511,13 +511,36 @@ Use `notify` to send a particular data payload to a nominated URL:
 	ping := nexmo.NotifyAction{EventUrl: url, Payload: data}
 ```
 
-#### RecordAction
+This feature is useful for marking progress through a call and that the user is still connected.
+
+#### Record Action
 
 Send a `record` action to start a recording:
 
 ```go
     record := nexmo.RecordAction{BeepStart: true}
 ```
+
+When the recording completes, Nexmo sends a webhook containing the recording URL so that you can download the file.
+
+#### Conversation Action
+
+Adds the call to a conversation:
+
+```go
+    conversation := nexmo.ConversationAction{Name: "convo1"}
+```
+
+#### Connect Action
+
+Connects the current call to another endpoint (currently only phone is supported):
+
+```go
+    endpoint := make([]nexmo.Endpoint, 1)
+	endpoint[0] = nexmo.PhoneEndpoint{Number: "44777000777"}
+	connect := nexmo.ConnectAction{Endpoint: endpoint, From: "44777000888"}
+```
+The `from` field when connecting to a phone endpoint should be a Nexmo number that you own.
 
 ## Tips, Tricks and Troubleshooting
 

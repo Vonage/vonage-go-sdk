@@ -26,11 +26,11 @@ func (n *Ncco) GetActions() []interface{} {
 // field is a string here, and the CalculatedLoopValue is used to
 // assemble the correct value when sending
 type TalkAction struct {
-	Action              string `json:"action,omitempty"`
+	Action              string `json:"action"`
 	Text                string `json:"text"`
 	Loop                string `json:"-"`
 	BargeIn             bool   `json:"bargeIn"`
-	Level               int    `json:"level"`
+	Level               int    `json:"level,omitempty"`
 	VoiceName           string `json:"voiceName,omitempty"`
 	CalculatedLoopValue int    `json:"loop"`
 }
@@ -52,7 +52,7 @@ func (a TalkAction) prepare() Action {
 
 // NotifyAction to represent a Notify Action
 type NotifyAction struct {
-	Action      string            `json:"action,omitempty"`
+	Action      string            `json:"action"`
 	Payload     map[string]string `json:"payload,omitempty"`
 	EventUrl    []string          `json:"eventUrl,omitempty"`
 	EventMethod string            `json:"eventMethod,omitempty"`
@@ -66,7 +66,7 @@ func (a NotifyAction) prepare() Action {
 
 // RecordAction to start a recording at this point in the call
 type RecordAction struct {
-	Action       string   `json:"action,omitempty"`
+	Action       string   `json:"action"`
 	Format       string   `json:"format,omitempty"`
 	Split        string   `json:"split,omitempty"`
 	Channels     int      `json:"channels,omitempty"`
@@ -82,4 +82,68 @@ type RecordAction struct {
 func (a RecordAction) prepare() Action {
 	a.Action = "record"
 	return a
+}
+
+type ConversationAction struct {
+	Action                      string   `json:"action"`
+	Name                        string   `json:"name,omitempty"`
+	MusicOnHoldUrl              []string `json:"musicOnHoldUrl,omitempty"`
+	StartOnEnter                string   `json:"-"`
+	EndOnExit                   bool     `json:"endOnExit,omitempty"`
+	Record                      bool     `json:"record,omitempty"`
+	CanSpeak                    []string `json:"canSpeak,omitempty"`
+	CanHear                     []string `json:"canHear,omitempty"`
+	CalculatedStartOnEnterValue bool     `json:"startOnEnter"`
+}
+
+// prepare for the ConversationAction
+func (a ConversationAction) prepare() Action {
+	a.Action = "conversation"
+	// boolean fields default to false, but startOnEnter defaults to true
+	// look at the value of string StartOnEnter, set false if string "false" is given
+	a.CalculatedStartOnEnterValue = true
+	if a.StartOnEnter == "false" {
+		a.CalculatedStartOnEnterValue = false
+	}
+	return a
+}
+
+type ConnectAction struct {
+	Action           string     `json:"action"`
+	Endpoint         []Endpoint `json:"endpoint"`
+	From             string     `json:"from,omitempty"`
+	Timeout          int        `json:"eventType,omitempty"`
+	Limit            int        `json:"limit,omitempty"`
+	MachineDetection string     `json:"machineDetection,omitempty"`
+	EventType        string     `json:"eventType,omitempty"`
+	EventUrl         []string   `json:"eventUrl,omitempty"`
+	EventMethod      string     `json:"eventMethod,omitempty"`
+	RingbackTone     string     `json:"ringbackTone,omitempty"`
+}
+
+// prepare for the ConnectAction
+func (a ConnectAction) prepare() Action {
+	a.Action = "connect"
+	// organise the endpoint
+	a.Endpoint[0] = a.Endpoint[0].prepareEndpoint()
+	return a
+}
+
+//--- Connect Endpoints ---
+
+// Endpoint is a mostly dummy interface to let us typehint on it
+type Endpoint interface {
+	prepareEndpoint() Endpoint
+}
+
+type PhoneEndpoint struct {
+	Type       string `json:"type"`
+	Number     string `json:"number"`
+	DtmfAnswer string `json:"dtmfAnswer,omitempty"`
+	OnAnswer   string `json:"onAnswer,omitempty"`
+}
+
+func (e PhoneEndpoint) prepareEndpoint() Endpoint {
+	e.Type = "phone"
+	return e
 }
