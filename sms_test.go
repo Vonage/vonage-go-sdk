@@ -7,12 +7,12 @@ import (
 	"github.com/jarcoal/httpmock"
 )
 
-func TestNewSMSClient(*testing.T) {
+func TestSmsNewSMSClient(*testing.T) {
 	auth := CreateAuthFromKeySecret("123", "456")
 	NewSMSClient(auth)
 }
 
-func TestSend(t *testing.T) {
+func TestSmsSend(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -50,7 +50,7 @@ func TestSend(t *testing.T) {
 	}
 }
 
-func TestSendFail(t *testing.T) {
+func TestSmsSendFail(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
