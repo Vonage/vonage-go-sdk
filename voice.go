@@ -41,8 +41,7 @@ func (client *VoiceClient) GetCalls() (voice.GetCallsResponse, VoiceErrorRespons
 
 	// catch HTTP errors
 	if err != nil {
-		e := err.(voice.GenericOpenAPIError)
-		return voice.GetCallsResponse{}, VoiceErrorResponse{}, e
+		return voice.GetCallsResponse{}, VoiceErrorResponse{}, err
 	}
 
 	return result, VoiceErrorResponse{}, nil
