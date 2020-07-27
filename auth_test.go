@@ -2,7 +2,7 @@ package nexmo
 
 import "testing"
 
-func TestGetCreds(t *testing.T) {
+func TestAuthGetCreds(t *testing.T) {
 	// create the auth struct
 	myAuth := CreateAuthFromKeySecret("123", "456")
 	myCreds := myAuth.GetCreds()
@@ -16,7 +16,7 @@ func TestGetCreds(t *testing.T) {
 	}
 }
 
-func TestCreateAuthFromKeySecret(t *testing.T) {
+func TestAuthCreateAuthFromKeySecret(t *testing.T) {
 	// create the auth struct
 	myAuth := CreateAuthFromKeySecret("123", "456")
 

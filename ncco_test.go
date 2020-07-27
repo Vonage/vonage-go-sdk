@@ -2,11 +2,10 @@ package nexmo
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 )
 
-func TestTalkSimple(t *testing.T) {
+func TestNccoTalkSimple(t *testing.T) {
 	ncco := Ncco{}
 	talk := TalkAction{Text: "Hello"}
 	ncco.AddAction(talk)
@@ -23,7 +22,7 @@ func TestTalkSimple(t *testing.T) {
 	}
 }
 
-func TestTalkAll(t *testing.T) {
+func TestNccoTalkAll(t *testing.T) {
 	ncco := Ncco{}
 	talk := TalkAction{Text: "Hello", Loop: "4", BargeIn: true, Level: 1, VoiceName: "Nicole"}
 	ncco.AddAction(talk)
@@ -35,7 +34,7 @@ func TestTalkAll(t *testing.T) {
 	}
 }
 
-func TestNotify(t *testing.T) {
+func TestNccoNotify(t *testing.T) {
 	ncco := Ncco{}
 	url := []string{"https://example.com/notify"}
 	data := make(map[string]string)
@@ -51,7 +50,7 @@ func TestNotify(t *testing.T) {
 	}
 }
 
-func TestRecordSimple(t *testing.T) {
+func TestNccoRecordSimple(t *testing.T) {
 	ncco := Ncco{}
 	record := RecordAction{}
 	ncco.AddAction(record)
@@ -63,7 +62,7 @@ func TestRecordSimple(t *testing.T) {
 	}
 }
 
-func TestRecordAll(t *testing.T) {
+func TestNccoRecordAll(t *testing.T) {
 	ncco := Ncco{}
 	url := []string{"https://example.com/record"}
 	record := RecordAction{Format: "ogg", Split: "conversation", Channels: 8, EndOnSilence: 5, EndOnKey: "#", TimeOut: 10, BeepStart: true, EventUrl: url, EventMethod: "GET"}
@@ -76,7 +75,7 @@ func TestRecordAll(t *testing.T) {
 	}
 }
 
-func TestConversationSimple(t *testing.T) {
+func TestNccoConversationSimple(t *testing.T) {
 	ncco := Ncco{}
 	conversation := ConversationAction{Name: "convo1"}
 	ncco.AddAction(conversation)
@@ -88,7 +87,7 @@ func TestConversationSimple(t *testing.T) {
 	}
 }
 
-func TestConversationAll(t *testing.T) {
+func TestNccoConversationAll(t *testing.T) {
 	ncco := Ncco{}
 	url := []string{"https://example.com/music.mp3"}
 	conversation := ConversationAction{Name: "convo1", MusicOnHoldUrl: url, StartOnEnter: "False", EndOnExit: true, Record: true}
@@ -101,7 +100,7 @@ func TestConversationAll(t *testing.T) {
 	}
 }
 
-func TestConnectSimplePhone(t *testing.T) {
+func TestNccoConnectSimplePhone(t *testing.T) {
 	ncco := Ncco{}
 	endpoint := make([]Endpoint, 1)
 	endpoint[0] = PhoneEndpoint{Number: "447770007777"}
@@ -115,7 +114,7 @@ func TestConnectSimplePhone(t *testing.T) {
 	}
 }
 
-func TestConnectAllPhone(t *testing.T) {
+func TestNccoConnectAllPhone(t *testing.T) {
 	ncco := Ncco{}
 	url := []string{"https://example.com/event"}
 	endpoint := make([]Endpoint, 1)

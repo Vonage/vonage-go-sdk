@@ -7,12 +7,12 @@ import (
 	"github.com/jarcoal/httpmock"
 )
 
-func TestNewVerifyClient(*testing.T) {
+func TestVerifyNewVerifyClient(*testing.T) {
 	auth := CreateAuthFromKeySecret("123", "456")
 	NewVerifyClient(auth)
 }
 
-func TestRequest(t *testing.T) {
+func TestVerifyRequest(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -41,7 +41,7 @@ func TestRequest(t *testing.T) {
 	}
 }
 
-func TestRequestConcurrent(t *testing.T) {
+func TestVerifyRequestConcurrent(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -73,7 +73,7 @@ func TestRequestConcurrent(t *testing.T) {
 	}
 }
 
-func TestRequestFail(t *testing.T) {
+func TestVerifyRequestFail(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -98,7 +98,7 @@ Go away
 
 }
 
-func TestCheck(t *testing.T) {
+func TestVerifyCheck(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -131,7 +131,7 @@ func TestCheck(t *testing.T) {
 	}
 }
 
-func TestCheckError(t *testing.T) {
+func TestVerifyCheckError(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -268,7 +268,7 @@ func TestVerifySearchError(t *testing.T) {
 	}
 }
 
-func TestCancel(t *testing.T) {
+func TestVerifyCancel(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -297,7 +297,7 @@ func TestCancel(t *testing.T) {
 	}
 }
 
-func TestCancelTooSoon(t *testing.T) {
+func TestVerifyCancelTooSoon(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -326,7 +326,7 @@ func TestCancelTooSoon(t *testing.T) {
 	}
 }
 
-func TestCancelNotNow(t *testing.T) {
+func TestVerifyCancelNotNow(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -355,7 +355,7 @@ func TestCancelNotNow(t *testing.T) {
 	}
 }
 
-func TestTriggerNextEvent(t *testing.T) {
+func TestVerifyTriggerNextEvent(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -384,7 +384,7 @@ func TestTriggerNextEvent(t *testing.T) {
 	}
 }
 
-func TestTriggerNextEventFail(t *testing.T) {
+func TestVerifyTriggerNextEventFail(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 

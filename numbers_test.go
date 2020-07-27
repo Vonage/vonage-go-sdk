@@ -7,12 +7,12 @@ import (
 	"github.com/jarcoal/httpmock"
 )
 
-func TestNewNumbersClient(*testing.T) {
+func TestNumbersNewNumbersClient(*testing.T) {
 	auth := CreateAuthFromKeySecret("123", "456")
 	NewNumbersClient(auth)
 }
 
-func TestList(t *testing.T) {
+func TestNumbersList(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -58,7 +58,7 @@ func TestList(t *testing.T) {
 	}
 }
 
-func TestListNone(t *testing.T) {
+func TestNumbersListNone(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -84,7 +84,7 @@ func TestListNone(t *testing.T) {
 	}
 }
 
-func TestFilteredList(t *testing.T) {
+func TestNumbersFilteredList(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -135,7 +135,7 @@ func TestFilteredList(t *testing.T) {
 	}
 }
 
-func TestNumberSearchOptions(t *testing.T) {
+func TestNumbersSearchOptions(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -178,7 +178,7 @@ func TestNumberSearchOptions(t *testing.T) {
 	}
 }
 
-func TestNumberSearch(t *testing.T) {
+func TestNumbersSearch(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -221,7 +221,7 @@ func TestNumberSearch(t *testing.T) {
 	}
 }
 
-func TestNumberBuy(t *testing.T) {
+func TestNumbersBuy(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -251,7 +251,7 @@ func TestNumberBuy(t *testing.T) {
 	}
 }
 
-func TestNumberCannotBuy(t *testing.T) {
+func TestNumbersCannotBuy(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -281,7 +281,7 @@ func TestNumberCannotBuy(t *testing.T) {
 	}
 }
 
-func TestNumberCancel(t *testing.T) {
+func TestNumbersCancel(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -311,7 +311,7 @@ func TestNumberCancel(t *testing.T) {
 	}
 }
 
-func TestNumberCancelFail(t *testing.T) {
+func TestNumbersCancelFail(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -341,7 +341,7 @@ func TestNumberCancelFail(t *testing.T) {
 	}
 }
 
-func TestNumberUpdate(t *testing.T) {
+func TestNumbersUpdate(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -371,7 +371,7 @@ func TestNumberUpdate(t *testing.T) {
 	}
 }
 
-func TestNumberUpdateFail(t *testing.T) {
+func TestNumbersUpdateFail(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
