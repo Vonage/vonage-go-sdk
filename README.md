@@ -37,7 +37,10 @@ Or import the package into your project and then do `go get .`.
 
 Here are some simple examples to get you started. If there's anything else you'd like to see here, please open an issue and let us know! Be aware that this library is still at an alpha stage so things may change between versions.
 
-## SMS API
+### SMS API
+
+Working with SMS API.
+
 #### Send SMS
 
 To send an SMS, try the code below:
@@ -271,8 +274,84 @@ func main() {
 }
 ```
 
+### Voice API
+
+The Voice API lets you do all sorts of things with calls and access your call history.
+
+**NCCOs** are the control objects for calls. Create actions, add them to an NCCO object, and you should be good.
+
+Example of this and more below...
+
+#### List all Calls
+
+A list of all the calls associated with your account.
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+    privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := NewVoiceClient(auth)
+
+	response, _, _ := client.GetCalls()
+	fmt.Println(response.Embedded.Calls[0].Uuid + " status: " + response.Embedded.Calls[0].Status)
+}
+```
+
+#### Make a Phone Call
+
+Start a call (the from number should be a Nexmo number you own)
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+    privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := NewVoiceClient(auth)
+
+	from := CallFrom{Type: "phone", Number: "447770007777"}
+	to := CallTo{Type: "phone", Number: "447770007788"}
+
+	ncco := Ncco{}
+	talk := TalkAction{Text: "Go library calling to say hello", VoiceName: "Nicole"}
+	ncco.AddAction(talk)
+
+	result, _, _ := client.CreateCall(CreateCallOpts{From: from, To: to, Ncco: ncco})
+	fmt.Println(result.Uuid + " call ID started")
+}
+
+```
+
+#### Error Handling
+
+For Voice API, there are three return values on most methods. The first two are structs representing the fields in the success and error response for the API endpoint involved. The final value is an error, but in many cases this can be type asserted to a more useful `GenericOpenAPIError`, like this:
+
+```
+	response, _, http_error := client.GetCalls()
+
+	if http_error != nil {
+        e := http_error.(voice.GenericOpenAPIError)
+        // output the status code
+        fmt.Println(e.Error())
+        // print the whole API response
+        fmt.Println(string(e.Body()))
+	}
+
+```
 
 ### Number Management
+
+The SDK supports working with the numbers you own, and purchasing new ones.
 
 #### List the Numbers You Own
 
@@ -437,8 +516,10 @@ func main() {
 }
 ```
 
-
 ### JWT Authentication
+
+We use JSON Web Tokens for authentication on some APIs (some are API key and secret). More information about working with JWTs is in the following sections.
+
 #### Generate a Basic JWT
 
 Generate a JSON Web Token (JWT) for the APIs that use that. You usually won't need to do this if you're using the library but if you need to make a custom request or want to use a JWT for something else, you can use this.
