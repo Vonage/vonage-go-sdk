@@ -585,8 +585,7 @@ Create a `talk` action to read some text into the call:
 Use `notify` to send a particular data payload to a nominated URL:
 
 ```go
-	url := make([]string, 1)
-	url[0] = "https://example.com/webhooks/notify"
+	url := []string{"https://example.com/webhooks/notify"}
 	data := make(map[string]string)
 	data["stage"] = "Registration"
 	ping := nexmo.NotifyAction{EventUrl: url, Payload: data}
@@ -612,13 +611,21 @@ Adds the call to a conversation:
     conversation := nexmo.ConversationAction{Name: "convo1"}
 ```
 
+#### Stream Action
+
+Play an mp3 file into a call as an audio stream:
+
+```go
+    stream := nexmo.StreamAction{StreamUrl: []string{"https://example.com/music.mp3"}}
+
+```
+
 #### Connect Action
 
 Connects the current call to another endpoint (currently only phone is supported):
 
 ```go
-    endpoint := make([]nexmo.Endpoint, 1)
-	endpoint[0] = nexmo.PhoneEndpoint{Number: "44777000777"}
+    endpoint := []nexmo.PhoneEndpoint{Number: "44777000777"}
 	connect := nexmo.ConnectAction{Endpoint: endpoint, From: "44777000888"}
 ```
 The `from` field when connecting to a phone endpoint should be a Nexmo number that you own.

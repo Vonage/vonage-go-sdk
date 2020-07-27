@@ -87,6 +87,7 @@ func (a RecordAction) prepare() Action {
 	return a
 }
 
+// ConversationAction sets up a conference that calls can be added to
 type ConversationAction struct {
 	Action                      string   `json:"action"`
 	Name                        string   `json:"name,omitempty"`
@@ -111,6 +112,35 @@ func (a ConversationAction) prepare() Action {
 	return a
 }
 
+// StreamAction plays audio stream from URL. Beware that the "Loop"
+// field is a string here, and the CalculatedLoopValue is used to
+// assemble the correct value when sending
+type StreamAction struct {
+	Action              string   `json:"action"`
+	StreamUrl           []string `json:"streamUrl,omitempty"`
+	Level               int      `json:"level,omitempty"`
+	Loop                string   `json:"-"`
+	BargeIn             bool     `json:"bargeIn"`
+	CalculatedLoopValue int      `json:"loop"`
+}
+
+// prepare for StreamAction calculates a loop value
+func (a StreamAction) prepare() Action {
+	a.Action = "stream"
+	// int fields default to 0, which isn't the default for looping
+	// look at the value of string Loop, and set field for JSON if it's a number
+	a.CalculatedLoopValue = 1
+	if a.Loop != "" {
+		loop, err := strconv.Atoi(a.Loop)
+		if err == nil {
+			a.CalculatedLoopValue = loop
+		}
+	}
+	return a
+}
+
+// ConnectAction takes an Endpoint (of which there are many) and joins
+// it into the current call
 type ConnectAction struct {
 	Action           string     `json:"action"`
 	Endpoint         []Endpoint `json:"endpoint"`
