@@ -4,16 +4,16 @@ import (
 	"testing"
 )
 
-func TestNewGenerator(t *testing.T) {
-	g := NewGenerator("aaaaaaaa-bbbb-cccc-dddd-0123456789ab", []byte(getPrivateKey()))
+func TestJWTNewGenerator(t *testing.T) {
+	g := NewGenerator("aaaaaaaa-bbbb-cccc-dddd-0123456789ab", []byte(getTestPrivateKey()))
 
 	if g.ApplicationID != "aaaaaaaa-bbbb-cccc-dddd-0123456789ab" {
 		t.Errorf("Application ID not added to token generator")
 	}
 }
 
-func TestOnePath(t *testing.T) {
-	g := NewGenerator("aaaaaaaa-bbbb-cccc-dddd-0123456789ab", []byte(getPrivateKey()))
+func TestJWTOnePath(t *testing.T) {
+	g := NewGenerator("aaaaaaaa-bbbb-cccc-dddd-0123456789ab", []byte(getTestPrivateKey()))
 	g.AddPath(Path{Path: "/*/users/**"})
 
 	token, _ := g.GenerateToken()
@@ -21,10 +21,9 @@ func TestOnePath(t *testing.T) {
 	if len(token) < 400 {
 		t.Errorf("Token may not have been generated")
 	}
-
 }
 
-func getPrivateKey() string {
+func getTestPrivateKey() string {
 	return `-----BEGIN PRIVATE KEY-----
 MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCxeDzyjtX+wNSf
 SfRhOnvbfj3wa9NFzpUGF1OsLytdij0B9+RRGnHezfJE39O5A2W75DuBiXZEhjw2
