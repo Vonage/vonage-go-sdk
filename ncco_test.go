@@ -124,7 +124,56 @@ func TestNccoConnectAllPhone(t *testing.T) {
 
 	// check the JSON
 	j, _ := json.Marshal(ncco.GetActions())
-	if string(j) != "[{\"action\":\"connect\",\"endpoint\":[{\"type\":\"phone\",\"number\":\"447770007777\",\"dtmfAnswer\":\"41\"}],\"from\":\"447770008888\",\"limit\":5,\"machineDetection\":\"continue\",\"eventUrl\":[\"https://example.com/event\"],\"eventMethod\":\"GET\"}]" {
+	if string(j) != "[{\"action\":\"connect\",\"endpoint\":[{\"type\":\"phone\",\"number\":\"447770007777\",\"dtmfAnswer\":\"41\"}],\"from\":\"447770008888\",\"timeout\":3,\"limit\":5,\"machineDetection\":\"continue\",\"eventUrl\":[\"https://example.com/event\"],\"eventMethod\":\"GET\"}]" {
 		t.Errorf("Unexpected JSON format for: simple Connect phone")
+	}
+}
+
+func TestNccoStreamSimple(t *testing.T) {
+	ncco := Ncco{}
+	stream := StreamAction{StreamUrl: []string{"https://example.com/music.mp3"}}
+	ncco.AddAction(stream)
+
+	// check the JSON
+	j, _ := json.Marshal(ncco.GetActions())
+	if string(j) != "[{\"action\":\"stream\",\"streamUrl\":[\"https://example.com/music.mp3\"],\"bargeIn\":false,\"loop\":1}]" {
+		t.Errorf("Unexpected JSON format for: simple Stream")
+	}
+}
+
+func TestNccoStreamOptions(t *testing.T) {
+	ncco := Ncco{}
+	stream := StreamAction{StreamUrl: []string{"https://example.com/music.mp3"}, Level: 1, Loop: "4", BargeIn: true}
+	ncco.AddAction(stream)
+
+	// check the JSON
+	j, _ := json.Marshal(ncco.GetActions())
+	if string(j) != "[{\"action\":\"stream\",\"streamUrl\":[\"https://example.com/music.mp3\"],\"level\":1,\"bargeIn\":true,\"loop\":4}]" {
+		t.Errorf("Unexpected JSON format for: Stream options")
+	}
+}
+
+func TestNccoInputDtmfEmpty(t *testing.T) {
+	ncco := Ncco{}
+	dtmf := InputAction{Dtmf: &DtmfInput{}}
+	ncco.AddAction(dtmf)
+
+	// check the JSON
+	j, _ := json.Marshal(ncco.GetActions())
+	if string(j) != "[{\"action\":\"input\",\"dtmf\":{}}]" {
+		t.Errorf("Unexpected JSON format for: Input DTMF empty")
+	}
+}
+
+func TestNccoInputDtmfOptions(t *testing.T) {
+	ncco := Ncco{}
+	dtmf := InputAction{EventUrl: []string{"https://example.com/event"}, EventMethod: "GET", Dtmf: &DtmfInput{TimeOut: 8, MaxDigits: 2, SubmitOnHash: true}}
+	ncco.AddAction(dtmf)
+
+	// check the JSON
+	j, _ := json.Marshal(ncco.GetActions())
+	// fmt.Println(string(j))
+	if string(j) != "[{\"action\":\"input\",\"dtmf\":{\"timeOut\":8,\"maxDigits\":2,\"submitOnHash\":true},\"eventUrl\":[\"https://example.com/event\"],\"eventMethod\":\"GET\"}]" {
+		t.Errorf("Unexpected JSON format for: Input DTMF options")
 	}
 }
