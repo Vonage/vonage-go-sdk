@@ -49,27 +49,29 @@ func (client *VoiceClient) GetCalls() (voice.GetCallsResponse, VoiceErrorRespons
 
 // CreateCallOpts: Options for creating a call
 type CreateCallOpts struct {
-	From CallFrom
-	To   CallTo
-	Ncco Ncco
+	From             CallFrom
+	To               CallTo
+	Ncco             Ncco
+	AnswerUrl        []string
+	AnswerMethod     string
+	EventUrl         []string
+	EventMethod      string
+	MachineDetection string
+	LengthTimer      int32
+	RingingTimer     int32
 }
 
 // CallFrom details of the caller
 type CallFrom struct {
-	Type       string
-	Number     string
-	DtmfAnswer string
+	Type   string
+	Number string
 }
 
 // CallTo details of the callee
 type CallTo struct {
-	Type        string
-	Number      string
-	DtmfAnswer  string
-	Uri         string
-	Extension   string
-	ContentType string
-	Headers     map[string]string
+	Type       string
+	Number     string
+	DtmfAnswer string
 }
 
 // VoiceErrorResponse is a container for error types since we can get more than
@@ -101,15 +103,55 @@ func (client *VoiceClient) CreateCall(opts CreateCallOpts) (voice.CreateCallResp
 
 	voiceClient := voice.NewAPIClient(client.Config)
 	voiceCallOpts := voice.CreateCallRequest{}
-	// assuming phone start with
+
+	// assuming phone to start with, this needs other endpoints added later
 	var to []interface{}
-	to = append(to, voice.EndpointPhone{Type: "phone", Number: opts.To.Number})
+	to_phone := voice.EndpointPhone{Type: "phone", Number: opts.To.Number}
+	if opts.To.DtmfAnswer != "" {
+		to_phone.DtmfAnswer = opts.To.DtmfAnswer
+	}
+	to = append(to, to_phone)
 	voiceCallOpts.To = to
+
 	// from has to be a phone
 	voiceCallOpts.From = voice.EndpointPhone{Type: "phone", Number: opts.From.Number}
 
 	// ncco has its own features
-	voiceCallOpts.Ncco = opts.Ncco.GetActions()
+	if len(opts.Ncco.GetActions()) > 0 {
+		voiceCallOpts.Ncco = opts.Ncco.GetActions()
+		j, errj := json.Marshal(voiceCallOpts.Ncco)
+		fmt.Printf("%#v\n", string(j))
+		fmt.Printf("%#v\n", errj)
+	}
+
+	// answer details
+	if len(opts.AnswerUrl) > 0 {
+		voiceCallOpts.AnswerUrl = opts.AnswerUrl
+		if opts.AnswerMethod != "" {
+			voiceCallOpts.AnswerMethod = opts.AnswerMethod
+		}
+	}
+
+	// event settings
+	if len(opts.EventUrl) > 0 {
+		voiceCallOpts.EventUrl = opts.EventUrl
+		if opts.EventMethod != "" {
+			voiceCallOpts.EventMethod = opts.EventMethod
+		}
+	}
+
+	// other fields
+	if opts.MachineDetection != "" {
+		voiceCallOpts.MachineDetection = opts.MachineDetection
+	}
+
+	if opts.RingingTimer != 0 {
+		voiceCallOpts.RingingTimer = opts.RingingTimer
+	}
+
+	if opts.LengthTimer != 0 {
+		voiceCallOpts.LengthTimer = opts.LengthTimer
+	}
 
 	callOpts := optional.NewInterface(voiceCallOpts)
 
