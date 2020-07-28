@@ -1,7 +1,6 @@
 package nexmo
 
 import (
-	"fmt"
 	"net/http"
 	"testing"
 
@@ -99,8 +98,6 @@ func TestVoiceGetCallsNoAuth(t *testing.T) {
 	client := NewVoiceClient(auth)
 
 	_, _, http_error := client.GetCalls()
-	fmt.Printf("%#v\n", http_error)
-
 	if http_error == nil {
 		t.Errorf("Voice GetCalls with faily Auth failed")
 	}
@@ -110,7 +107,6 @@ func TestVoiceMakeCall(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	// httpmock.RegisterResponder("GET", "https://ljnexmo.eu.ngrok.io/",
 	httpmock.RegisterResponder("POST", "https://api.nexmo.com/v1/calls/",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(201, `

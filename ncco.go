@@ -139,13 +139,34 @@ func (a StreamAction) prepare() Action {
 	return a
 }
 
+// InputAction uses pointers for the optional dtmf input
+type InputAction struct {
+	Action      string     `json:"action"`
+	Dtmf        *DtmfInput `json:"dtmf,omitempty"`
+	EventUrl    []string   `json:"eventUrl,omitempty"`
+	EventMethod string     `json:"eventMethod,omitempty"`
+}
+
+// prepare for the InputAction
+func (a InputAction) prepare() Action {
+	a.Action = "input"
+	return a
+}
+
+// DtmfInput captures digits pressed on the keypad
+type DtmfInput struct {
+	TimeOut      int  `json:"timeOut,omitempty"`
+	MaxDigits    int  `json:"maxDigits,omitempty"`
+	SubmitOnHash bool `json:"submitOnHash,omitempty"`
+}
+
 // ConnectAction takes an Endpoint (of which there are many) and joins
 // it into the current call
 type ConnectAction struct {
 	Action           string     `json:"action"`
 	Endpoint         []Endpoint `json:"endpoint"`
 	From             string     `json:"from,omitempty"`
-	Timeout          int        `json:"eventType,omitempty"`
+	Timeout          int        `json:"timeout,omitempty"`
 	Limit            int        `json:"limit,omitempty"`
 	MachineDetection string     `json:"machineDetection,omitempty"`
 	EventType        string     `json:"eventType,omitempty"`
