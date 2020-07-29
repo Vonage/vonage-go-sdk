@@ -16,10 +16,8 @@ import (
 type CallEvent struct {
 	// The UUID of the Conversion that the event relates to
 	ConversationUuid string `json:"conversation_uuid"`
-	// The endpoint you called from. Possible values are the same as `to`.
-	To []map[string]interface{} `json:"to"`
-	// The endpoint you called from. Possible values are the same as `to`.
-	From []map[string]interface{} `json:"from"`
+	To From `json:"to"`
+	From From `json:"from"`
 	// The UUID of the call leg that the event relates to
 	Uuid string `json:"uuid"`
 	Timestamp time.Time `json:"timestamp,omitempty"`

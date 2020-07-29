@@ -9,8 +9,9 @@
  */
 
 package voice
-// DtmfRequest struct for DtmfRequest
-type DtmfRequest struct {
-	// The digits to send
-	Digits string `json:"digits,omitempty"`
+// UpdateCallRequestTransferAnswerUrlDestination struct for UpdateCallRequestTransferAnswerUrlDestination
+type UpdateCallRequestTransferAnswerUrlDestination struct {
+	Type string `json:"type"`
+	// The URL that Nexmo makes a request to. Must return an NCCO.
+	Url []string `json:"url"`
 }

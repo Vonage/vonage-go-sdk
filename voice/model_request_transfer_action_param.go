@@ -9,8 +9,10 @@
  */
 
 package voice
-// DtmfRequest struct for DtmfRequest
-type DtmfRequest struct {
-	// The digits to send
-	Digits string `json:"digits,omitempty"`
-}
+// RequestTransferActionParam Transfer the call to a new NCCO
+type RequestTransferActionParam string
+
+// List of RequestTransferActionParam
+const (
+	TRANSFER RequestTransferActionParam = "transfer"
+)
