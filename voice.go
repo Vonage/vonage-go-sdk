@@ -47,6 +47,29 @@ func (client *VoiceClient) GetCalls() (voice.GetCallsResponse, VoiceErrorRespons
 	return result, VoiceErrorResponse{}, nil
 }
 
+// GetCall for the details of a specific call
+func (client *VoiceClient) GetCall(uuid string) (voice.GetCallResponse, VoiceErrorResponse, error) {
+	// create the client
+	voiceClient := voice.NewAPIClient(client.Config)
+
+	ctx := context.Background()
+	result, _, err := voiceClient.DefaultApi.GetCall(ctx, uuid)
+	/*
+		e := err.(voice.GenericOpenAPIError)
+		// output the status code
+		fmt.Println(e.Error())
+		// print the whole API response
+		fmt.Println(string(e.Body()))
+	*/
+
+	// catch HTTP errors
+	if err != nil {
+		return voice.GetCallResponse{}, VoiceErrorResponse{}, err
+	}
+
+	return result, VoiceErrorResponse{}, nil
+}
+
 // CreateCallOpts: Options for creating a call
 type CreateCallOpts struct {
 	From             CallFrom
@@ -119,9 +142,11 @@ func (client *VoiceClient) CreateCall(opts CreateCallOpts) (voice.CreateCallResp
 	// ncco has its own features
 	if len(opts.Ncco.GetActions()) > 0 {
 		voiceCallOpts.Ncco = opts.Ncco.GetActions()
-		j, errj := json.Marshal(voiceCallOpts.Ncco)
-		fmt.Printf("%#v\n", string(j))
-		fmt.Printf("%#v\n", errj)
+		/*
+			j, errj := json.Marshal(voiceCallOpts.Ncco)
+			fmt.Printf("%#v\n", string(j))
+			fmt.Printf("%#v\n", errj)
+		*/
 	}
 
 	// answer details
