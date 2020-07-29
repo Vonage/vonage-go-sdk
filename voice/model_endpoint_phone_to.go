@@ -9,8 +9,12 @@
  */
 
 package voice
-// DtmfRequest struct for DtmfRequest
-type DtmfRequest struct {
-	// The digits to send
-	Digits string `json:"digits,omitempty"`
+// EndpointPhoneTo Connect to a Phone (PSTN) number
+type EndpointPhoneTo struct {
+	// The type of connection. Must be `phone`
+	Type string `json:"type"`
+	// The phone number to connect to
+	Number string `json:"number"`
+	// Provide [DTMF digits](https://developer.nexmo.com/voice/voice-api/guides/dtmf) to send when the call is answered
+	DtmfAnswer string `json:"dtmfAnswer,omitempty"`
 }

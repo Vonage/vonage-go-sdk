@@ -9,8 +9,10 @@
  */
 
 package voice
-// DtmfRequest struct for DtmfRequest
-type DtmfRequest struct {
-	// The digits to send
-	Digits string `json:"digits,omitempty"`
+// EndpointPhoneFrom Connect to a Phone (PSTN) number
+type EndpointPhoneFrom struct {
+	// The type of connection. Must be `phone`
+	Type string `json:"type"`
+	// The phone number to connect to
+	Number string `json:"number"`
 }

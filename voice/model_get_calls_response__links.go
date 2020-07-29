@@ -9,8 +9,7 @@
  */
 
 package voice
-// DtmfRequest struct for DtmfRequest
-type DtmfRequest struct {
-	// The digits to send
-	Digits string `json:"digits,omitempty"`
+// GetCallsResponseLinks struct for GetCallsResponseLinks
+type GetCallsResponseLinks struct {
+	Self GetCallsResponseLinksSelf `json:"self,omitempty"`
 }

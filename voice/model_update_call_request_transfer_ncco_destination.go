@@ -9,8 +9,10 @@
  */
 
 package voice
-// DtmfRequest struct for DtmfRequest
-type DtmfRequest struct {
-	// The digits to send
-	Digits string `json:"digits,omitempty"`
+// UpdateCallRequestTransferNccoDestination struct for UpdateCallRequestTransferNccoDestination
+type UpdateCallRequestTransferNccoDestination struct {
+	// Always `ncco`
+	Type string `json:"type"`
+	// Refer to the [NCCO Guide](https://developer.nexmo.com/voice/voice-api/ncco-reference) for a description of possible NCCO parameters.
+	Ncco []map[string]interface{} `json:"ncco"`
 }
