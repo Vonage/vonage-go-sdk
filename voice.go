@@ -37,7 +37,7 @@ func (client *VoiceClient) GetCalls() (voice.GetCallsResponse, VoiceErrorRespons
 	voiceOpts := voice.GetCallsOpts{}
 
 	ctx := context.Background()
-	result, _, err := voiceClient.DefaultApi.GetCalls(ctx, &voiceOpts)
+	result, _, err := voiceClient.CallsApi.GetCalls(ctx, &voiceOpts)
 
 	// catch HTTP errors
 	if err != nil {
@@ -53,7 +53,7 @@ func (client *VoiceClient) GetCall(uuid string) (voice.GetCallResponse, VoiceErr
 	voiceClient := voice.NewAPIClient(client.Config)
 
 	ctx := context.Background()
-	result, _, err := voiceClient.DefaultApi.GetCall(ctx, uuid)
+	result, _, err := voiceClient.CallsApi.GetCall(ctx, uuid)
 	/*
 		e := err.(voice.GenericOpenAPIError)
 		// output the status code
@@ -129,7 +129,7 @@ func (client *VoiceClient) CreateCall(opts CreateCallOpts) (voice.CreateCallResp
 
 	// assuming phone to start with, this needs other endpoints added later
 	var to []interface{}
-	to_phone := voice.EndpointPhone{Type: "phone", Number: opts.To.Number}
+	to_phone := voice.EndpointPhoneTo{Type: "phone", Number: opts.To.Number}
 	if opts.To.DtmfAnswer != "" {
 		to_phone.DtmfAnswer = opts.To.DtmfAnswer
 	}
@@ -137,7 +137,7 @@ func (client *VoiceClient) CreateCall(opts CreateCallOpts) (voice.CreateCallResp
 	voiceCallOpts.To = to
 
 	// from has to be a phone
-	voiceCallOpts.From = voice.EndpointPhone{Type: "phone", Number: opts.From.Number}
+	voiceCallOpts.From = voice.EndpointPhoneFrom{Type: "phone", Number: opts.From.Number}
 
 	// ncco has its own features
 	if len(opts.Ncco.GetActions()) > 0 {
@@ -181,8 +181,8 @@ func (client *VoiceClient) CreateCall(opts CreateCallOpts) (voice.CreateCallResp
 	callOpts := optional.NewInterface(voiceCallOpts)
 
 	ctx := context.Background()
-	createCallOpts := &voice.CreateCallOpts{CreateCallRequest: callOpts}
-	result, _, err := voiceClient.DefaultApi.CreateCall(ctx, createCallOpts)
+	createCallOpts := &voice.CreateCallOpts{Opts: callOpts}
+	result, _, err := voiceClient.CallsApi.CreateCall(ctx, createCallOpts)
 
 	if err != nil {
 		e := err.(voice.GenericOpenAPIError)
