@@ -134,7 +134,7 @@ func TestVoiceMakeCall(t *testing.T) {
 	talk := TalkAction{Text: "This is the golang library, calling to say hello", VoiceName: "Nicole"}
 	ncco.AddAction(talk)
 
-	result, _, _ := client.CreateCall(CreateCallOpts{From: from, To: to, Ncco: ncco})
+	result, _, _ := client.CreateCallAnswerUrl(CreateCallOpts{From: from, To: to, Ncco: ncco})
 	message := result.Uuid + " <-- call ID started"
 	if message != "63f61863-4a51-4f6b-86e1-46edebcf9356 <-- call ID started" {
 		t.Errorf("Voice create call failed")

@@ -120,15 +120,14 @@ type VoiceErrorGeneralResponse struct {
 	Title string `json:"error_title, omitempty"`
 }
 
-// CreateCall Makes a phone call given the from/to details and
-// either an AnswerURL or an NCCO
-func (client *VoiceClient) CreateCall(opts CreateCallOpts) (voice.CreateCallResponse, VoiceErrorResponse, error) {
+// CreateCallNcco Makes a phone call given the from/to details and an NCCO
+func (client *VoiceClient) CreateCallNcco(opts CreateCallOpts) (voice.CreateCallResponse, VoiceErrorResponse, error) {
 
 	voiceClient := voice.NewAPIClient(client.Config)
-	voiceCallOpts := voice.CreateCallRequest{}
+	voiceCallOpts := voice.CreateCallRequestNcco{}
 
 	// assuming phone to start with, this needs other endpoints added later
-	var to []interface{}
+	var to []voice.EndpointPhoneTo
 	to_phone := voice.EndpointPhoneTo{Type: "phone", Number: opts.To.Number}
 	if opts.To.DtmfAnswer != "" {
 		to_phone.DtmfAnswer = opts.To.DtmfAnswer
@@ -142,12 +141,78 @@ func (client *VoiceClient) CreateCall(opts CreateCallOpts) (voice.CreateCallResp
 	// ncco has its own features
 	if len(opts.Ncco.GetActions()) > 0 {
 		voiceCallOpts.Ncco = opts.Ncco.GetActions()
-		/*
-			j, errj := json.Marshal(voiceCallOpts.Ncco)
-			fmt.Printf("%#v\n", string(j))
-			fmt.Printf("%#v\n", errj)
-		*/
 	}
+
+	// event settings
+	if len(opts.EventUrl) > 0 {
+		voiceCallOpts.EventUrl = opts.EventUrl
+		if opts.EventMethod != "" {
+			voiceCallOpts.EventMethod = opts.EventMethod
+		}
+	}
+
+	// other fields
+	if opts.MachineDetection != "" {
+		voiceCallOpts.MachineDetection = opts.MachineDetection
+	}
+
+	if opts.RingingTimer != 0 {
+		voiceCallOpts.RingingTimer = opts.RingingTimer
+	}
+
+	if opts.LengthTimer != 0 {
+		voiceCallOpts.LengthTimer = opts.LengthTimer
+	}
+
+	callOpts := optional.NewInterface(voiceCallOpts)
+
+	ctx := context.Background()
+	createCallOpts := &voice.CreateCallOpts{Opts: callOpts}
+	result, _, err := voiceClient.CallsApi.CreateCall(ctx, createCallOpts)
+
+	if err != nil {
+		e := err.(voice.GenericOpenAPIError)
+		errorType := e.Error()
+		data := e.Body()
+
+		// now handle the errors we know we might get
+		if errorType == "401 Unauthorized" {
+			var errResp VoiceErrorGeneralResponse
+			json.Unmarshal(data, &errResp)
+			return voice.CreateCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+		} else if errorType == "404 Not Found" {
+			var errResp VoiceErrorInvalidParamsResponse
+			json.Unmarshal(data, &errResp)
+			return voice.CreateCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+		} else if errorType == "400 Bad Request" {
+			var errResp VoiceErrorInvalidParamsResponse
+			json.Unmarshal(data, &errResp)
+			return voice.CreateCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+		} else {
+			return voice.CreateCallResponse{}, VoiceErrorResponse{}, err
+		}
+
+	}
+	return result, VoiceErrorResponse{}, nil
+}
+
+// CreateCallAnswerUrl Makes a phone call given the from/to details and an AnswerURL
+func (client *VoiceClient) CreateCallAnswerUrl(opts CreateCallOpts) (voice.CreateCallResponse, VoiceErrorResponse, error) {
+
+	voiceClient := voice.NewAPIClient(client.Config)
+	voiceCallOpts := voice.CreateCallRequestAnswerUrl{}
+
+	// assuming phone to start with, this needs other endpoints added later
+	var to []voice.EndpointPhoneTo
+	to_phone := voice.EndpointPhoneTo{Type: "phone", Number: opts.To.Number}
+	if opts.To.DtmfAnswer != "" {
+		to_phone.DtmfAnswer = opts.To.DtmfAnswer
+	}
+	to = append(to, to_phone)
+	voiceCallOpts.To = to
+
+	// from has to be a phone
+	voiceCallOpts.From = voice.EndpointPhoneFrom{Type: "phone", Number: opts.From.Number}
 
 	// answer details
 	if len(opts.AnswerUrl) > 0 {
