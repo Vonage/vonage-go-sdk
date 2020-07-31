@@ -12,11 +12,11 @@ package voice
 
 import (
 	_context "context"
+	"github.com/antihax/optional"
 	_ioutil "io/ioutil"
 	_nethttp "net/http"
 	_neturl "net/url"
 	"strings"
-	"github.com/antihax/optional"
 )
 
 // Linger please
@@ -29,7 +29,7 @@ type CallsApiService service
 
 // CreateCallOpts Optional parameters for the method 'CreateCall'
 type CreateCallOpts struct {
-    UNKNOWNBASETYPE optional.Interface
+	Opts optional.Interface
 }
 
 /*
@@ -74,13 +74,7 @@ func (a *CallsApiService) CreateCall(ctx _context.Context, localVarOptionals *Cr
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	if localVarOptionals != nil && localVarOptionals.UNKNOWNBASETYPE.IsSet() {
-		localVarOptionalUNKNOWNBASETYPE, localVarOptionalUNKNOWNBASETYPEok := localVarOptionals.UNKNOWNBASETYPE.Value().(UNKNOWN_BASE_TYPE)
-		if !localVarOptionalUNKNOWNBASETYPEok {
-			return localVarReturnValue, nil, reportError("uNKNOWNBASETYPE should be UNKNOWN_BASE_TYPE")
-		}
-		localVarPostBody = &localVarOptionalUNKNOWNBASETYPE
-	}
+	localVarPostBody = &localVarOptionals
 
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
@@ -137,7 +131,7 @@ func (a *CallsApiService) GetCall(ctx _context.Context, uuid string) (GetCallRes
 
 	// create path and map variables
 	localVarPath := a.client.cfg.BasePath + "/{uuid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"uuid"+"}", _neturl.QueryEscape(parameterToString(uuid, "")) , -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"uuid"+"}", _neturl.QueryEscape(parameterToString(uuid, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -198,13 +192,13 @@ func (a *CallsApiService) GetCall(ctx _context.Context, uuid string) (GetCallRes
 
 // GetCallsOpts Optional parameters for the method 'GetCalls'
 type GetCallsOpts struct {
-    Status optional.String
-    DateStart optional.Time
-    DateEnd optional.Time
-    PageSize optional.Int32
-    RecordIndex optional.Int32
-    Order optional.String
-    ConversationUuid optional.Interface
+	Status           optional.String
+	DateStart        optional.Time
+	DateEnd          optional.Time
+	PageSize         optional.Int32
+	RecordIndex      optional.Int32
+	Order            optional.String
+	ConversationUuid optional.Interface
 }
 
 /*
@@ -318,7 +312,7 @@ Modify an in progress call
  * @param uuid UUID of the Call
  * @param uNKNOWNBASETYPE
 */
-func (a *CallsApiService) UpdateCall(ctx _context.Context, uuid string, uNKNOWNBASETYPE UNKNOWN_BASE_TYPE) (*_nethttp.Response, error) {
+func (a *CallsApiService) UpdateCall(ctx _context.Context, uuid string, uNKNOWNBASETYPE interface{}) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
@@ -329,7 +323,7 @@ func (a *CallsApiService) UpdateCall(ctx _context.Context, uuid string, uNKNOWNB
 
 	// create path and map variables
 	localVarPath := a.client.cfg.BasePath + "/{uuid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"uuid"+"}", _neturl.QueryEscape(parameterToString(uuid, "")) , -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"uuid"+"}", _neturl.QueryEscape(parameterToString(uuid, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

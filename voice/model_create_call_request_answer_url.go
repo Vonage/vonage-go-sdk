@@ -9,15 +9,16 @@
  */
 
 package voice
+
 // CreateCallRequestAnswerUrl struct for CreateCallRequestAnswerUrl
 type CreateCallRequestAnswerUrl struct {
-	// The webhook endpoint where you provide the [Nexmo Call Control Object](/voice/voice-api/ncco-reference) that governs this call. 
+	// The webhook endpoint where you provide the [Nexmo Call Control Object](/voice/voice-api/ncco-reference) that governs this call.
 	AnswerUrl []string `json:"answer_url"`
 	// The HTTP method used to send event information to answer_url.
-	AnswerMethod string `json:"answer_method,omitempty"`
-	To []OneOfEndpointPhoneToEndpointSipEndpointWebsocketEndpointVbcExtension `json:"to"`
-	From EndpointPhoneFrom `json:"from"`
-	// **Required** unless `event_url` is configured at the application level, see [Create an Application](/api/application.v2#createApplication)  The webhook endpoint where call progress events are sent to. For more information about the values sent, see [Event webhook](/voice/voice-api/webhook-reference#event-webhook). 
+	AnswerMethod string            `json:"answer_method,omitempty"`
+	To           []EndpointPhoneTo `json:"to"`
+	From         EndpointPhoneFrom `json:"from"`
+	// **Required** unless `event_url` is configured at the application level, see [Create an Application](/api/application.v2#createApplication)  The webhook endpoint where call progress events are sent to. For more information about the values sent, see [Event webhook](/voice/voice-api/webhook-reference#event-webhook).
 	EventUrl []string `json:"event_url,omitempty"`
 	// The HTTP method used to send event information to event_url.
 	EventMethod string `json:"event_method,omitempty"`
