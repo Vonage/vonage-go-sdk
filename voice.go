@@ -120,11 +120,9 @@ type VoiceErrorGeneralResponse struct {
 	Title string `json:"error_title, omitempty"`
 }
 
-// CreateCallNcco Makes a phone call given the from/to details and an NCCO
-func (client *VoiceClient) CreateCallNcco(opts CreateCallOpts) (voice.CreateCallResponse, VoiceErrorResponse, error) {
+func (client *VoiceClient) createCallCommon(opts CreateCallOpts) voice.CreateCallRequestBase {
 
-	voiceClient := voice.NewAPIClient(client.Config)
-	voiceCallOpts := voice.CreateCallRequestNcco{}
+	var target voice.CreateCallRequestBase
 
 	// assuming phone to start with, this needs other endpoints added later
 	var to []voice.EndpointPhoneTo
@@ -133,35 +131,55 @@ func (client *VoiceClient) CreateCallNcco(opts CreateCallOpts) (voice.CreateCall
 		to_phone.DtmfAnswer = opts.To.DtmfAnswer
 	}
 	to = append(to, to_phone)
-	voiceCallOpts.To = to
+	target.To = to
 
 	// from has to be a phone
-	voiceCallOpts.From = voice.EndpointPhoneFrom{Type: "phone", Number: opts.From.Number}
-
-	// ncco has its own features
-	if len(opts.Ncco.GetActions()) > 0 {
-		voiceCallOpts.Ncco = opts.Ncco.GetActions()
-	}
+	target.From = voice.EndpointPhoneFrom{Type: "phone", Number: opts.From.Number}
 
 	// event settings
 	if len(opts.EventUrl) > 0 {
-		voiceCallOpts.EventUrl = opts.EventUrl
+		target.EventUrl = opts.EventUrl
 		if opts.EventMethod != "" {
-			voiceCallOpts.EventMethod = opts.EventMethod
+			target.EventMethod = opts.EventMethod
 		}
 	}
 
 	// other fields
 	if opts.MachineDetection != "" {
-		voiceCallOpts.MachineDetection = opts.MachineDetection
+		target.MachineDetection = opts.MachineDetection
 	}
 
 	if opts.RingingTimer != 0 {
-		voiceCallOpts.RingingTimer = opts.RingingTimer
+		target.RingingTimer = opts.RingingTimer
 	}
 
 	if opts.LengthTimer != 0 {
-		voiceCallOpts.LengthTimer = opts.LengthTimer
+		target.LengthTimer = opts.LengthTimer
+	}
+
+	return target
+}
+
+// CreateCallNcco Makes a phone call given the from/to details and an NCCO
+func (client *VoiceClient) CreateCallNcco(opts CreateCallOpts) (voice.CreateCallResponse, VoiceErrorResponse, error) {
+
+	voiceClient := voice.NewAPIClient(client.Config)
+
+	voiceCallOpts := voice.CreateCallRequestNcco{}
+
+	commonFields := client.createCallCommon(opts)
+
+	voiceCallOpts.To = commonFields.To
+	voiceCallOpts.From = commonFields.From
+	voiceCallOpts.EventUrl = commonFields.EventUrl
+	voiceCallOpts.EventMethod = commonFields.EventMethod
+	voiceCallOpts.MachineDetection = commonFields.MachineDetection
+	voiceCallOpts.LengthTimer = commonFields.LengthTimer
+	voiceCallOpts.RingingTimer = commonFields.RingingTimer
+
+	// ncco has its own features
+	if len(opts.Ncco.GetActions()) > 0 {
+		voiceCallOpts.Ncco = opts.Ncco.GetActions()
 	}
 
 	callOpts := optional.NewInterface(voiceCallOpts)
@@ -202,17 +220,15 @@ func (client *VoiceClient) CreateCallAnswerUrl(opts CreateCallOpts) (voice.Creat
 	voiceClient := voice.NewAPIClient(client.Config)
 	voiceCallOpts := voice.CreateCallRequestAnswerUrl{}
 
-	// assuming phone to start with, this needs other endpoints added later
-	var to []voice.EndpointPhoneTo
-	to_phone := voice.EndpointPhoneTo{Type: "phone", Number: opts.To.Number}
-	if opts.To.DtmfAnswer != "" {
-		to_phone.DtmfAnswer = opts.To.DtmfAnswer
-	}
-	to = append(to, to_phone)
-	voiceCallOpts.To = to
+	commonFields := client.createCallCommon(opts)
 
-	// from has to be a phone
-	voiceCallOpts.From = voice.EndpointPhoneFrom{Type: "phone", Number: opts.From.Number}
+	voiceCallOpts.To = commonFields.To
+	voiceCallOpts.From = commonFields.From
+	voiceCallOpts.EventUrl = commonFields.EventUrl
+	voiceCallOpts.EventMethod = commonFields.EventMethod
+	voiceCallOpts.MachineDetection = commonFields.MachineDetection
+	voiceCallOpts.LengthTimer = commonFields.LengthTimer
+	voiceCallOpts.RingingTimer = commonFields.RingingTimer
 
 	// answer details
 	if len(opts.AnswerUrl) > 0 {
@@ -220,27 +236,6 @@ func (client *VoiceClient) CreateCallAnswerUrl(opts CreateCallOpts) (voice.Creat
 		if opts.AnswerMethod != "" {
 			voiceCallOpts.AnswerMethod = opts.AnswerMethod
 		}
-	}
-
-	// event settings
-	if len(opts.EventUrl) > 0 {
-		voiceCallOpts.EventUrl = opts.EventUrl
-		if opts.EventMethod != "" {
-			voiceCallOpts.EventMethod = opts.EventMethod
-		}
-	}
-
-	// other fields
-	if opts.MachineDetection != "" {
-		voiceCallOpts.MachineDetection = opts.MachineDetection
-	}
-
-	if opts.RingingTimer != 0 {
-		voiceCallOpts.RingingTimer = opts.RingingTimer
-	}
-
-	if opts.LengthTimer != 0 {
-		voiceCallOpts.LengthTimer = opts.LengthTimer
 	}
 
 	callOpts := optional.NewInterface(voiceCallOpts)
