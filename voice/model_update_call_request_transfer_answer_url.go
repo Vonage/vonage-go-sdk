@@ -9,8 +9,8 @@
  */
 
 package voice
-// DtmfRequest struct for DtmfRequest
-type DtmfRequest struct {
-	// The digits to send
-	Digits string `json:"digits,omitempty"`
+// UpdateCallRequestTransferAnswerUrl struct for UpdateCallRequestTransferAnswerUrl
+type UpdateCallRequestTransferAnswerUrl struct {
+	Action RequestTransferActionParam `json:"action"`
+	Destination UpdateCallRequestTransferAnswerUrlDestination `json:"destination"`
 }

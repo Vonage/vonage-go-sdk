@@ -9,8 +9,8 @@
  */
 
 package voice
-// DtmfRequest struct for DtmfRequest
-type DtmfRequest struct {
-	// The digits to send
-	Digits string `json:"digits,omitempty"`
+// UpdateCallRequestMute struct for UpdateCallRequestMute
+type UpdateCallRequestMute struct {
+	// Mute the specified UUID
+	Action string `json:"action,omitempty"`
 }
