@@ -9,13 +9,14 @@
  */
 
 package voice
+
 // CreateCallRequestNcco struct for CreateCallRequestNcco
 type CreateCallRequestNcco struct {
-	// The [Nexmo Call Control Object](/voice/voice-api/ncco-reference) to use for this call. 
-	Ncco []map[string]interface{} `json:"ncco"`
-	To []OneOfEndpointPhoneToEndpointSipEndpointWebsocketEndpointVbcExtension `json:"to"`
+	// The [Nexmo Call Control Object](/voice/voice-api/ncco-reference) to use for this call.
+	Ncco []interface{}     `json:"ncco"`
+	To   []EndpointPhoneTo `json:"to"`
 	From EndpointPhoneFrom `json:"from"`
-	// **Required** unless `event_url` is configured at the application level, see [Create an Application](/api/application.v2#createApplication)  The webhook endpoint where call progress events are sent to. For more information about the values sent, see [Event webhook](/voice/voice-api/webhook-reference#event-webhook). 
+	// **Required** unless `event_url` is configured at the application level, see [Create an Application](/api/application.v2#createApplication)  The webhook endpoint where call progress events are sent to. For more information about the values sent, see [Event webhook](/voice/voice-api/webhook-reference#event-webhook).
 	EventUrl []string `json:"event_url,omitempty"`
 	// The HTTP method used to send event information to event_url.
 	EventMethod string `json:"event_method,omitempty"`
