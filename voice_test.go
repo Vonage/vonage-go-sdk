@@ -103,7 +103,7 @@ func TestVoiceGetCallsNoAuth(t *testing.T) {
 	}
 }
 
-func TestVoiceMakeCall(t *testing.T) {
+func TestVoiceMakeCallWithNcco(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -134,9 +134,44 @@ func TestVoiceMakeCall(t *testing.T) {
 	talk := TalkAction{Text: "This is the golang library, calling to say hello", VoiceName: "Nicole"}
 	ncco.AddAction(talk)
 
-	result, _, _ := client.CreateCallAnswerUrl(CreateCallOpts{From: from, To: to, Ncco: ncco})
+	result, _, _ := client.CreateCall(CreateCallOpts{From: from, To: to, Ncco: ncco})
 	message := result.Uuid + " <-- call ID started"
 	if message != "63f61863-4a51-4f6b-86e1-46edebcf9356 <-- call ID started" {
-		t.Errorf("Voice create call failed")
+		t.Errorf("Voice create call with Ncco failed")
+	}
+}
+
+func TestVoiceMakeCallWithAnswerUrl(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/v1/calls/",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(201, `
+{
+  "uuid": "63f61863-4a51-4f6b-86e1-46edebcf9356",
+  "status": "started",
+  "direction": "outbound",
+  "conversation_uuid": "CON-f972836a-550f-45fa-956c-12a2ab5b7d22"
+}
+	`,
+			)
+
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", []byte("imagine this is a private key"))
+	client := NewVoiceClient(auth)
+
+	from := CallFrom{Type: "phone", Number: "447770007777"}
+	to := CallTo{Type: "phone", Number: "447770007788"}
+	answer := []string{"https://example.com/answer"}
+
+	result, _, _ := client.CreateCall(CreateCallOpts{From: from, To: to, AnswerUrl: answer})
+	message := result.Uuid + " <-- call ID started"
+	if message != "63f61863-4a51-4f6b-86e1-46edebcf9356 <-- call ID started" {
+		t.Errorf("Voice create call with AnswerUrl failed")
 	}
 }

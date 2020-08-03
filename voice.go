@@ -3,6 +3,7 @@ package nexmo
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"runtime"
 
 	"github.com/antihax/optional"
@@ -160,90 +161,63 @@ func (client *VoiceClient) createCallCommon(opts CreateCallOpts) voice.CreateCal
 	return target
 }
 
-// CreateCallNcco Makes a phone call given the from/to details and an NCCO
-func (client *VoiceClient) CreateCallNcco(opts CreateCallOpts) (voice.CreateCallResponse, VoiceErrorResponse, error) {
-
+// CreateCall Makes a phone call given the from/to details and an NCCO or an Answer URL
+func (client *VoiceClient) CreateCall(opts CreateCallOpts) (voice.CreateCallResponse, VoiceErrorResponse, error) {
 	voiceClient := voice.NewAPIClient(client.Config)
-
-	voiceCallOpts := voice.CreateCallRequestNcco{}
-
+	// use the same validation regardless of which type of call this is
 	commonFields := client.createCallCommon(opts)
-
-	voiceCallOpts.To = commonFields.To
-	voiceCallOpts.From = commonFields.From
-	voiceCallOpts.EventUrl = commonFields.EventUrl
-	voiceCallOpts.EventMethod = commonFields.EventMethod
-	voiceCallOpts.MachineDetection = commonFields.MachineDetection
-	voiceCallOpts.LengthTimer = commonFields.LengthTimer
-	voiceCallOpts.RingingTimer = commonFields.RingingTimer
 
 	// ncco has its own features
 	if len(opts.Ncco.GetActions()) > 0 {
+		// copy the common fields into the appropriate struct
+		voiceCallOpts := voice.CreateCallRequestNcco{}
+		voiceCallOpts.To = commonFields.To
+		voiceCallOpts.From = commonFields.From
+		voiceCallOpts.EventUrl = commonFields.EventUrl
+		voiceCallOpts.EventMethod = commonFields.EventMethod
+		voiceCallOpts.MachineDetection = commonFields.MachineDetection
+		voiceCallOpts.LengthTimer = commonFields.LengthTimer
+		voiceCallOpts.RingingTimer = commonFields.RingingTimer
+
+		// add NCCO
 		voiceCallOpts.Ncco = opts.Ncco.GetActions()
-	}
 
-	callOpts := optional.NewInterface(voiceCallOpts)
+		callOpts := optional.NewInterface(voiceCallOpts)
 
-	ctx := context.Background()
-	createCallOpts := &voice.CreateCallOpts{Opts: callOpts}
-	result, _, err := voiceClient.CallsApi.CreateCall(ctx, createCallOpts)
+		ctx := context.Background()
+		createCallOpts := &voice.CreateCallOpts{Opts: callOpts}
+		NccoResult, _, NccoErr := voiceClient.CallsApi.CreateCall(ctx, createCallOpts)
+		return client.handleCreateCallErrors(NccoResult, NccoErr)
+	} else if len(opts.AnswerUrl) > 0 {
+		voiceCallOpts := voice.CreateCallRequestAnswerUrl{}
+		// copy the common fields into the appropriate struct
+		voiceCallOpts.To = commonFields.To
+		voiceCallOpts.From = commonFields.From
+		voiceCallOpts.EventUrl = commonFields.EventUrl
+		voiceCallOpts.EventMethod = commonFields.EventMethod
+		voiceCallOpts.MachineDetection = commonFields.MachineDetection
+		voiceCallOpts.LengthTimer = commonFields.LengthTimer
+		voiceCallOpts.RingingTimer = commonFields.RingingTimer
 
-	if err != nil {
-		e := err.(voice.GenericOpenAPIError)
-		errorType := e.Error()
-		data := e.Body()
-
-		// now handle the errors we know we might get
-		if errorType == "401 Unauthorized" {
-			var errResp VoiceErrorGeneralResponse
-			json.Unmarshal(data, &errResp)
-			return voice.CreateCallResponse{}, VoiceErrorResponse{Error: errResp}, err
-		} else if errorType == "404 Not Found" {
-			var errResp VoiceErrorInvalidParamsResponse
-			json.Unmarshal(data, &errResp)
-			return voice.CreateCallResponse{}, VoiceErrorResponse{Error: errResp}, err
-		} else if errorType == "400 Bad Request" {
-			var errResp VoiceErrorInvalidParamsResponse
-			json.Unmarshal(data, &errResp)
-			return voice.CreateCallResponse{}, VoiceErrorResponse{Error: errResp}, err
-		} else {
-			return voice.CreateCallResponse{}, VoiceErrorResponse{}, err
-		}
-
-	}
-	return result, VoiceErrorResponse{}, nil
-}
-
-// CreateCallAnswerUrl Makes a phone call given the from/to details and an AnswerURL
-func (client *VoiceClient) CreateCallAnswerUrl(opts CreateCallOpts) (voice.CreateCallResponse, VoiceErrorResponse, error) {
-
-	voiceClient := voice.NewAPIClient(client.Config)
-	voiceCallOpts := voice.CreateCallRequestAnswerUrl{}
-
-	commonFields := client.createCallCommon(opts)
-
-	voiceCallOpts.To = commonFields.To
-	voiceCallOpts.From = commonFields.From
-	voiceCallOpts.EventUrl = commonFields.EventUrl
-	voiceCallOpts.EventMethod = commonFields.EventMethod
-	voiceCallOpts.MachineDetection = commonFields.MachineDetection
-	voiceCallOpts.LengthTimer = commonFields.LengthTimer
-	voiceCallOpts.RingingTimer = commonFields.RingingTimer
-
-	// answer details
-	if len(opts.AnswerUrl) > 0 {
+		// answer details
 		voiceCallOpts.AnswerUrl = opts.AnswerUrl
 		if opts.AnswerMethod != "" {
 			voiceCallOpts.AnswerMethod = opts.AnswerMethod
 		}
+
+		callOpts := optional.NewInterface(voiceCallOpts)
+
+		ctx := context.Background()
+		createCallOpts := &voice.CreateCallOpts{Opts: callOpts}
+		AnswerResult, _, AnswerErr := voiceClient.CallsApi.CreateCall(ctx, createCallOpts)
+		return client.handleCreateCallErrors(AnswerResult, AnswerErr)
 	}
 
-	callOpts := optional.NewInterface(voiceCallOpts)
+	// this is a backstop, we shouldn't end up here
+	return voice.CreateCallResponse{}, VoiceErrorResponse{}, errors.New("Unsupported combination of parameters, supply an answer URL or valid NCCO")
+}
 
-	ctx := context.Background()
-	createCallOpts := &voice.CreateCallOpts{Opts: callOpts}
-	result, _, err := voiceClient.CallsApi.CreateCall(ctx, createCallOpts)
-
+func (client *VoiceClient) handleCreateCallErrors(result voice.CreateCallResponse, err error) (voice.CreateCallResponse, VoiceErrorResponse, error) {
 	if err != nil {
 		e := err.(voice.GenericOpenAPIError)
 		errorType := e.Error()
