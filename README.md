@@ -15,27 +15,15 @@ If you don't already know Nexmo: We make telephony APIs. If you need to make a c
 
 Find current and past releases on the [releases page](https://github.com/nexmo-community/nexmo-go/releases).
 
-## Recommended process (Go 1.13+)
-
-Import the package and use it:
+Import the package and use it in your own project
 
 ```
 import ("github.com/nexmo-community/nexmo-go")
 ```
 
-## Older versions of Go (<= 1.12)
-
-To install the package, use `go get`:
-
-```
-go get github.com/nexmo-community/nexmo-go
-```
-
-Or import the package into your project and then do `go get .`.
-
 ## Usage
 
-Here are some simple examples to get you started. If there's anything else you'd like to see here, please open an issue and let us know! Be aware that this library is still at an alpha stage so things may change between versions.
+Here are some simple examples to get you started. If there's anything else you'd like to see here, please open an issue and let us know! Be aware that this library is still at an alpha stage so things may change between versions. We're following SemVer, so `0.5.5 => 0.5.6` is not expected to introduce breaking change but `0.5.5 => 0.6.0` or `0.5.5 => 1.0.0` both do so.
 
 ### SMS API
 
@@ -669,6 +657,18 @@ The fields for configuration are:
 - `BasePath` (shown in the example above) overrides where the requests should be sent to
 - `DefaultHeader` is a map, add any custom headers you need here
 - `HTTPClient` is a pointer to an httpClient if you need to change any networking settings
+
+## Contributions
+
+Yes please! This library is open source, community-driven, and benefits greatly from the input of its users.
+
+Please make all your changes on a branch, and open a pull request, these are welcome and will be reviewed with delight! If it's a big change, it is recommended to open an issue for discussion before you start.
+
+All changes require tests to go with them.
+
+### Using a Local Branch
+
+Refer to [this excellent blog post](https://thewebivore.com/using-replace-in-go-mod-to-point-to-your-local-module/) for instructions on how to use a local clone of this repository as the import in your own project. This is really useful when you are using a version of the library other than the latest stable release - for example if you are working on a change, or testing an open pull request.
 
 ## Getting Help
  
