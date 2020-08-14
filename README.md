@@ -291,9 +291,34 @@ func main() {
 }
 ```
 
+#### Call Detail
+
+If you have the UUID of the call, fetch the details of it:
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+    privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := NewVoiceClient(auth)
+
+	response, _, _ := client.GetCall("aaaabbbb-0000-1111-2222-abcdef01234567")
+    t1, _ := time.Parse(time.RFC3339, response.StartTime)
+	date_string := t1.Format("Jan _2 2006 at 15:04:05")
+	fmt.Println("Call started: " + date_string + ", duration " + result1.Duration + " seconds and status: " + result1.Status)
+}
+```
+
+The example includes how to parse and then format a date.
+
 #### Make a Phone Call
 
-Start a call (the from number should be a Nexmo number you own)
+Start a call (the from number should be a Nexmo number you own), supplying either `AnswerUrl` *or* `Ncco`:
 
 ```go
 package main
@@ -314,11 +339,50 @@ func main() {
 	talk := TalkAction{Text: "Go library calling to say hello", VoiceName: "Nicole"}
 	ncco.AddAction(talk)
 
+    // NCCO example
 	result, _, _ := client.CreateCall(CreateCallOpts{From: from, To: to, Ncco: ncco})
+    // alternate version with answer URL
+    //result, _, _ := client.CreateCall(CreateCallOpts{From: from, To: to, AnswerUrl: []string{"https://example.com/answer"}})
 	fmt.Println(result.Uuid + " call ID started")
 }
 
 ```
+
+See [NCCO](#nccos) for more information and examples for all other supported NCCO types.
+
+
+#### Transfer a Call
+
+This requires the Uuid of an existing call. The example below follows the "Make a Phone Call" example and assumes a `result` variable from that example.
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+    privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := NewVoiceClient(auth)
+
+	ncco := Ncco{}
+	talk := TalkAction{Text: "Go library calling to interrupt", VoiceName: "Nicole"}
+	ncco.AddAction(talk)
+
+
+    // NCCO example
+	result, _, _ := client.TransferCall(TransferCallOpts{Uuid: result.Uuid, Ncco: ncco})
+    // handy AnswerUrl example
+	// result, _, _ := client.TransferCall(TransferCallOpts{Uuid: result.Uuid, AnswerUrl: []string{"https://raw.githubusercontent.com/nexmo-community/ncco-examples/gh-pages/talk.json"}})
+	fmt.Println("Status: " + result.Status)
+}
+
+```
+
+See [NCCO](#nccos) for more information and examples for all other supported NCCO types.
+
 
 #### Error Handling
 
@@ -657,6 +721,16 @@ The fields for configuration are:
 - `BasePath` (shown in the example above) overrides where the requests should be sent to
 - `DefaultHeader` is a map, add any custom headers you need here
 - `HTTPClient` is a pointer to an httpClient if you need to change any networking settings
+
+### Handling Date Fields
+
+Many of our APIs use dates but they come from the API as strings that Go understands as RFC3339 format. Convert to a Go time object with something like:
+
+```go
+	start_time, _ := time.Parse(time.RFC3339, response.StartTime)
+```
+
+You can then go ahead and use the time object as you usually would.
 
 ## Contributions
 

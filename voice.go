@@ -55,13 +55,6 @@ func (client *VoiceClient) GetCall(uuid string) (voice.GetCallResponse, VoiceErr
 
 	ctx := context.Background()
 	result, _, err := voiceClient.CallsApi.GetCall(ctx, uuid)
-	/*
-		e := err.(voice.GenericOpenAPIError)
-		// output the status code
-		fmt.Println(e.Error())
-		// print the whole API response
-		fmt.Println(string(e.Body()))
-	*/
 
 	// catch HTTP errors
 	if err != nil {
@@ -242,4 +235,86 @@ func (client *VoiceClient) handleCreateCallErrors(result voice.CreateCallRespons
 
 	}
 	return result, VoiceErrorResponse{}, nil
+}
+
+// TransferCallOpts: Options for transferring a call
+type TransferCallOpts struct {
+	Uuid      string
+	Ncco      Ncco
+	AnswerUrl []string
+}
+
+type ModifyCallResponse struct {
+	Status string
+}
+
+type TransferDestinationUrl struct {
+	Type string   `json:"type"`
+	Url  []string `json:"url"`
+}
+
+type TransferWithUrlOpts struct {
+	Action      string                 `json:"action"`
+	Destination TransferDestinationUrl `json:"destination"`
+}
+
+type TransferDestinationNcco struct {
+	Type string        `json:"type"`
+	Ncco []interface{} `json:"ncco"`
+}
+
+type TransferWithNccoOpts struct {
+	Action      string                  `json:"action"`
+	Destination TransferDestinationNcco `json:"destination"`
+}
+
+// TransferCall wraps the Modify Call API endpoint
+func (client *VoiceClient) TransferCall(opts TransferCallOpts) (ModifyCallResponse, VoiceErrorResponse, error) {
+	// create the client
+	voiceClient := voice.NewAPIClient(client.Config)
+
+	if len(opts.AnswerUrl) > 0 {
+		destination := TransferDestinationUrl{Type: "ncco", Url: opts.AnswerUrl}
+		transfer := TransferWithUrlOpts{Action: "transfer", Destination: destination}
+		modifyCallOpts := voice.ModifyCallOpts{Opts: optional.NewInterface(transfer)}
+		ctx := context.Background()
+		response, err := voiceClient.CallsApi.UpdateCall(ctx, opts.Uuid, &modifyCallOpts)
+		if err != nil {
+			e := err.(voice.GenericOpenAPIError)
+			data := e.Body()
+			errorType := e.Error()
+			if errorType == "400 Bad Request" {
+				var errResp VoiceErrorInvalidParamsResponse
+				json.Unmarshal(data, &errResp)
+				return ModifyCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+			}
+			return ModifyCallResponse{}, VoiceErrorResponse{Error: response}, err
+		} else {
+			// not a whole lot to return as it's a 204, this branch is success
+			return ModifyCallResponse{Status: "0"}, VoiceErrorResponse{}, nil
+		}
+	} else if len(opts.Ncco.GetActions()) > 0 {
+		destination := TransferDestinationNcco{Type: "ncco", Ncco: opts.Ncco.GetActions()}
+		transfer := TransferWithNccoOpts{Action: "transfer", Destination: destination}
+		modifyCallOpts := voice.ModifyCallOpts{Opts: optional.NewInterface(transfer)}
+		ctx := context.Background()
+		response, err := voiceClient.CallsApi.UpdateCall(ctx, opts.Uuid, &modifyCallOpts)
+		if err != nil {
+			e := err.(voice.GenericOpenAPIError)
+			data := e.Body()
+			errorType := e.Error()
+			if errorType == "400 Bad Request" {
+				var errResp VoiceErrorInvalidParamsResponse
+				json.Unmarshal(data, &errResp)
+				return ModifyCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+			}
+			return ModifyCallResponse{}, VoiceErrorResponse{Error: response}, err
+		} else {
+			// not a whole lot to return as it's a 204, this branch is success
+			return ModifyCallResponse{Status: "0"}, VoiceErrorResponse{}, nil
+		}
+	}
+
+	// this is a backstop, we shouldn't end up here
+	return ModifyCallResponse{}, VoiceErrorResponse{}, errors.New("Unsupported combination of parameters, supply an answer URL or valid NCCO")
 }
