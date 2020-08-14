@@ -306,6 +306,11 @@ func (a *CallsApiService) GetCalls(ctx _context.Context, localVarOptionals *GetC
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+// ModifyCallOpts Optional parameters for the method 'ModifyCall'
+type ModifyCallOpts struct {
+	Opts optional.Interface
+}
+
 /*
 UpdateCall Modify an in progress call
 Modify an in progress call
@@ -313,7 +318,7 @@ Modify an in progress call
  * @param uuid UUID of the Call
  * @param uNKNOWNBASETYPE
 */
-func (a *CallsApiService) UpdateCall(ctx _context.Context, uuid string, uNKNOWNBASETYPE interface{}) (*_nethttp.Response, error) {
+func (a *CallsApiService) UpdateCall(ctx _context.Context, uuid string, localVarOptionals *ModifyCallOpts) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
@@ -348,7 +353,7 @@ func (a *CallsApiService) UpdateCall(ctx _context.Context, uuid string, uNKNOWNB
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = &uNKNOWNBASETYPE
+	localVarPostBody = localVarOptionals.Opts.Value()
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return nil, err
