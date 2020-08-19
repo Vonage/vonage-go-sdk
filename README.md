@@ -129,7 +129,7 @@ func main() {
 	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
 	verifyClient := nexmo.NewVerifyClient(auth)
 
-    response, errResp, err := verifyClient.Request("44777000777", "GoTest", nexmo.VerifyOpts{CodeLength: 6, Lg: "es-es", WorkflowId: 4})
+    response, errResp, err := verifyClient.Request("44777000777", "GoTest", nexmo.VerifyOpts{CodeLength: 6, Lg: "es-es", WorkflowID: 4})
 
     if err != nil {
         fmt.Printf("%#v\n", err)
