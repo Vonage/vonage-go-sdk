@@ -20,8 +20,8 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/nexmo-community/nexmo-go"
 	"github.com/spf13/cobra"
+	"github.com/vonage/vonage-go-sdk"
 )
 
 // verifyCmd represents the verify command
@@ -50,10 +50,10 @@ var verifyRequestCmd = &cobra.Command{
 	Long:  `Start the verification request for the user's phone number by sending them a pin`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		auth := nexmo.CreateAuthFromKeySecret(Key, Secret)
-		verifyClient := nexmo.NewVerifyClient(auth)
+		auth := vonage.CreateAuthFromKeySecret(Key, Secret)
+		verifyClient := vonage.NewVerifyClient(auth)
 
-		response, respErr, err := verifyClient.Request(Number, Brand, nexmo.VerifyOpts{})
+		response, respErr, err := verifyClient.Request(Number, Brand, vonage.VerifyOpts{})
 
 		if err != nil {
 			panic(err)
@@ -75,11 +75,11 @@ var verifyRequestCmd = &cobra.Command{
 var verifyCheckCmd = &cobra.Command{
 	Use:   "check",
 	Short: "Check the PIN code sent by the user",
-	Long:  `Check the PIN code that the user sent matches what Nexmo sent`,
+	Long:  `Check the PIN code that the user sent matches what Vonage sent`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		auth := nexmo.CreateAuthFromKeySecret(Key, Secret)
-		verifyClient := nexmo.NewVerifyClient(auth)
+		auth := vonage.CreateAuthFromKeySecret(Key, Secret)
+		verifyClient := vonage.NewVerifyClient(auth)
 
 		response, respErr, err := verifyClient.Check(RequestId, Code)
 
@@ -106,8 +106,8 @@ var verifySearchCmd = &cobra.Command{
 	Long:  `Search for a Request ID and find out its status, timings and progress`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		auth := nexmo.CreateAuthFromKeySecret(Key, Secret)
-		verifyClient := nexmo.NewVerifyClient(auth)
+		auth := vonage.CreateAuthFromKeySecret(Key, Secret)
+		verifyClient := vonage.NewVerifyClient(auth)
 
 		response, respErr, err := verifyClient.Search(RequestId)
 

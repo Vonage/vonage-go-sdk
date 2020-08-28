@@ -1,4 +1,4 @@
-package nexmo
+package vonage
 
 import "testing"
 

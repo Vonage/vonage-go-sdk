@@ -2,10 +2,10 @@
 // users started with the Nexmo APIs
 // Pull requests, issues and comments are all welcome and gratefully received
 
-package nexmo
+package vonage
 
 import (
-	"github.com/nexmo-community/nexmo-go/jwt"
+	"github.com/vonage/vonage-go-sdk/jwt"
 )
 
 // Auth types are various but support a common interface

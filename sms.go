@@ -1,11 +1,11 @@
-package nexmo
+package vonage
 
 import (
 	"errors"
 	"runtime"
 
 	"github.com/antihax/optional"
-	"github.com/nexmo-community/nexmo-go/sms"
+	"github.com/vonage/vonage-go-sdk/sms"
 )
 
 // SMSClient for working with the SMS API
@@ -24,7 +24,7 @@ func NewSMSClient(Auth Auth) *SMSClient {
 
 	// Use a default set of config but make it accessible
 	client.Config = sms.NewConfiguration()
-	client.Config.UserAgent = "nexmo-go/0.15-dev Go/" + runtime.Version()
+	client.Config.UserAgent = "vonage-go/0.15-dev Go/" + runtime.Version()
 	return client
 }
 
