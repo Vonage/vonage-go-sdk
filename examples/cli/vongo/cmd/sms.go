@@ -20,7 +20,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/nexmo-community/nexmo-go"
+	"github.com/vonage/vonage-go-sdk"
 	"github.com/spf13/cobra"
 )
 
@@ -48,10 +48,10 @@ var smsSendCmd = &cobra.Command{
 use these features to get started and/or test your setup`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		auth := nexmo.CreateAuthFromKeySecret(Key, Secret)
-		smsClient := nexmo.NewSMSClient(auth)
+		auth := vonage.CreateAuthFromKeySecret(Key, Secret)
+		smsClient := vonage.NewSMSClient(auth)
 
-		response, err := smsClient.Send(From, To, Message, nexmo.SMSOpts{})
+		response, err := smsClient.Send(From, To, Message, vonage.SMSOpts{})
 
 		if err != nil {
 			panic(err)

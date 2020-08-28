@@ -1,4 +1,4 @@
-package nexmo
+package vonage
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"runtime"
 
 	"github.com/antihax/optional"
-	"github.com/nexmo-community/nexmo-go/numbers"
+	"github.com/vonage/vonage-go-sdk/numbers"
 )
 
 // NumbersClient for working with the Numbers API
@@ -25,7 +25,7 @@ func NewNumbersClient(Auth Auth) *NumbersClient {
 
 	// Use a default set of config but make it accessible
 	client.Config = numbers.NewConfiguration()
-	client.Config.UserAgent = "nexmo-go/0.15-dev Go/" + runtime.Version()
+	client.Config.UserAgent = "vonage-go/0.15-dev Go/" + runtime.Version()
 	transport := &APITransport{APISecret: client.apiSecret}
 	client.Config.HTTPClient = transport.Client()
 	return client

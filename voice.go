@@ -1,4 +1,4 @@
-package nexmo
+package vonage
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"runtime"
 
 	"github.com/antihax/optional"
-	"github.com/nexmo-community/nexmo-go/voice"
+	"github.com/vonage/vonage-go-sdk/voice"
 )
 
 // VoiceClient for working with the Voice API
@@ -23,7 +23,7 @@ func NewVoiceClient(Auth Auth) *VoiceClient {
 	client.JWT = creds[0]
 
 	client.Config = voice.NewConfiguration()
-	client.Config.UserAgent = "nexmo-go/0.15-dev Go/" + runtime.Version()
+	client.Config.UserAgent = "vonage-go/0.15-dev Go/" + runtime.Version()
 	client.Config.AddDefaultHeader("Authorization", "Bearer "+client.JWT)
 	// client.Config.BasePath = "http://localhost:4010"
 	return client

@@ -1,4 +1,4 @@
-package nexmo
+package vonage
 
 import (
 	"net/http"
@@ -16,7 +16,6 @@ func TestVoiceGetCalls(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	// httpmock.RegisterResponder("GET", "https://ljnexmo.eu.ngrok.io/",
 	httpmock.RegisterResponder("GET", "https://api.nexmo.com/v1/calls/",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
@@ -81,7 +80,6 @@ func TestVoiceGetCallsNoAuth(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	// httpmock.RegisterResponder("GET", "https://ljnexmo.eu.ngrok.io/",
 	httpmock.RegisterResponder("GET", "https://api.nexmo.com/v1/calls/",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(401, `
@@ -106,7 +104,6 @@ func TestVoiceGetCall(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	// httpmock.RegisterResponder("GET", "https://ljnexmo.eu.ngrok.io/",
 	httpmock.RegisterResponder("GET", "https://api.nexmo.com/v1/calls/1234567890",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `

@@ -21,7 +21,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/nexmo-community/nexmo-go/jwt"
+	"github.com/vonage/vonage-go-sdk/jwt"
 	"github.com/spf13/cobra"
 )
 

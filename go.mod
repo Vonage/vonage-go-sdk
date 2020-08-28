@@ -1,4 +1,4 @@
-module github.com/nexmo-community/nexmo-go
+module github.com/vonage/vonage-go-sdk
 
 go 1.13
 

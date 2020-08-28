@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/nexmo-community/nexmo-go/examples/cli/vongo/cmd"
+import "github.com/vonage/vonage-go-sdk/examples/cli/vongo/cmd"
 
 func main() {
 	cmd.Execute()

@@ -33,9 +33,9 @@ var Secret string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "vongo",
-	Short: "A simple demo of a golang SDK for Nexmo/Vonage APIs",
+	Short: "A simple demo of a golang SDK for Vonage APIs",
 	Long: `This application is a work in progress, it uses an under-construction
-	version of the Nexmo/Vonage golang SDK.`,
+	version of the Vonage golang SDK.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

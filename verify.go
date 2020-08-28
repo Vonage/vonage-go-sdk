@@ -1,4 +1,4 @@
-package nexmo
+package vonage
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"runtime"
 
 	"github.com/antihax/optional"
-	"github.com/nexmo-community/nexmo-go/verify"
+	"github.com/vonage/vonage-go-sdk/verify"
 )
 
 // VerifyClient for working with the Verify API
@@ -25,7 +25,7 @@ func NewVerifyClient(Auth Auth) *VerifyClient {
 	client.apiSecret = creds[1]
 
 	client.Config = verify.NewConfiguration()
-	client.Config.UserAgent = "nexmo-go/0.15-dev Go/" + runtime.Version()
+	client.Config.UserAgent = "vonage-go/0.15-dev Go/" + runtime.Version()
 	return client
 }
 
