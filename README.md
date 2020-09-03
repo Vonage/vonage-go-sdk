@@ -351,6 +351,28 @@ func main() {
 See [NCCO](#nccos) for more information and examples for all other supported NCCO types.
 
 
+#### End a Call
+
+End a call using the `hangup()` method on the client:
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+    privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := NewVoiceClient(auth)
+	result, _, _ := client.Hangup("aaaabbbb-0000-1111-2222-abcdef01234567")
+	fmt.Println("Status: " + result.Status) // Status: 0 is good
+}
+
+```
+
+
 #### Transfer a Call
 
 This requires the Uuid of an existing call. The example below follows the "Make a Phone Call" example and assumes a `result` variable from that example.
@@ -383,6 +405,35 @@ func main() {
 
 See [NCCO](#nccos) for more information and examples for all other supported NCCO types.
 
+#### Mute or Earmuff a Call
+
+These actions are similar to one another. To "earmuff" a call makes the call inaudible to the user. To "mute" the call makes the user inaudible to the call. The library offers the following methods:
+ * `Mute()`
+ * `Unmute()`
+ * `Earmuff()`
+ * `Unearmuff()`
+
+They all accept the UUID of the in-progress call, so the code looks like this:
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+    privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := NewVoiceClient(auth)
+
+	result, _, _ := client.Mute("aaaabbbb-0000-1111-2222-abcdef01234567")
+	fmt.Println("Status: " + result.Status) // Status: 0 is good
+}
+
+```
+
+Replace `Mute()` with your desired method name.
 
 #### Error Handling
 

@@ -318,3 +318,59 @@ func (client *VoiceClient) TransferCall(opts TransferCallOpts) (ModifyCallRespon
 	// this is a backstop, we shouldn't end up here
 	return ModifyCallResponse{}, VoiceErrorResponse{}, errors.New("Unsupported combination of parameters, supply an answer URL or valid NCCO")
 }
+
+type ModifyCallOpts struct {
+	Action string `json:"action"`
+}
+
+// Hangup wraps the Modify Call API endpoint
+func (client *VoiceClient) Hangup(uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
+	return client.voiceAction("hangup", uuid)
+}
+
+// Mute wraps the Modify Call API endpoint
+func (client *VoiceClient) Mute(uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
+	return client.voiceAction("mute", uuid)
+}
+
+// Unmute wraps the Modify Call API endpoint
+func (client *VoiceClient) Unmute(uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
+	return client.voiceAction("unmute", uuid)
+}
+
+// Earmuff wraps the Modify Call API endpoint
+func (client *VoiceClient) Earmuff(uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
+	return client.voiceAction("earmuff", uuid)
+}
+
+// Unearmuff wraps the Modify Call API endpoint
+func (client *VoiceClient) Unearmuff(uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
+	return client.voiceAction("unearmuff", uuid)
+}
+
+// voiceAction holds the code for the actions that have no extra params
+func (client *VoiceClient) voiceAction(action string, uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
+	// create the client
+	voiceClient := voice.NewAPIClient(client.Config)
+	modifyCallOpts := voice.ModifyCallOpts{Opts: optional.NewInterface(ModifyCallOpts{Action: action})}
+	ctx := context.Background()
+
+	response, err := voiceClient.CallsApi.UpdateCall(ctx, uuid, &modifyCallOpts)
+	if err != nil {
+		e := err.(voice.GenericOpenAPIError)
+		data := e.Body()
+		errorType := e.Error()
+		if errorType == "400 Bad Request" {
+			var errResp VoiceErrorInvalidParamsResponse
+			json.Unmarshal(data, &errResp)
+			return ModifyCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+		}
+		return ModifyCallResponse{}, VoiceErrorResponse{Error: response}, err
+	} else {
+		// not a whole lot to return as it's a 204, this branch is success
+		return ModifyCallResponse{Status: "0"}, VoiceErrorResponse{}, nil
+	}
+
+	// this is a backstop, we shouldn't end up here
+	return ModifyCallResponse{}, VoiceErrorResponse{}, errors.New("Unsupported combination of parameters, supply an answer URL or valid NCCO")
+}
