@@ -221,3 +221,156 @@ func TestVoiceMakeCallWithAnswerUrl(t *testing.T) {
 		t.Errorf("Voice create call with AnswerUrl failed")
 	}
 }
+
+func TestVoiceTransferCallWithAnswerUrl(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("PUT", "https://api.nexmo.com/v1/calls/abcdef01-2222-3333-4444-9876543210ab",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(204, "")
+			return resp, nil
+		},
+	)
+
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", []byte("imagine this is a private key"))
+	client := NewVoiceClient(auth)
+
+	url := []string{"https://example.com/answer"}
+
+	result, _, _ := client.TransferCall(TransferCallOpts{Uuid: "abcdef01-2222-3333-4444-9876543210ab", AnswerUrl: url})
+	message := "Status: " + result.Status
+	if message != "Status: 0" {
+		t.Errorf("Voice transfer call with AnswerUrl failed")
+	}
+}
+
+func TestVoiceTransferCallWithNcco(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("PUT", "https://api.nexmo.com/v1/calls/abcdef01-2222-3333-4444-9876543210ab",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(204, "")
+			return resp, nil
+		},
+	)
+
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", []byte("imagine this is a private key"))
+	client := NewVoiceClient(auth)
+
+	ncco := Ncco{}
+	talk := TalkAction{Text: "This is the golang library, calling to interrupt the other call", VoiceName: "Nicole"}
+	ncco.AddAction(talk)
+
+	result, _, _ := client.TransferCall(TransferCallOpts{Uuid: "abcdef01-2222-3333-4444-9876543210ab", Ncco: ncco})
+	message := "Status: " + result.Status
+	if message != "Status: 0" {
+		t.Errorf("Voice transfer call with AnswerUrl failed")
+	}
+}
+
+func TestVoiceHangup(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("PUT", "https://api.nexmo.com/v1/calls/abcdef01-2222-3333-4444-9876543210ab",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(204, "")
+			return resp, nil
+		},
+	)
+
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", []byte("imagine this is a private key"))
+	client := NewVoiceClient(auth)
+
+	result, _, _ := client.Hangup("abcdef01-2222-3333-4444-9876543210ab")
+	message := "Status: " + result.Status
+	if message != "Status: 0" {
+		t.Errorf("Voice hangup failed")
+	}
+}
+
+func TestVoiceMute(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("PUT", "https://api.nexmo.com/v1/calls/abcdef01-2222-3333-4444-9876543210ab",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(204, "")
+			return resp, nil
+		},
+	)
+
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", []byte("imagine this is a private key"))
+	client := NewVoiceClient(auth)
+
+	result, _, _ := client.Mute("abcdef01-2222-3333-4444-9876543210ab")
+	message := "Status: " + result.Status
+	if message != "Status: 0" {
+		t.Errorf("Voice Mute failed")
+	}
+}
+
+func TestVoiceUnmute(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("PUT", "https://api.nexmo.com/v1/calls/abcdef01-2222-3333-4444-9876543210ab",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(204, "")
+			return resp, nil
+		},
+	)
+
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", []byte("imagine this is a private key"))
+	client := NewVoiceClient(auth)
+
+	result, _, _ := client.Unmute("abcdef01-2222-3333-4444-9876543210ab")
+	message := "Status: " + result.Status
+	if message != "Status: 0" {
+		t.Errorf("Voice Unmute failed")
+	}
+}
+
+func TestVoiceEarmuff(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("PUT", "https://api.nexmo.com/v1/calls/abcdef01-2222-3333-4444-9876543210ab",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(204, "")
+			return resp, nil
+		},
+	)
+
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", []byte("imagine this is a private key"))
+	client := NewVoiceClient(auth)
+
+	result, _, _ := client.Earmuff("abcdef01-2222-3333-4444-9876543210ab")
+	message := "Status: " + result.Status
+	if message != "Status: 0" {
+		t.Errorf("Voice Earmuff failed")
+	}
+}
+
+func TestVoiceUnearmuff(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("PUT", "https://api.nexmo.com/v1/calls/abcdef01-2222-3333-4444-9876543210ab",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(204, "")
+			return resp, nil
+		},
+	)
+
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", []byte("imagine this is a private key"))
+	client := NewVoiceClient(auth)
+
+	result, _, _ := client.Unearmuff("abcdef01-2222-3333-4444-9876543210ab")
+	message := "Status: " + result.Status
+	if message != "Status: 0" {
+		t.Errorf("Voice Unearmuff failed")
+	}
+}
