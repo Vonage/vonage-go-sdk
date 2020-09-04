@@ -435,6 +435,82 @@ func main() {
 
 Replace `Mute()` with your desired method name.
 
+#### Stream Audio into a Call
+
+You can stream (and stop streaming) audio from a public URL into an in-progress call, like this: 
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+    privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := NewVoiceClient(auth)
+
+    result, _, _:= client.PlayAudioStream("aaaabbbb-0000-1111-2222-abcdef01234567", 
+        "https://raw.githubusercontent.com/nexmo-community/ncco-examples/gh-pages/assets/welcome_to_nexmo.mp3",
+        vonage.PlayAudioOpts{}
+    )
+    // or to stop the audio
+    // result, _, _:= client.StopAudioStream("aaaabbbb-0000-1111-2222-abcdef01234567")
+	fmt.Println("Update message: " + result.Message)
+}
+
+```
+
+#### Play Text-To-Speech into a Call
+
+You can send (and stop sending) TTS (Text To Speech) into an in-progress call. Here's an example: 
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+    privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := NewVoiceClient(auth)
+
+    result, _, _:= client.PlayTts("aaaabbbb-0000-1111-2222-abcdef01234567",
+        "Hello, my friend",
+        vonage.PlayTtsOpts{Loop: 2, VoiceName: "Russell"}
+    )
+    // or to stop an in-progress TTS
+    // result, _, _:= client.StopTts("aaaabbbb-0000-1111-2222-abcdef01234567")
+	fmt.Println("Update message: " + result.Message)
+}
+
+```
+
+#### Play DTMF Tones into a Call
+
+You can send DTMF (keypad tones) into an in-progress call. Here's an example: 
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+    privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := NewVoiceClient(auth)
+
+    result, _, _:= client.PlayDtmf("aaaabbbb-0000-1111-2222-abcdef01234567", "123")
+	fmt.Println("Update message: " + result.Message)
+}
+
+```
+
 #### Error Handling
 
 For Voice API, there are three return values on most methods. The first two are structs representing the fields in the success and error response for the API endpoint involved. The final value is an error, but in many cases this can be type asserted to a more useful `GenericOpenAPIError`, like this:
