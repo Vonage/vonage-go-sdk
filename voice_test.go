@@ -374,3 +374,138 @@ func TestVoiceUnearmuff(t *testing.T) {
 		t.Errorf("Voice Unearmuff failed")
 	}
 }
+
+func TestVoiceStartStream(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("PUT", "https://api.nexmo.com/v1/calls/abcdef01-2222-3333-4444-9876543210ab/stream",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+{
+  "message": "Stream started",
+  "uuid": "63f61863-4a51-4f6b-86e1-46edebcf9356"
+}
+	`,
+			)
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", []byte("imagine this is a private key"))
+	client := NewVoiceClient(auth)
+
+	result, _, _ := client.PlayAudioStream("abcdef01-2222-3333-4444-9876543210ab", "https://example.com/music.mp3", PlayAudioOpts{})
+	if result.Message != "Stream started" {
+		t.Errorf("Voice Start Audio Stream failed")
+	}
+}
+
+func TestVoiceStopStream(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("DELETE", "https://api.nexmo.com/v1/calls/abcdef01-2222-3333-4444-9876543210ab/stream",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+{
+  "message": "Stream stopped",
+  "uuid": "63f61863-4a51-4f6b-86e1-46edebcf9356"
+}
+	`,
+			)
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", []byte("imagine this is a private key"))
+	client := NewVoiceClient(auth)
+
+	result, _, _ := client.StopAudioStream("abcdef01-2222-3333-4444-9876543210ab")
+	if result.Message != "Stream stopped" {
+		t.Errorf("Voice Stop Audio Stream failed")
+	}
+}
+
+func TestVoiceStartTts(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("PUT", "https://api.nexmo.com/v1/calls/abcdef01-2222-3333-4444-9876543210ab/talk",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+{
+  "message": "Talk started",
+  "uuid": "63f61863-4a51-4f6b-86e1-46edebcf9356"
+}
+	`,
+			)
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", []byte("imagine this is a private key"))
+	client := NewVoiceClient(auth)
+
+	result, _, _ := client.PlayTts("abcdef01-2222-3333-4444-9876543210ab", "Hello world", PlayTtsOpts{})
+	if result.Message != "Talk started" {
+		t.Errorf("Voice Start Talk failed")
+	}
+}
+
+func TestVoiceStopTts(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("DELETE", "https://api.nexmo.com/v1/calls/abcdef01-2222-3333-4444-9876543210ab/talk",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+{
+  "message": "Talk stopped",
+  "uuid": "63f61863-4a51-4f6b-86e1-46edebcf9356"
+}
+	`,
+			)
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", []byte("imagine this is a private key"))
+	client := NewVoiceClient(auth)
+
+	result, _, _ := client.StopTts("abcdef01-2222-3333-4444-9876543210ab")
+	if result.Message != "Talk stopped" {
+		t.Errorf("Voice Stop TTS failed")
+	}
+}
+
+func TestVoiceDtmf(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("PUT", "https://api.nexmo.com/v1/calls/abcdef01-2222-3333-4444-9876543210ab/dtmf",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+{
+  "message": "DTMF sent",
+  "uuid": "63f61863-4a51-4f6b-86e1-46edebcf9356"
+}
+	`,
+			)
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", []byte("imagine this is a private key"))
+	client := NewVoiceClient(auth)
+
+	result, _, _ := client.PlayDtmf("abcdef01-2222-3333-4444-9876543210ab", "752")
+	if result.Message != "DTMF sent" {
+		t.Errorf("Voice DTMF send failed")
+	}
+}

@@ -25,7 +25,6 @@ func NewVoiceClient(Auth Auth) *VoiceClient {
 	client.Config = voice.NewConfiguration()
 	client.Config.UserAgent = "vonage-go/0.15-dev Go/" + runtime.Version()
 	client.Config.AddDefaultHeader("Authorization", "Bearer "+client.JWT)
-	// client.Config.BasePath = "http://localhost:4010"
 	return client
 }
 
@@ -372,5 +371,125 @@ func (client *VoiceClient) voiceAction(action string, uuid string) (ModifyCallRe
 	}
 
 	// this is a backstop, we shouldn't end up here
-	return ModifyCallResponse{}, VoiceErrorResponse{}, errors.New("Unsupported combination of parameters, supply an answer URL or valid NCCO")
+	return ModifyCallResponse{}, VoiceErrorResponse{}, errors.New("An unknown error occurred. Please check the documentation and try again")
+}
+
+type PlayAudioOpts struct {
+	Loop  string
+	Level int
+}
+
+// PlayAudioStream starts an audio file from a URL playing in a call
+func (client *VoiceClient) PlayAudioStream(uuid string, streamUrl string, opts PlayAudioOpts) (voice.StartStreamResponse, VoiceErrorResponse, error) {
+	voiceClient := voice.NewAPIClient(client.Config)
+
+	streamOpts := voice.StartStreamRequest{StreamUrl: []string{streamUrl}}
+
+	ctx := context.Background()
+	response, _, err := voiceClient.StreamAudioApi.StartStream(ctx, uuid, streamOpts)
+
+	if err != nil {
+		e := err.(voice.GenericOpenAPIError)
+		data := e.Body()
+
+		var errResp VoiceErrorGeneralResponse
+		json.Unmarshal(data, &errResp)
+		return response, VoiceErrorResponse{Error: errResp}, err
+	}
+
+	return response, VoiceErrorResponse{}, err
+}
+
+// StopAudioStream stops the currently-playing audio stream
+func (client *VoiceClient) StopAudioStream(uuid string) (voice.StopStreamResponse, VoiceErrorResponse, error) {
+	voiceClient := voice.NewAPIClient(client.Config)
+	ctx := context.Background()
+	response, _, err := voiceClient.StreamAudioApi.StopStream(ctx, uuid)
+
+	if err != nil {
+		e := err.(voice.GenericOpenAPIError)
+		data := e.Body()
+
+		var errResp VoiceErrorGeneralResponse
+		json.Unmarshal(data, &errResp)
+		return response, VoiceErrorResponse{Error: errResp}, err
+	}
+
+	return response, VoiceErrorResponse{}, err
+}
+
+type PlayTtsOpts struct {
+	Text      string
+	Loop      int32
+	Level     string
+	VoiceName string
+}
+
+// PlayTts starts playing TTS into the call
+func (client *VoiceClient) PlayTts(uuid string, text string, opts PlayTtsOpts) (voice.StartTalkResponse, VoiceErrorResponse, error) {
+	voiceClient := voice.NewAPIClient(client.Config)
+
+	req_vars := voice.StartTalkRequest{Text: text}
+	if opts.Loop != 0 {
+		req_vars.Loop = opts.Loop
+	}
+	if opts.Level != "" {
+		req_vars.Level = opts.Level
+	}
+	if opts.VoiceName != "" {
+		req_vars.VoiceName = voice.VoiceName(opts.VoiceName)
+	}
+	talkOpts := voice.StartTalkOpts{StartTalkRequest: optional.NewInterface(req_vars)}
+
+	ctx := context.Background()
+	response, _, err := voiceClient.PlayTTSApi.StartTalk(ctx, uuid, &talkOpts)
+
+	if err != nil {
+		e := err.(voice.GenericOpenAPIError)
+		data := e.Body()
+
+		var errResp VoiceErrorGeneralResponse
+		json.Unmarshal(data, &errResp)
+		return response, VoiceErrorResponse{Error: errResp}, err
+	}
+
+	return response, VoiceErrorResponse{}, err
+}
+
+// StopTts stops the current TTS from playing
+func (client *VoiceClient) StopTts(uuid string) (voice.StopTalkResponse, VoiceErrorResponse, error) {
+	voiceClient := voice.NewAPIClient(client.Config)
+	ctx := context.Background()
+	response, _, err := voiceClient.PlayTTSApi.StopTalk(ctx, uuid)
+
+	if err != nil {
+		e := err.(voice.GenericOpenAPIError)
+		data := e.Body()
+
+		var errResp VoiceErrorGeneralResponse
+		json.Unmarshal(data, &errResp)
+		return response, VoiceErrorResponse{Error: errResp}, err
+	}
+
+	return response, VoiceErrorResponse{}, err
+}
+
+// PlayDTMF starts playing a string of DTMF digits into the call
+func (client *VoiceClient) PlayDtmf(uuid string, dtmf string) (voice.DtmfResponse, VoiceErrorResponse, error) {
+	voiceClient := voice.NewAPIClient(client.Config)
+	dtmfOpts := voice.DtmfRequest{Digits: dtmf}
+
+	ctx := context.Background()
+	response, _, err := voiceClient.PlayDTMFApi.StartDTMF(ctx, uuid, dtmfOpts)
+
+	if err != nil {
+		e := err.(voice.GenericOpenAPIError)
+		data := e.Body()
+
+		var errResp VoiceErrorGeneralResponse
+		json.Unmarshal(data, &errResp)
+		return response, VoiceErrorResponse{Error: errResp}, err
+	}
+
+	return response, VoiceErrorResponse{}, err
 }
