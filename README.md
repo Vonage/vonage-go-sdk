@@ -1,26 +1,26 @@
-# Nexmo Server SDK For Go
+# Vonage Go SDK
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/nexmo-community/nexmo-go)](https://goreportcard.com/report/github.com/nexmo-community/nexmo-go)
-[![Build Status](https://travis-ci.org/nexmo-community/nexmo-go.svg?branch=master)](https://travis-ci.org/nexmo-community/nexmo-go)
-[![Coverage](https://codecov.io/gh/nexmo-community/nexmo-go/branch/master/graph/badge.svg)](https://codecov.io/gh/nexmo-community/nexmo-go)
-[![GoDoc](https://godoc.org/github.com/nexmo-community/nexmo-go?status.svg)](https://godoc.org/github.com/nexmo-community/nexmo-go) 
+[![Go Report Card](https://goreportcard.com/badge/github.com/vonage/vonage-go-sdk)](https://goreportcard.com/report/github.com/vonage/vonage-go-sdk)
+[![Build Status](https://travis-ci.org/vonage/vonage-go-sdk.svg?branch=master)](https://travis-ci.org/vonage/vonage-go-sdk)
+[![Coverage](https://codecov.io/gh/vonage/vonage-go-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/vonage/vonage-go-sdk)
+[![GoDoc](https://godoc.org/github.com/vonage/vonage-go-sdk?status.svg)](https://godoc.org/github.com/vonage/vonage-go-sdk) 
 
 <img src="https://developer.nexmo.com/assets/images/Vonage_Nexmo.svg" height="48px" alt="Nexmo is now known as Vonage" />
 
-This is the community-supported Golang library for [Nexmo](https://nexmo.com). It has support for most of our APIs, but is still under active development. Issues, pull requests and other input is very welcome.
+This is the community-supported Golang library for [Vonage](https://vonage.com). It has support for most of our APIs, but is still under active development. Issues, pull requests and other input is very welcome.
 
-If you don't already know Nexmo: We make telephony APIs. If you need to make a call, check a phone number, or send an SMS then you are in the right place! If you don't have a Nexmo yet, you can [sign up for a Nexmo account](https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&amp;utm_medium=github&amp;utm_campaign=nexmo-go) and get some free credit to get you started.
+If you don't already know Vonage: We make telephony APIs. If you need to make a call, check a phone number, or send an SMS then you are in the right place! If you don't have one yet, you can [sign up for a Vonage account](https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&amp;utm_medium=github&amp;utm_campaign=vonage-go) and get some free credit to get you started.
 
 > Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by its terms.
 
 ## Installation
 
-Find current and past releases on the [releases page](https://github.com/nexmo-community/nexmo-go/releases).
+Find current and past releases on the [releases page](https://github.com/vonage/vonage-go-sdk/releases).
 
 Import the package and use it in your own project
 
 ```
-import ("github.com/nexmo-community/nexmo-go")
+import ("github.com/vonage/vonage-go-sdk")
 ```
 
 ## Usage
@@ -41,13 +41,13 @@ package main
 import (
 	"fmt"
 
-	"github.com/nexmo-community/nexmo-go/nexmo"
+	"github.com/vonage/vonage-go-sdk"
 )
 
 func main() {
-	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	smsClient := nexmo.NewSMSClient(auth)
-	response, err := smsClient.Send("NexmoGolang", "44777000777", "This is a message from golang", nexmo.SMSOpts{})
+	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	smsClient := vonage.NewSMSClient(auth)
+	response, err := smsClient.Send("44777000000", "44777000777", "This is a message from golang", vonage.SMSOpts{})
 
 	if err != nil {
 		panic(err)
@@ -69,13 +69,13 @@ package main
 import (
 	"fmt"
 
-	"github.com/nexmo-community/nexmo-go/nexmo"
+	"github.com/vonage/vonage-go-sdk"
 )
 
 func main() {
-	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	smsClient := nexmo.NewSMSClient(auth)
-	response, err := smsClient.Send("NexmoGolang", "44777000777", "こんにちは世界", nexmo.SMSOpts{Type: "unicode"})
+	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	smsClient := vonage.NewSMSClient(auth)
+	response, err := smsClient.Send("44777000000", "44777000777", "こんにちは世界", vonage.SMSOpts{Type: "unicode"})
 
 	if err != nil {
 		panic(err)
@@ -124,14 +124,14 @@ package main
 import (
 	"fmt"
 
-	"github.com/nexmo-community/nexmo-go"
+	"github.com/vonage/vonage-go-sdk"
 )
 
 func main() {
-	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	verifyClient := nexmo.NewVerifyClient(auth)
+	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	verifyClient := vonage.NewVerifyClient(auth)
 
-    response, errResp, err := verifyClient.Request("44777000777", "GoTest", nexmo.VerifyOpts{CodeLength: 6, Lg: "es-es", WorkflowID: 4})
+    response, errResp, err := verifyClient.Request("44777000777", "GoTest", vonage.VerifyOpts{CodeLength: 6, Lg: "es-es", WorkflowID: 4})
 
     if err != nil {
         fmt.Printf("%#v\n", err)
@@ -155,12 +155,12 @@ package main
 import (
 	"fmt"
 
-	"github.com/nexmo-community/nexmo-go"
+	"github.com/vonage/vonage-go-sdk"
 )
 
 func main() {
-	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	verifyClient := nexmo.NewVerifyClient(auth)
+	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	verifyClient := vonage.NewVerifyClient(auth)
 
 	response, errResp, err := verifyClient.Check(REQUEST_ID, PIN_CODE)
 
@@ -187,12 +187,12 @@ package main
 import (
 	"fmt"
 
-	"github.com/nexmo-community/nexmo-go"
+	"github.com/vonage/vonage-go-sdk"
 )
 
 func main() {
-	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	verifyClient := nexmo.NewVerifyClient(auth)
+	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	verifyClient := vonage.NewVerifyClient(auth)
    	response, errResp, err := verifyClient.Cancel(REQUEST_ID)
 
 	if err != nil {
@@ -216,12 +216,12 @@ package main
 import (
 	"fmt"
 
-	"github.com/nexmo-community/nexmo-go"
+	"github.com/vonage/vonage-go-sdk"
 )
 
 func main() {
-	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	verifyClient := nexmo.NewVerifyClient(auth)
+	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	verifyClient := vonage.NewVerifyClient(auth)
    	response, errResp, err := verifyClient.TriggerNextEvent(REQUEST_ID)
 
 	if err != nil {
@@ -245,12 +245,12 @@ package main
 import (
 	"fmt"
 
-	"github.com/nexmo-community/nexmo-go"
+	"github.com/vonage/vonage-go-sdk"
 )
 
 func main() {
-	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	verifyClient := nexmo.NewVerifyClient(auth)
+	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	verifyClient := vonage.NewVerifyClient(auth)
    	response, errResp, err := verifyClient.Search(REQUEST_ID)
 
 	if err != nil {
@@ -544,13 +544,13 @@ package main
 import (
 	"fmt"
 
-	"github.com/nexmo-community/nexmo-go"
+	"github.com/vonage/vonage-go-sdk"
 )
 
 func main() {
-	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	numbersClient := nexmo.NewNumbersClient(auth)
-	response, err := numbersClient.List(nexmo.NumbersOpts{})
+	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	numbersClient := vonage.NewNumbersClient(auth)
+	response, err := numbersClient.List(vonage.NumbersOpts{})
 
 	if err != nil {
 		panic(err)
@@ -570,13 +570,13 @@ package main
 import (
 	"fmt"
 
-	"github.com/nexmo-community/nexmo-go"
+	"github.com/vonage/vonage-go-sdk"
 )
 
 func main() {
-	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	numbersClient := nexmo.NewNumbersClient(auth)
-	response, err := numbersClient.List(nexmo.NumbersOpts{HasApplication: "false"})
+	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	numbersClient := vonage.NewNumbersClient(auth)
+	response, err := numbersClient.List(vonage.NumbersOpts{HasApplication: "false"})
 
 	if err != nil {
 		panic(err)
@@ -598,13 +598,13 @@ package main
 import (
 	"fmt"
 
-	"github.com/nexmo-community/nexmo-go"
+	"github.com/vonage/vonage-go-sdk"
 )
 
 func main() {
-	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	numbersClient := nexmo.NewNumbersClient(auth)
-    response, respErr, err := numbersClient.Search("GB", nexmo.NumberSearchOpts{Size: 10})
+	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	numbersClient := vonage.NewNumbersClient(auth)
+    response, respErr, err := numbersClient.Search("GB", vonage.NumberSearchOpts{Size: 10})
     if err != nil {
         panic(err)
     }
@@ -627,14 +627,14 @@ package main
 import (
 	"fmt"
 
-	"github.com/nexmo-community/nexmo-go"
+	"github.com/vonage/vonage-go-sdk"
 )
 
 func main() {
-	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	numbersClient := nexmo.NewNumbersClient(auth)
+	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	numbersClient := vonage.NewNumbersClient(auth)
 
-    response, resp, err := numbersClient.Buy("GB", "44777000777", nexmo.NumberBuyOpts{})
+    response, resp, err := numbersClient.Buy("GB", "44777000777", vonage.NumberBuyOpts{})
     if err != nil {
         panic(err)
     }
@@ -660,13 +660,13 @@ package main
 import (
 	"fmt"
 
-	"github.com/nexmo-community/nexmo-go"
+	"github.com/vonage/vonage-go-sdk"
 )
 
 func main() {
-	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	numbersClient := nexmo.NewNumbersClient(auth)
-	response, resp, err := numbersClient.Update("GB", "44777000777", nexmo.NumberUpdateOpts{AppID: " aaaaaaaa-bbbb-cccc-dddd-0123456789abc"})
+	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	numbersClient := vonage.NewNumbersClient(auth)
+	response, resp, err := numbersClient.Update("GB", "44777000777", vonage.NumberUpdateOpts{AppID: " aaaaaaaa-bbbb-cccc-dddd-0123456789abc"})
 
 	fmt.Printf("%#v\n", response)
 }
@@ -682,14 +682,14 @@ package main
 import (
 	"fmt"
 
-	"github.com/nexmo-community/nexmo-go"
+	"github.com/vonage/vonage-go-sdk"
 )
 
 func main() {
-	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	numbersClient := nexmo.NewNumbersClient(auth)
+	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	numbersClient := vonage.NewNumbersClient(auth)
 
-    response, resp, err := numbersClient.Cancel("GB", "44777000777", nexmo.NumberCancelOpts{})
+    response, resp, err := numbersClient.Cancel("GB", "44777000777", vonage.NumberCancelOpts{})
     if err != nil {
         panic(err)
     }
@@ -711,7 +711,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/nexmo-community/nexmo-go/jwt"
+	"github.com/vonage/vonage-go-sdk/jwt"
 )
 
 func main() {
@@ -748,8 +748,8 @@ NCCO (Nexmo Call Control Object) is the format for describing the various action
 The basic approach is to create an NCCO, then create actions to add into it:
 
 ```go
-	ncco := nexmo.Ncco{}
-	talk := nexmo.TalkAction{Text: "Greetings from the golang library", VoiceName: "Nicole"}
+	ncco := vonage.Ncco{}
+	talk := vonage.TalkAction{Text: "Greetings from the golang library", VoiceName: "Nicole"}
 	ncco.AddAction(talk)
 ```
 
@@ -758,7 +758,7 @@ The basic approach is to create an NCCO, then create actions to add into it:
 Create a `talk` action to read some text into the call:
 
 ```go
-	talk := nexmo.TalkAction{Text: "Greetings from the golang library", VoiceName: "Nicole"}
+	talk := vonage.TalkAction{Text: "Greetings from the golang library", VoiceName: "Nicole"}
 ```
 
 #### Notify Action
@@ -769,7 +769,7 @@ Use `notify` to send a particular data payload to a nominated URL:
 	url := []string{"https://example.com/webhooks/notify"}
 	data := make(map[string]string)
 	data["stage"] = "Registration"
-	ping := nexmo.NotifyAction{EventUrl: url, Payload: data}
+	ping := vonage.NotifyAction{EventUrl: url, Payload: data}
 ```
 
 This feature is useful for marking progress through a call and that the user is still connected.
@@ -779,7 +779,7 @@ This feature is useful for marking progress through a call and that the user is 
 Send a `record` action to start a recording:
 
 ```go
-    record := nexmo.RecordAction{BeepStart: true}
+    record := vonage.RecordAction{BeepStart: true}
 ```
 
 When the recording completes, Nexmo sends a webhook containing the recording URL so that you can download the file.
@@ -789,7 +789,7 @@ When the recording completes, Nexmo sends a webhook containing the recording URL
 Adds the call to a conversation:
 
 ```go
-    conversation := nexmo.ConversationAction{Name: "convo1"}
+    conversation := vonage.ConversationAction{Name: "convo1"}
 ```
 
 #### Stream Action
@@ -797,7 +797,7 @@ Adds the call to a conversation:
 Play an mp3 file into a call as an audio stream:
 
 ```go
-    stream := nexmo.StreamAction{StreamUrl: []string{"https://example.com/music.mp3"}}
+    stream := vonage.StreamAction{StreamUrl: []string{"https://example.com/music.mp3"}}
 
 ```
 
@@ -806,8 +806,8 @@ Play an mp3 file into a call as an audio stream:
 Connects the current call to another endpoint (currently only phone is supported):
 
 ```go
-    endpoint := []nexmo.PhoneEndpoint{Number: "44777000777"}
-	connect := nexmo.ConnectAction{Endpoint: endpoint, From: "44777000888"}
+    endpoint := []vonage.PhoneEndpoint{Number: "44777000777"}
+	connect := vonage.ConnectAction{Endpoint: endpoint, From: "44777000888"}
 ```
 The `from` field when connecting to a phone endpoint should be a Nexmo number that you own.
 
@@ -823,17 +823,17 @@ package main
 import (
 	"fmt"
 
-	"github.com/nexmo-community/nexmo-go/nexmo"
+	"github.com/vonage/vonage-go-sdk"
 )
 
 func main() {
 	fmt.Println("Hello")
 
-	auth := nexmo.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	smsClient := nexmo.NewSMSClient(auth)
+	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	smsClient := vonage.NewSMSClient(auth)
     smsClient.Config.BasePath = "http://localhost:4010"
 
-	response, err := smsClient.Send("NexmoGolang", "44777000777", "This is a message from golang", nexmo.SMSOpts{})
+	response, err := smsClient.Send("NexmoGolang", "44777000777", "This is a message from golang", vonage.SMSOpts{})
 
 	if err != nil {
 		panic(err)
@@ -884,4 +884,4 @@ We love to hear from you so if you have questions, comments or find a bug in the
 ## Further Reading
  
 * Check out the Developer Documentation at <https://developer.nexmo.com> - you'll find the API references for all the APIs there as well
-* The documentation for the library: <https://godoc.org/github.com/nexmo-community/nexmo-go>
+* The documentation for the library: <https://godoc.org/github.com/vonage/vonage-go-sdk>
