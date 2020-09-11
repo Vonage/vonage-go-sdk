@@ -9,15 +9,6 @@
  */
 
 package numberInsight
-// NiBasicStatus Code | Text -- | -- 0 | Success - request accepted for delivery by Nexmo. 1 | Busy - you have made more requests in the last second than are permitted by your Nexmo account. Please retry. 3 | Invalid - your request is incomplete and missing some mandatory parameters. 4 | Invalid credentials - the _api_key_ or _api_secret_ you supplied is either not valid or has been disabled. 5 | Internal Error - the format of the recipient address is not valid. 9 | Partner quota exceeded - your Nexmo account does not have sufficient credit to process this request. 
-type NiBasicStatus int32
 
-// List of niBasicStatus
-const (
-	_0 NiBasicStatus = 0
-	_1 NiBasicStatus = 1
-	_3 NiBasicStatus = 3
-	_4 NiBasicStatus = 4
-	_5 NiBasicStatus = 5
-	_9 NiBasicStatus = 9
-)
+// NiBasicStatus Code | Text -- | -- 0 | Success - request accepted for delivery by Nexmo. 1 | Busy - you have made more requests in the last second than are permitted by your Nexmo account. Please retry. 3 | Invalid - your request is incomplete and missing some mandatory parameters. 4 | Invalid credentials - the _api_key_ or _api_secret_ you supplied is either not valid or has been disabled. 5 | Internal Error - the format of the recipient address is not valid. 9 | Partner quota exceeded - your Nexmo account does not have sufficient credit to process this request.
+type NiBasicStatus int32
