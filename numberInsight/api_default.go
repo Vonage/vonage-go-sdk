@@ -231,7 +231,7 @@ func (a *DefaultApiService) GetNumberInsightAsync(ctx _context.Context, format s
 	}
 	if ctx != nil {
 		// API Key Authentication
-		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
+		if auth, ok := ctx.Value(ContextAPISecret).(APIKey); ok {
 			var key string
 			if auth.Prefix != "" {
 				key = auth.Prefix + " " + auth.Key

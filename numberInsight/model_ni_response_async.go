@@ -18,6 +18,8 @@ type NiResponseAsync struct {
 	// Your account balance in EUR after this request.
 	RemainingBalance string `json:"remaining_balance,omitempty"`
 	// If there is an internal lookup error, the `refund_price` will reflect the lookup price. If `cnam` is requested for a non-US number the `refund_price` will reflect the `cnam` price. If both of these conditions occur, `refund_price` is the sum of the lookup price and `cnam` price.
-	RequestPrice string `json:"request_price,omitempty"`
-	Status NiStandardAdvancedStatus `json:"status,omitempty"`
+	RequestPrice  string                   `json:"request_price,omitempty"`
+	Status        NiStandardAdvancedStatus `json:"status,omitempty"`
+	StatusMessage string                   `json:"error_text,omitempty"`
+	// The unique identifier for your request. This is a alphanumeric string up to 40 characters.
 }
