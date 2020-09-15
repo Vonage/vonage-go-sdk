@@ -27,7 +27,7 @@ func NewNumberInsightClient(Auth Auth) *NumberInsightClient {
 }
 
 type NiErrorResponse struct {
-	Status        numberInsight.NiBasicStatus
+	Status        int32
 	StatusMessage string
 }
 
@@ -52,7 +52,67 @@ func (client *NumberInsightClient) Basic(number string) (numberInsight.NiRespons
 
 	if result.Status != 0 {
 		errResp := NiErrorResponse{
-			Status:        result.Status,
+			Status:        int32(result.Status),
+			StatusMessage: result.StatusMessage,
+		}
+		return result, errResp, nil
+	}
+
+	return result, NiErrorResponse{}, nil
+}
+
+// Standard does a Standard-level lookup for data about a number
+func (client *NumberInsightClient) Standard(number string) (numberInsight.NiResponseJsonStandard, NiErrorResponse, error) {
+	// create the client
+	numberInsightClient := numberInsight.NewAPIClient(client.Config)
+
+	niOpts := numberInsight.GetNumberInsightStandardOpts{}
+
+	// we need context for the API key
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, numberInsight.ContextAPIKey, numberInsight.APIKey{Key: client.apiKey})
+	ctx = context.WithValue(ctx, numberInsight.ContextAPISecret, numberInsight.APIKey{Key: client.apiSecret})
+
+	result, _, err := numberInsightClient.DefaultApi.GetNumberInsightStandard(ctx, "json", number, &niOpts)
+
+	// catch HTTP errors
+	if err != nil {
+		return numberInsight.NiResponseJsonStandard{}, NiErrorResponse{}, err
+	}
+
+	if result.Status != 0 {
+		errResp := NiErrorResponse{
+			Status:        int32(result.Status),
+			StatusMessage: result.StatusMessage,
+		}
+		return result, errResp, nil
+	}
+
+	return result, NiErrorResponse{}, nil
+}
+
+// AdvancedAsync requests a callback with advanced-level information about a number
+func (client *NumberInsightClient) AdvancedAsync(number string, callback string) (numberInsight.NiResponseAsync, NiErrorResponse, error) {
+	// create the client
+	numberInsightClient := numberInsight.NewAPIClient(client.Config)
+
+	niOpts := numberInsight.GetNumberInsightAsyncOpts{}
+
+	// we need context for the API key
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, numberInsight.ContextAPIKey, numberInsight.APIKey{Key: client.apiKey})
+	ctx = context.WithValue(ctx, numberInsight.ContextAPISecret, numberInsight.APIKey{Key: client.apiSecret})
+
+	result, _, err := numberInsightClient.DefaultApi.GetNumberInsightAsync(ctx, "json", callback, number, &niOpts)
+
+	// catch HTTP errors
+	if err != nil {
+		return numberInsight.NiResponseAsync{}, NiErrorResponse{}, err
+	}
+
+	if result.Status != 0 {
+		errResp := NiErrorResponse{
+			Status:        int32(result.Status),
 			StatusMessage: result.StatusMessage,
 		}
 		return result, errResp, nil
