@@ -188,11 +188,13 @@ func (client *NumbersClient) Buy(country string, msisdn string, opts NumberBuyOp
 		data := e.Body()
 
 		var errResp NumbersErrorResponse
-		json.Unmarshal(data, &errResp)
-		if errResp.ErrorCode == "420" && errResp.ErrorCodeLabel == "method failed" {
-			errResp.ErrorCodeLabel = "method failed. This can also indicate that you already own this number"
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			if errResp.ErrorCode == "420" && errResp.ErrorCodeLabel == "method failed" {
+				errResp.ErrorCodeLabel = "method failed. This can also indicate that you already own this number"
+			}
+			return result, errResp, nil
 		}
-		return result, errResp, nil
 	}
 
 	if err != nil {
@@ -229,12 +231,14 @@ func (client *NumbersClient) Cancel(country string, msisdn string, opts NumberCa
 		data := e.Body()
 
 		var errResp NumbersErrorResponse
-		json.Unmarshal(data, &errResp)
-		if errResp.ErrorCode == "420" && errResp.ErrorCodeLabel == "method failed" {
-			// expand on this error code, it's commonly because you don't own the number
-			errResp.ErrorCodeLabel = "method failed. This can also indicate that the number is not associated with this key"
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			if errResp.ErrorCode == "420" && errResp.ErrorCodeLabel == "method failed" {
+				// expand on this error code, it's commonly because you don't own the number
+				errResp.ErrorCodeLabel = "method failed. This can also indicate that the number is not associated with this key"
+			}
+			return result, errResp, nil
 		}
-		return result, errResp, nil
 	}
 
 	if err != nil {
@@ -297,8 +301,10 @@ func (client *NumbersClient) Update(country string, msisdn string, opts NumberUp
 		data := e.Body()
 
 		var errResp NumbersErrorResponse
-		json.Unmarshal(data, &errResp)
-		return result, errResp, nil
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			return result, errResp, nil
+		}
 	}
 
 	return result, NumbersErrorResponse{}, nil

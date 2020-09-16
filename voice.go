@@ -99,18 +99,18 @@ type VoiceErrorResponse struct {
 // VoiceErrorInvalidParamsResponse can come with a 400 response if
 // it is caused by some invalid_parameters
 type VoiceErrorInvalidParamsResponse struct {
-	Type              int                 `json:"type, omitempty"`
-	Title             string              `json:"title, omitempty"`
-	Detail            string              `json:"detail, omitempty"`
-	Instance          string              `json:"instance, omitempty"`
-	InvalidParameters []map[string]string `json:"invalid_parameters, omitempty"`
+	Type              int                 `json:"type,omitempty"`
+	Title             string              `json:"title,omitempty"`
+	Detail            string              `json:"detail,omitempty"`
+	Instance          string              `json:"instance,omitempty"`
+	InvalidParameters []map[string]string `json:"invalid_parameters,omitempty"`
 }
 
 // VoiceErrorGeneralResponse covers some common error types that come
 // from the webserver/gateway rather than the API itself
 type VoiceErrorGeneralResponse struct {
-	Type  string `json:"type, omitempty"`
-	Title string `json:"error_title, omitempty"`
+	Type  string `json:"type,omitempty"`
+	Title string `json:"error_title,omitempty"`
 }
 
 func (client *VoiceClient) createCallCommon(opts CreateCallOpts) voice.CreateCallRequestBase {
@@ -218,16 +218,22 @@ func (client *VoiceClient) handleCreateCallErrors(result voice.CreateCallRespons
 		// now handle the errors we know we might get
 		if errorType == "401 Unauthorized" {
 			var errResp VoiceErrorGeneralResponse
-			json.Unmarshal(data, &errResp)
-			return voice.CreateCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+			jsonErr := json.Unmarshal(data, &errResp)
+			if jsonErr == nil {
+				return voice.CreateCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+			}
 		} else if errorType == "404 Not Found" {
 			var errResp VoiceErrorInvalidParamsResponse
-			json.Unmarshal(data, &errResp)
-			return voice.CreateCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+			jsonErr := json.Unmarshal(data, &errResp)
+			if jsonErr == nil {
+				return voice.CreateCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+			}
 		} else if errorType == "400 Bad Request" {
 			var errResp VoiceErrorInvalidParamsResponse
-			json.Unmarshal(data, &errResp)
-			return voice.CreateCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+			jsonErr := json.Unmarshal(data, &errResp)
+			if jsonErr == nil {
+				return voice.CreateCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+			}
 		} else {
 			return voice.CreateCallResponse{}, VoiceErrorResponse{}, err
 		}
@@ -284,8 +290,10 @@ func (client *VoiceClient) TransferCall(opts TransferCallOpts) (ModifyCallRespon
 			errorType := e.Error()
 			if errorType == "400 Bad Request" {
 				var errResp VoiceErrorInvalidParamsResponse
-				json.Unmarshal(data, &errResp)
-				return ModifyCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+				jsonErr := json.Unmarshal(data, &errResp)
+				if jsonErr == nil {
+					return ModifyCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+				}
 			}
 			return ModifyCallResponse{}, VoiceErrorResponse{Error: response}, err
 		} else {
@@ -304,8 +312,10 @@ func (client *VoiceClient) TransferCall(opts TransferCallOpts) (ModifyCallRespon
 			errorType := e.Error()
 			if errorType == "400 Bad Request" {
 				var errResp VoiceErrorInvalidParamsResponse
-				json.Unmarshal(data, &errResp)
-				return ModifyCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+				jsonErr := json.Unmarshal(data, &errResp)
+				if jsonErr == nil {
+					return ModifyCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+				}
 			}
 			return ModifyCallResponse{}, VoiceErrorResponse{Error: response}, err
 		} else {
@@ -361,17 +371,16 @@ func (client *VoiceClient) voiceAction(action string, uuid string) (ModifyCallRe
 		errorType := e.Error()
 		if errorType == "400 Bad Request" {
 			var errResp VoiceErrorInvalidParamsResponse
-			json.Unmarshal(data, &errResp)
-			return ModifyCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+			jsonErr := json.Unmarshal(data, &errResp)
+			if jsonErr == nil {
+				return ModifyCallResponse{}, VoiceErrorResponse{Error: errResp}, err
+			}
 		}
 		return ModifyCallResponse{}, VoiceErrorResponse{Error: response}, err
 	} else {
 		// not a whole lot to return as it's a 204, this branch is success
 		return ModifyCallResponse{Status: "0"}, VoiceErrorResponse{}, nil
 	}
-
-	// this is a backstop, we shouldn't end up here
-	return ModifyCallResponse{}, VoiceErrorResponse{}, errors.New("An unknown error occurred. Please check the documentation and try again")
 }
 
 type PlayAudioOpts struct {
@@ -393,8 +402,10 @@ func (client *VoiceClient) PlayAudioStream(uuid string, streamUrl string, opts P
 		data := e.Body()
 
 		var errResp VoiceErrorGeneralResponse
-		json.Unmarshal(data, &errResp)
-		return response, VoiceErrorResponse{Error: errResp}, err
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			return response, VoiceErrorResponse{Error: errResp}, err
+		}
 	}
 
 	return response, VoiceErrorResponse{}, err
@@ -411,8 +422,10 @@ func (client *VoiceClient) StopAudioStream(uuid string) (voice.StopStreamRespons
 		data := e.Body()
 
 		var errResp VoiceErrorGeneralResponse
-		json.Unmarshal(data, &errResp)
-		return response, VoiceErrorResponse{Error: errResp}, err
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			return response, VoiceErrorResponse{Error: errResp}, err
+		}
 	}
 
 	return response, VoiceErrorResponse{}, err
@@ -449,8 +462,10 @@ func (client *VoiceClient) PlayTts(uuid string, text string, opts PlayTtsOpts) (
 		data := e.Body()
 
 		var errResp VoiceErrorGeneralResponse
-		json.Unmarshal(data, &errResp)
-		return response, VoiceErrorResponse{Error: errResp}, err
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			return response, VoiceErrorResponse{Error: errResp}, err
+		}
 	}
 
 	return response, VoiceErrorResponse{}, err
@@ -467,8 +482,10 @@ func (client *VoiceClient) StopTts(uuid string) (voice.StopTalkResponse, VoiceEr
 		data := e.Body()
 
 		var errResp VoiceErrorGeneralResponse
-		json.Unmarshal(data, &errResp)
-		return response, VoiceErrorResponse{Error: errResp}, err
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			return response, VoiceErrorResponse{Error: errResp}, err
+		}
 	}
 
 	return response, VoiceErrorResponse{}, err
@@ -487,8 +504,10 @@ func (client *VoiceClient) PlayDtmf(uuid string, dtmf string) (voice.DtmfRespons
 		data := e.Body()
 
 		var errResp VoiceErrorGeneralResponse
-		json.Unmarshal(data, &errResp)
-		return response, VoiceErrorResponse{Error: errResp}, err
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			return response, VoiceErrorResponse{Error: errResp}, err
+		}
 	}
 
 	return response, VoiceErrorResponse{}, err

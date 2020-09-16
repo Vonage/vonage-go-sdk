@@ -1,6 +1,7 @@
 package vonage
 
 import (
+	"context"
 	"errors"
 	"runtime"
 
@@ -60,12 +61,14 @@ func (client *SMSClient) Send(from string, to string, text string, opts SMSOpts)
 		smsOpts.Type_ = optional.NewString(opts.Type)
 	}
 
-	if opts.StatusReportReq != false {
+	if opts.StatusReportReq {
 		smsOpts.StatusReportReq = optional.NewBool(opts.StatusReportReq)
 	}
 
+	ctx := context.Background()
+
 	// now send the SMS
-	result, _, err := smsClient.DefaultApi.SendAnSms(nil, "json", client.apiKey, from, to, &smsOpts)
+	result, _, err := smsClient.DefaultApi.SendAnSms(ctx, "json", client.apiKey, from, to, &smsOpts)
 
 	// catch HTTP errors
 	if err != nil {

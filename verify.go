@@ -77,8 +77,10 @@ func (client *VerifyClient) Request(number string, brand string, opts VerifyOpts
 		data, _ := ioutil.ReadAll(resp.Body)
 
 		var errResp verify.RequestErrorResponse
-		json.Unmarshal(data, &errResp)
-		return result, errResp, nil
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			return result, errResp, nil
+		}
 	}
 	return result, verify.RequestErrorResponse{}, nil
 }
@@ -107,8 +109,10 @@ func (client *VerifyClient) Check(requestID string, code string) (verify.CheckRe
 		data, _ := ioutil.ReadAll(resp.Body)
 
 		var errResp verify.CheckErrorResponse
-		json.Unmarshal(data, &errResp)
-		return result, errResp, nil
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			return result, errResp, nil
+		}
 	}
 
 	return result, verify.CheckErrorResponse{}, nil
@@ -139,8 +143,10 @@ func (client *VerifyClient) Search(requestID string) (verify.SearchResponse, ver
 		data, _ := ioutil.ReadAll(resp.Body)
 
 		var errResp verify.SearchErrorResponse
-		json.Unmarshal(data, &errResp)
-		return verify.SearchResponse{}, errResp, nil
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			return verify.SearchResponse{}, errResp, nil
+		}
 	}
 
 	return result, verify.SearchErrorResponse{}, nil
@@ -168,8 +174,10 @@ func (client *VerifyClient) Cancel(requestID string) (verify.ControlResponse, ve
 		data, _ := ioutil.ReadAll(resp.Body)
 
 		var errResp verify.ControlErrorResponse
-		json.Unmarshal(data, &errResp)
-		return result, errResp, nil
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			return result, errResp, nil
+		}
 	}
 
 	return result, verify.ControlErrorResponse{}, nil
@@ -197,8 +205,10 @@ func (client *VerifyClient) TriggerNextEvent(requestID string) (verify.ControlRe
 		data, _ := ioutil.ReadAll(resp.Body)
 
 		var errResp verify.ControlErrorResponse
-		json.Unmarshal(data, &errResp)
-		return result, errResp, nil
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			return result, errResp, nil
+		}
 	}
 
 	return result, verify.ControlErrorResponse{}, nil
