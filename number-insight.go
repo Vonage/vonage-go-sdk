@@ -4,6 +4,7 @@ import (
 	"context"
 	"runtime"
 
+	"github.com/antihax/optional"
 	"github.com/vonage/vonage-go-sdk/numberInsight"
 )
 
@@ -31,12 +32,20 @@ type NiErrorResponse struct {
 	StatusMessage string
 }
 
+type NiOpts struct {
+	Country string
+}
+
 // Basic does a basic-level lookup for data about a number
-func (client *NumberInsightClient) Basic(number string) (numberInsight.NiResponseJsonBasic, NiErrorResponse, error) {
+func (client *NumberInsightClient) Basic(number string, opts NiOpts) (numberInsight.NiResponseJsonBasic, NiErrorResponse, error) {
 	// create the client
 	numberInsightClient := numberInsight.NewAPIClient(client.Config)
 
 	niOpts := numberInsight.GetNumberInsightBasicOpts{}
+
+	if opts.Country != "" {
+		niOpts.Country = optional.NewString(opts.Country)
+	}
 
 	// we need context for the API key
 	ctx := context.Background()
@@ -62,7 +71,7 @@ func (client *NumberInsightClient) Basic(number string) (numberInsight.NiRespons
 }
 
 // Standard does a Standard-level lookup for data about a number
-func (client *NumberInsightClient) Standard(number string) (numberInsight.NiResponseJsonStandard, NiErrorResponse, error) {
+func (client *NumberInsightClient) Standard(number string, opts NiOpts) (numberInsight.NiResponseJsonStandard, NiErrorResponse, error) {
 	// create the client
 	numberInsightClient := numberInsight.NewAPIClient(client.Config)
 
@@ -92,7 +101,7 @@ func (client *NumberInsightClient) Standard(number string) (numberInsight.NiResp
 }
 
 // AdvancedAsync requests a callback with advanced-level information about a number
-func (client *NumberInsightClient) AdvancedAsync(number string, callback string) (numberInsight.NiResponseAsync, NiErrorResponse, error) {
+func (client *NumberInsightClient) AdvancedAsync(number string, callback string, opts NiOpts) (numberInsight.NiResponseAsync, NiErrorResponse, error) {
 	// create the client
 	numberInsightClient := numberInsight.NewAPIClient(client.Config)
 

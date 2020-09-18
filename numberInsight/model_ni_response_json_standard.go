@@ -33,12 +33,12 @@ type NiResponseJsonStandard struct {
 	// If there is an internal lookup error, the `refund_price` will reflect the lookup price. If `cnam` is requested for a non-US number the `refund_price` will reflect the `cnam` price. If both of these conditions occur, `refund_price` is the sum of the lookup price and `cnam` price.
 	RefundPrice string `json:"refund_price,omitempty"`
 	// Your account balance in EUR after this request.
-	RemainingBalance float32 `json:"remaining_balance,omitempty"`
-	CurrentCarrier NiCurrentCarrierProperties `json:"current_carrier,omitempty"`
-	OriginalCarrier NiInitialCarrierProperties `json:"original_carrier,omitempty"`
+	RemainingBalance string                     `json:"remaining_balance,omitempty"`
+	CurrentCarrier   NiCurrentCarrierProperties `json:"current_carrier,omitempty"`
+	OriginalCarrier  NiInitialCarrierProperties `json:"original_carrier,omitempty"`
 	// If the user has changed carrier for `number`. The assumed status means that the information supplier has replied to the request but has not said explicitly that the number is ported.
-	Ported string `json:"ported,omitempty"`
-	Roaming NiRoaming `json:"roaming,omitempty"`
+	Ported         string           `json:"ported,omitempty"`
+	Roaming        NiRoaming        `json:"roaming,omitempty"`
 	CallerIdentity NiCallerIdentity `json:"caller_identity,omitempty"`
 	// Full name of the person or business who owns the phone number. `unknown` if this information is not available. This parameter is only present if `cnam` had a value of `true` within the request.
 	CallerName string `json:"caller_name,omitempty"`
