@@ -27,6 +27,10 @@ var (
 // DefaultApiService DefaultApi service
 type DefaultApiService service
 
+type CreateApplicationOpts struct {
+	Opts optional.Interface
+}
+
 /*
 CreateApplication Create an application
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -67,7 +71,7 @@ func (a *DefaultApiService) CreateApplication(ctx _context.Context, uNKNOWNBASET
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = &uNKNOWNBASETYPE
+	localVarPostBody = localVarOptionals.Opts.Value()
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -503,6 +507,10 @@ func (a *DefaultApiService) ListApplication(ctx _context.Context, localVarOption
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type UpdateApplicationOpts struct {
+	Opts optional.Interface
+}
+
 /*
 UpdateApplication Update an application
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -546,7 +554,7 @@ func (a *DefaultApiService) UpdateApplication(ctx _context.Context, id string, u
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = &uNKNOWNBASETYPE
+	localVarPostBody = localVarOptionals.Opts.Value()
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
