@@ -37,7 +37,7 @@ CreateApplication Create an application
  * @param uNKNOWNBASETYPE
 @return ApplicationResponse
 */
-func (a *DefaultApiService) CreateApplication(ctx _context.Context, uNKNOWNBASETYPE UNKNOWN_BASE_TYPE) (ApplicationResponse, *_nethttp.Response, error) {
+func (a *DefaultApiService) CreateApplication(ctx _context.Context, localVarOptionals *CreateApplicationOpts) (ApplicationResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -391,16 +391,16 @@ ListApplication List available applications
  * @param optional nil or *ListApplicationOpts - Optional Parameters:
  * @param "PageSize" (optional.Int32) -  The number of applications per page
  * @param "Page" (optional.Int32) -  The current page number (starts at 1)
-@return map[string]interface{}
+@return ApplicationResponseCollection
 */
-func (a *DefaultApiService) ListApplication(ctx _context.Context, localVarOptionals *ListApplicationOpts) (map[string]interface{}, *_nethttp.Response, error) {
+func (a *DefaultApiService) ListApplication(ctx _context.Context, localVarOptionals *ListApplicationOpts) (ApplicationResponseCollection, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  map[string]interface{}
+		localVarReturnValue  ApplicationResponseCollection
 	)
 
 	// create path and map variables
@@ -518,7 +518,7 @@ UpdateApplication Update an application
  * @param uNKNOWNBASETYPE
 @return ApplicationResponse
 */
-func (a *DefaultApiService) UpdateApplication(ctx _context.Context, id string, uNKNOWNBASETYPE UNKNOWN_BASE_TYPE) (ApplicationResponse, *_nethttp.Response, error) {
+func (a *DefaultApiService) UpdateApplication(ctx _context.Context, id string, localVarOptionals *UpdateApplicationOpts) (ApplicationResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}

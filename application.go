@@ -28,7 +28,7 @@ func NewApplicationClient(Auth Auth) *ApplicationClient {
 }
 
 // List your Applications
-func (client *ApplicationClient) GetApplications() (map[string]interface{}, error) {
+func (client *ApplicationClient) GetApplications() (application.ApplicationResponseCollection, error) {
 	// create the client
 	applicationClient := application.NewAPIClient(client.Config)
 
