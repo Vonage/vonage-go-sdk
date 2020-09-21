@@ -2,9 +2,10 @@ package vonage
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 	"runtime"
 
+	"github.com/antihax/optional"
 	"github.com/vonage/vonage-go-sdk/application"
 )
 
@@ -27,12 +28,33 @@ func NewApplicationClient(Auth Auth) *ApplicationClient {
 	return client
 }
 
+// ApplicationErrorResponse respresents error responses
+type ApplicationErrorResponse struct {
+	Type     string `json:"type,omitempty"`
+	Title    string `json:"title,omitempty"`
+	Detail   string `json:"detail,omitempty"`
+	Instance string `json:"instance,omitempty"`
+}
+
+type GetApplicationsOpts struct {
+	PageSize int32
+	Page     int32
+}
+
 // List your Applications
-func (client *ApplicationClient) GetApplications() (application.ApplicationResponseCollection, error) {
+func (client *ApplicationClient) GetApplications(opts GetApplicationsOpts) (application.ApplicationResponseCollection, ApplicationErrorResponse, error) {
 	// create the client
 	applicationClient := application.NewAPIClient(client.Config)
 
 	AppOpts := application.ListApplicationOpts{}
+
+	if opts.Page != 0 {
+		AppOpts.Page = optional.NewInt32(opts.Page)
+	}
+
+	if opts.PageSize != 0 {
+		AppOpts.PageSize = optional.NewInt32(opts.PageSize)
+	}
 
 	ctx := context.WithValue(context.Background(), application.ContextBasicAuth, application.BasicAuth{
 		UserName: client.apiKey,
@@ -40,14 +62,24 @@ func (client *ApplicationClient) GetApplications() (application.ApplicationRespo
 	})
 
 	result, _, err := applicationClient.DefaultApi.ListApplication(ctx, &AppOpts)
-	// fmt.Printf("%#v\n", result)
-	fmt.Printf("%#v\n", err)
+	if err != nil {
+		e, ok := err.(application.GenericOpenAPIError)
+		if ok {
+			data := e.Body()
 
-	return result, nil
+			var errResp ApplicationErrorResponse
+			json.Unmarshal(data, &errResp)
+			return application.ApplicationResponseCollection{}, errResp, err
+		}
+
+		// this catches other error types
+		return result, ApplicationErrorResponse{}, err
+	}
+	return result, ApplicationErrorResponse{}, nil
 }
 
 // GetApplication returns one application, by app ID
-func (client *ApplicationClient) GetApplication(app_id string) (application.ApplicationResponse, error) {
+func (client *ApplicationClient) GetApplication(app_id string) (application.ApplicationResponse, ApplicationErrorResponse, error) {
 	// create the client
 	applicationClient := application.NewAPIClient(client.Config)
 
@@ -57,8 +89,17 @@ func (client *ApplicationClient) GetApplication(app_id string) (application.Appl
 	})
 
 	result, _, err := applicationClient.DefaultApi.GetApplication(ctx, app_id)
-	// fmt.Printf("%#v\n", result)
-	fmt.Printf("%#v\n", err)
+	if err != nil {
+		e, ok := err.(application.GenericOpenAPIError)
+		if ok {
+			data := e.Body()
 
-	return result, nil
+			var errResp ApplicationErrorResponse
+			json.Unmarshal(data, &errResp)
+			return application.ApplicationResponse{}, errResp, err
+		}
+		return result, ApplicationErrorResponse{}, err
+	}
+
+	return result, ApplicationErrorResponse{}, nil
 }
