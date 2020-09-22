@@ -114,30 +114,55 @@ type ApplicationMessagesWebhooks struct {
 	StatusUrl  ApplicationUrl `json:"status_url,omitempty"`
 }
 
+type ApplicationVoiceWebhooks struct {
+	AnswerUrl         ApplicationUrl `json:"answer_url,omitempty"`
+	FallbackAnswerUrl ApplicationUrl `json:"fallback_answer_url,omitempty"`
+	EventUrl          ApplicationUrl `json:"event_url,omitempty"`
+}
+
+type ApplicationRtcWebhooks struct {
+	EventUrl ApplicationUrl `json:"event_url,omitempty"`
+}
+
 type ApplicationMessages struct {
 	Webhooks ApplicationMessagesWebhooks `json:"webhooks,omitempty"`
+}
+
+type ApplicationVoice struct {
+	Webhooks ApplicationVoiceWebhooks `json:"webhooks,omitempty"`
+}
+
+type ApplicationRtc struct {
+	Webhooks ApplicationRtcWebhooks `json:"webhooks,omitempty"`
+}
+
+type ApplicationVbc struct {
+}
+
+// Use pointers so we can tell which things were intentionally sent, or not
+type ApplicationCapabilities struct {
+	Voice    *ApplicationVoice    `json:"voice,omitempty"`
+	Rtc      *ApplicationRtc      `json:"rtc,omitempty"`
+	Messages *ApplicationMessages `json:"messages,omitempty"`
+	Vbc      *ApplicationVbc      `json:"vbc,omitempty"`
 }
 
 type ApplicationKeys struct {
 	PublicKey string `json:"public_key,omitempty"`
 }
 
-type ApplicationCapabilities struct {
-	//Voice    interface{}
-	// Rtc      interface{}
-	Messages ApplicationMessages `json:"messages,omitempty"`
-	// Vbc      interface{}
-}
-
+// CreateApplicationOpts holds the optional values for a CreateApplication operation
 type CreateApplicationOpts struct {
-	Keys         ApplicationKeys         `json:"keys,omitempty"`
-	Capabilities ApplicationCapabilities `json:"capabilities,omitempty"`
+	Keys         ApplicationKeys
+	Capabilities ApplicationCapabilities
 }
 
+// CreateApplicationRequestOpts the data structure to send to the API calling code,
+// used inside CreateApplication rather than as an incoming argument
 type CreateApplicationRequestOpts struct {
-	Name         string                   `json:"name,omitempty"`
-	Keys         *ApplicationKeys         `json:"keys,omitempty"`
-	Capabilities *ApplicationCapabilities `json:"capabilities,omitempty"`
+	Name         string                  `json:"name,omitempty"`
+	Keys         *ApplicationKeys        `json:"keys,omitempty"`
+	Capabilities ApplicationCapabilities `json:"capabilities,omitempty"`
 }
 
 // CreateApplication creates a new application
@@ -147,7 +172,8 @@ func (client *ApplicationClient) CreateApplication(name string, opts CreateAppli
 
 	AppOpts := CreateApplicationRequestOpts{}
 	AppOpts.Name = name
-	AppOpts.Capabilities = &opts.Capabilities
+	AppOpts.Capabilities = opts.Capabilities
+
 	createOpts := application.CreateApplicationOpts{Opts: optional.NewInterface(AppOpts)}
 
 	ctx := context.WithValue(context.Background(), application.ContextBasicAuth, application.BasicAuth{

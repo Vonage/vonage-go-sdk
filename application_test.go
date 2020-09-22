@@ -223,16 +223,14 @@ func TestApplicationCreate(t *testing.T) {
 
 	auth := CreateAuthFromKeySecret("12345678", "456")
 	client := NewApplicationClient(auth)
-	mesg1 := ApplicationCapabilities{
-		Messages: ApplicationMessages{
-			Webhooks: ApplicationMessagesWebhooks{
-				StatusUrl:  ApplicationUrl{Address: "https://ljnexmo.eu.ngrok.io/status", HttpMethod: "POST"},
-				InboundUrl: ApplicationUrl{Address: "https://ljnexmo.eu.ngrok.io/inbound", HttpMethod: "POST"},
-			},
+	mesg1 := ApplicationMessages{
+		Webhooks: ApplicationMessagesWebhooks{
+			StatusUrl:  ApplicationUrl{Address: "https://ljnexmo.eu.ngrok.io/status", HttpMethod: "POST"},
+			InboundUrl: ApplicationUrl{Address: "https://ljnexmo.eu.ngrok.io/inbound", HttpMethod: "POST"},
 		},
 	}
 
-	opts := CreateApplicationOpts{Capabilities: mesg1}
+	opts := CreateApplicationOpts{Capabilities: ApplicationCapabilities{Messages: &mesg1}}
 	response, _, _ := client.CreateApplication("MyNewApp", opts)
 
 	message := "App Name: " + response.Name
