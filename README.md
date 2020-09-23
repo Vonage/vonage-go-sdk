@@ -601,6 +601,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/vonage/vonage-go-sdk/ncco"
 )
 
 func main() {
@@ -611,12 +612,12 @@ func main() {
 	from := CallFrom{Type: "phone", Number: "447770007777"}
 	to := CallTo{Type: "phone", Number: "447770007788"}
 
-	ncco := Ncco{}
-	talk := TalkAction{Text: "Go library calling to say hello", VoiceName: "Nicole"}
-	ncco.AddAction(talk)
+	MyNcco := Ncco{}
+	talk := ncco.TalkAction{Text: "Go library calling to say hello", VoiceName: "Nicole"}
+	MyNcco.AddAction(talk)
 
     // NCCO example
-	result, _, _ := client.CreateCall(CreateCallOpts{From: from, To: to, Ncco: ncco})
+	result, _, _ := client.CreateCall(CreateCallOpts{From: from, To: to, Ncco: MyNcco})
     // alternate version with answer URL
     //result, _, _ := client.CreateCall(CreateCallOpts{From: from, To: to, AnswerUrl: []string{"https://example.com/answer"}})
 	fmt.Println(result.Uuid + " call ID started")
@@ -665,13 +666,13 @@ func main() {
 	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
 	client := NewVoiceClient(auth)
 
-	ncco := Ncco{}
-	talk := TalkAction{Text: "Go library calling to interrupt", VoiceName: "Nicole"}
-	ncco.AddAction(talk)
+	MyNcco := ncco.Ncco{}
+	talk := ncco.TalkAction{Text: "Go library calling to interrupt", VoiceName: "Nicole"}
+	MyNcco.AddAction(talk)
 
 
     // NCCO example
-	result, _, _ := client.TransferCall(TransferCallOpts{Uuid: result.Uuid, Ncco: ncco})
+	result, _, _ := client.TransferCall(TransferCallOpts{Uuid: result.Uuid, Ncco: MyNcco})
     // handy AnswerUrl example
 	// result, _, _ := client.TransferCall(TransferCallOpts{Uuid: result.Uuid, AnswerUrl: []string{"https://raw.githubusercontent.com/nexmo-community/ncco-examples/gh-pages/talk.json"}})
 	fmt.Println("Status: " + result.Status)
@@ -789,7 +790,7 @@ func main() {
 
 #### Error Handling
 
-For Voice API, there are three return values on most methods. The first two are structs representing the fields in the success and error response for the API endpoint involved. The final value is an error, but in many cases this can be type asserted to a more useful `GenericOpenAPIError`, like this:
+There are three return values on most methods. The first two are structs representing the fields in the success and error response for the API endpoint involved. The final value is an error, but in many cases this can be type asserted to a more useful `GenericOpenAPIError`, like this:
 
 ```
 	response, _, http_error := client.GetCalls()
@@ -1071,9 +1072,9 @@ NCCO (Nexmo Call Control Object) is the format for describing the various action
 The basic approach is to create an NCCO, then create actions to add into it:
 
 ```go
-	ncco := vonage.Ncco{}
-	talk := vonage.TalkAction{Text: "Greetings from the golang library", VoiceName: "Nicole"}
-	ncco.AddAction(talk)
+	MyNcco := ncco.Ncco{}
+	talk := ncco.TalkAction{Text: "Greetings from the golang library", VoiceName: "Nicole"}
+	MyNcco.AddAction(talk)
 ```
 
 #### Talk Action
@@ -1081,7 +1082,7 @@ The basic approach is to create an NCCO, then create actions to add into it:
 Create a `talk` action to read some text into the call:
 
 ```go
-	talk := vonage.TalkAction{Text: "Greetings from the golang library", VoiceName: "Nicole"}
+	talk := ncco.TalkAction{Text: "Greetings from the golang library", VoiceName: "Nicole"}
 ```
 
 #### Notify Action
@@ -1092,7 +1093,7 @@ Use `notify` to send a particular data payload to a nominated URL:
 	url := []string{"https://example.com/webhooks/notify"}
 	data := make(map[string]string)
 	data["stage"] = "Registration"
-	ping := vonage.NotifyAction{EventUrl: url, Payload: data}
+	ping := ncco.NotifyAction{EventUrl: url, Payload: data}
 ```
 
 This feature is useful for marking progress through a call and that the user is still connected.
@@ -1102,7 +1103,7 @@ This feature is useful for marking progress through a call and that the user is 
 Send a `record` action to start a recording:
 
 ```go
-    record := vonage.RecordAction{BeepStart: true}
+    record := ncco.RecordAction{BeepStart: true}
 ```
 
 When the recording completes, Nexmo sends a webhook containing the recording URL so that you can download the file.
@@ -1112,7 +1113,7 @@ When the recording completes, Nexmo sends a webhook containing the recording URL
 Adds the call to a conversation:
 
 ```go
-    conversation := vonage.ConversationAction{Name: "convo1"}
+    conversation := ncco.ConversationAction{Name: "convo1"}
 ```
 
 #### Stream Action
@@ -1120,7 +1121,7 @@ Adds the call to a conversation:
 Play an mp3 file into a call as an audio stream:
 
 ```go
-    stream := vonage.StreamAction{StreamUrl: []string{"https://example.com/music.mp3"}}
+    stream := ncco.StreamAction{StreamUrl: []string{"https://example.com/music.mp3"}}
 
 ```
 
@@ -1129,8 +1130,8 @@ Play an mp3 file into a call as an audio stream:
 Connects the current call to another endpoint (currently only phone is supported):
 
 ```go
-    endpoint := []vonage.PhoneEndpoint{Number: "44777000777"}
-	connect := vonage.ConnectAction{Endpoint: endpoint, From: "44777000888"}
+    endpoint := []ncco.PhoneEndpoint{Number: "44777000777"}
+	connect := ncco.ConnectAction{Endpoint: endpoint, From: "44777000888"}
 ```
 The `from` field when connecting to a phone endpoint should be a Nexmo number that you own.
 

@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/jarcoal/httpmock"
+	"github.com/vonage/vonage-go-sdk/ncco"
 )
 
 func TestVoiceNewClient(*testing.T) {
@@ -176,11 +177,11 @@ func TestVoiceMakeCallWithNcco(t *testing.T) {
 	from := CallFrom{Type: "phone", Number: "447770007777"}
 	to := CallTo{Type: "phone", Number: "447770007788"}
 
-	ncco := Ncco{}
-	talk := TalkAction{Text: "This is the golang library, calling to say hello", VoiceName: "Nicole"}
-	ncco.AddAction(talk)
+	MyNcco := ncco.Ncco{}
+	talk := ncco.TalkAction{Text: "This is the golang library, calling to say hello", VoiceName: "Nicole"}
+	MyNcco.AddAction(talk)
 
-	result, _, _ := client.CreateCall(CreateCallOpts{From: from, To: to, Ncco: ncco})
+	result, _, _ := client.CreateCall(CreateCallOpts{From: from, To: to, Ncco: MyNcco})
 	message := result.Uuid + " <-- call ID started"
 	if message != "63f61863-4a51-4f6b-86e1-46edebcf9356 <-- call ID started" {
 		t.Errorf("Voice create call with Ncco failed")
@@ -259,11 +260,11 @@ func TestVoiceTransferCallWithNcco(t *testing.T) {
 	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", []byte("imagine this is a private key"))
 	client := NewVoiceClient(auth)
 
-	ncco := Ncco{}
-	talk := TalkAction{Text: "This is the golang library, calling to interrupt the other call", VoiceName: "Nicole"}
-	ncco.AddAction(talk)
+	MyNcco := ncco.Ncco{}
+	talk := ncco.TalkAction{Text: "This is the golang library, calling to interrupt the other call", VoiceName: "Nicole"}
+	MyNcco.AddAction(talk)
 
-	result, _, _ := client.TransferCall(TransferCallOpts{Uuid: "abcdef01-2222-3333-4444-9876543210ab", Ncco: ncco})
+	result, _, _ := client.TransferCall(TransferCallOpts{Uuid: "abcdef01-2222-3333-4444-9876543210ab", Ncco: MyNcco})
 	message := "Status: " + result.Status
 	if message != "Status: 0" {
 		t.Errorf("Voice transfer call with AnswerUrl failed")

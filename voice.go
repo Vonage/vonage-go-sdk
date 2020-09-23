@@ -7,6 +7,7 @@ import (
 	"runtime"
 
 	"github.com/antihax/optional"
+	"github.com/vonage/vonage-go-sdk/ncco"
 	"github.com/vonage/vonage-go-sdk/voice"
 )
 
@@ -67,7 +68,7 @@ func (client *VoiceClient) GetCall(uuid string) (voice.GetCallResponse, VoiceErr
 type CreateCallOpts struct {
 	From             CallFrom
 	To               CallTo
-	Ncco             Ncco
+	Ncco             ncco.Ncco
 	AnswerUrl        []string
 	AnswerMethod     string
 	EventUrl         []string
@@ -245,7 +246,7 @@ func (client *VoiceClient) handleCreateCallErrors(result voice.CreateCallRespons
 // TransferCallOpts: Options for transferring a call
 type TransferCallOpts struct {
 	Uuid      string
-	Ncco      Ncco
+	Ncco      ncco.Ncco
 	AnswerUrl []string
 }
 
