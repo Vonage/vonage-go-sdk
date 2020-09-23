@@ -11,7 +11,62 @@ This is the community-supported Golang library for [Vonage](https://vonage.com).
 
 If you don't already know Vonage: We make telephony APIs. If you need to make a call, check a phone number, or send an SMS then you are in the right place! If you don't have one yet, you can [sign up for a Vonage account](https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&amp;utm_medium=github&amp;utm_campaign=vonage-go) and get some free credit to get you started.
 
-> Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by its terms.
+  * [Installation](#installation)
+  * [Usage](#usage)
+    * [SMS API](#sms-api)
+      * [Send SMS](#send-sms)
+      * [Send Unicode SMS](#send-unicode-sms)
+      * [Receive SMS](#receive-sms)
+    * [Verify API](#verify-api)
+      * [Verify a User's Phone Number](#verify-a-users-phone-number)
+      * [Check Verification Code](#check-verification-code)
+      * [Cancel a Verification](#cancel-a-verification)
+      * [Trigger the Next Event in a Verification](#trigger-the-next-event-in-a-verification)
+      * [Search for a Verification](#search-for-a-verification)
+    * [Application API](#application-api)
+      * [List Applications:](#list-applications)
+      * [Get One Application By ID](#get-one-application-by-id)
+      * [Create a New Application](#create-a-new-application)
+      * [Create a New Application with a Public Key](#create-a-new-application-with-a-public-key)
+      * [Creating an Application for All Capabilities](#creating-an-application-for-all-capabilities)
+      * [Update an Application](#update-an-application)
+      * [Delete an Application](#delete-an-application)
+    * [Voice API](#voice-api)
+      * [List all Calls](#list-all-calls)
+      * [Call Detail](#call-detail)
+      * [Make a Phone Call](#make-a-phone-call)
+      * [End a Call](#end-a-call)
+      * [Transfer a Call](#transfer-a-call)
+      * [Mute or Earmuff a Call](#mute-or-earmuff-a-call)
+      * [Stream Audio into a Call](#stream-audio-into-a-call)
+      * [Play Text\-To\-Speech into a Call](#play-text-to-speech-into-a-call)
+      * [Play DTMF Tones into a Call](#play-dtmf-tones-into-a-call)
+      * [Error Handling](#error-handling)
+    * [Number Insights](#number-insights)
+      * [Number Insight Advanced](#number-insight-advanced)
+    * [Number Management](#number-management)
+      * [List the Numbers You Own](#list-the-numbers-you-own)
+      * [Search for a number to buy](#search-for-a-number-to-buy)
+      * [Buy a number](#buy-a-number)
+      * [Update number configuration](#update-number-configuration)
+      * [Cancel a bought number](#cancel-a-bought-number)
+    * [JWT Authentication](#jwt-authentication)
+      * [Generate a Basic JWT](#generate-a-basic-jwt)
+      * [Generate a JWT with more options](#generate-a-jwt-with-more-options)
+    * [NCCOs](#nccos)
+      * [Talk Action](#talk-action)
+      * [Notify Action](#notify-action)
+      * [Record Action](#record-action)
+      * [Conversation Action](#conversation-action)
+      * [Stream Action](#stream-action)
+      * [Connect Action](#connect-action)
+  * [Tips, Tricks and Troubleshooting](#tips-tricks-and-troubleshooting)
+    * [Changing the Base URL](#changing-the-base-url)
+    * [Handling Date Fields](#handling-date-fields)
+  * [Contributions](#contributions)
+    * [Using a Local Branch](#using-a-local-branch)
+  * [Getting Help](#getting-help)
+  * [Further Reading](#further-reading)
 
 ## Installation
 
@@ -110,7 +165,6 @@ func main() {
 	http.ListenAndServe(":8080", nil)
 }
 ```
-
 
 ### Verify API
 
