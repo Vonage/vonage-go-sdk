@@ -167,7 +167,7 @@ func TestApplicationCreate(t *testing.T) {
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 {
-  "id": "78d335fa323d01149c3dd6f0d48968cf",
+  "id": "78d335fa-323d-0114-9c3d-d6f0d48968cf",
   "name": "My Application",
   "capabilities": {
     "voice": {
@@ -256,5 +256,85 @@ func TestApplicationDelete(t *testing.T) {
 
 	if !response {
 		t.Errorf("Delete an application failed")
+	}
+}
+
+func TestApplicationUpdate(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("PUT", "https://api.nexmo.com/v2/applications/abcdef123",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+{
+  "id": "78d335fa-323d-0114-9c3d-d6f0d48968cf",
+  "name": "My Updated Application",
+  "capabilities": {
+    "voice": {
+      "webhooks": {
+        "answer_url": {
+          "address": "https://example.com/webhooks/answer",
+          "http_method": "POST"
+        },
+        "fallback_answer_url": {
+          "address": "https://fallback.example.com/webhooks/answer",
+          "http_method": "POST"
+        },
+        "event_url": {
+          "address": "https://example.com/webhooks/event",
+          "http_method": "POST"
+        }
+      }
+    },
+    "messages": {
+      "webhooks": {
+        "inbound_url": {
+          "address": "https://example.com/webhooks/inbound",
+          "http_method": "POST"
+        },
+        "status_url": {
+          "address": "https://example.com/webhooks/status",
+          "http_method": "POST"
+        }
+      }
+    },
+    "rtc": {
+      "webhooks": {
+        "event_url": {
+          "address": "https://example.com/webhooks/event",
+          "http_method": "POST"
+        }
+      }
+    },
+    "vbc": {}
+  },
+  "keys": {
+    "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCA\nKOxjsU4pf/sMFi9N0jqcSLcjxu33G\nd/vynKnlw9SENi+UZR44GdjGdmfm1\ntL1eA7IBh2HNnkYXnAwYzKJoa4eO3\n0kYWekeIZawIwe/g9faFgkev+1xsO\nOUNhPx2LhuLmgwWSRS4L5W851Xe3f\nUQIDAQAB\n-----END PUBLIC KEY-----\n",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFA\nASCBKcwggSjAgEAAoIBAQDEPpvi+3\nRH1efQ\\nkveWzZDrNNoEXmBw61w+O\n0u/N36tJnN5XnYecU64yHzu2ByEr0\n7iIvYbavFnADwl\\nHMTJwqDQakpa3\n8/SFRnTDq3zronvNZ6nOp7S6K7pcZ\nrw/CvrL6hXT1x7cGBZ4jPx\\nqhjqY\nuJPgZD7OVB69oYOV92vIIJ7JLYwqb\n-----END PRIVATE KEY-----\n"
+  }
+}
+	`,
+			)
+
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewApplicationClient(auth)
+	mesg1 := ApplicationMessages{
+		Webhooks: ApplicationMessagesWebhooks{
+			StatusUrl:  ApplicationUrl{Address: "https://ljnexmo.eu.ngrok.io/status", HttpMethod: "POST"},
+			InboundUrl: ApplicationUrl{Address: "https://ljnexmo.eu.ngrok.io/inbound", HttpMethod: "POST"},
+		},
+	}
+
+	opts := UpdateApplicationOpts{Capabilities: ApplicationCapabilities{Messages: &mesg1}}
+	response, _, _ := client.UpdateApplication("abcdef123", "MyUpdatedApp", opts)
+
+	message := "App Name: " + response.Name
+	if message != "App Name: My Updated Application" {
+		t.Errorf("Update an application failed")
 	}
 }

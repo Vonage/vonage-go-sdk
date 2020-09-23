@@ -227,3 +227,54 @@ func (client *ApplicationClient) DeleteApplication(app_id string) (bool, Applica
 
 	return true, ApplicationErrorResponse{}, nil
 }
+
+// UpdateApplicationOpts holds the optional values for a UpdateApplication operation
+type UpdateApplicationOpts struct {
+	Keys         ApplicationKeys
+	Capabilities ApplicationCapabilities
+}
+
+// UpdateApplicationRequestOpts the data structure to send to the API calling code,
+// used inside UpdateApplication rather than as an incoming argument
+type UpdateApplicationRequestOpts struct {
+	Name         string                  `json:"name,omitempty"`
+	Keys         *ApplicationKeys        `json:"keys,omitempty"`
+	Capabilities ApplicationCapabilities `json:"capabilities,omitempty"`
+}
+
+// UpdateApplication updates an existing application
+func (client *ApplicationClient) UpdateApplication(id string, name string, opts UpdateApplicationOpts) (application.ApplicationResponse, ApplicationErrorResponse, error) {
+	// create the client
+	applicationClient := application.NewAPIClient(client.Config)
+
+	AppOpts := UpdateApplicationRequestOpts{}
+	AppOpts.Name = name
+	AppOpts.Capabilities = opts.Capabilities
+
+	if opts.Keys.PublicKey != "" {
+		// the user supplied a public key
+		AppOpts.Keys = &opts.Keys
+	}
+
+	updateOpts := application.UpdateApplicationOpts{Opts: optional.NewInterface(AppOpts)}
+
+	ctx := context.WithValue(context.Background(), application.ContextBasicAuth, application.BasicAuth{
+		UserName: client.apiKey,
+		Password: client.apiSecret,
+	})
+
+	result, _, err := applicationClient.DefaultApi.UpdateApplication(ctx, id, &updateOpts)
+	if err != nil {
+		e, ok := err.(application.GenericOpenAPIError)
+		if ok {
+			data := e.Body()
+
+			var errResp ApplicationErrorResponse
+			json.Unmarshal(data, &errResp)
+			return application.ApplicationResponse{}, errResp, err
+		}
+		return result, ApplicationErrorResponse{}, err
+	}
+
+	return result, ApplicationErrorResponse{}, nil
+}
