@@ -37,10 +37,16 @@ type SMSOpts struct {
 	ClientRef       string
 }
 
+type Sms struct {
+	// The amount of messages in the request
+	MessageCount string
+	Messages     []sms.Message
+}
+
 // Send an SMS. Give some text to send and the number to send to - there are
 // some restrictions on what you can send from, to be safe try using a Nexmo
 // number associated with your account
-func (client *SMSClient) Send(from string, to string, text string, opts SMSOpts) (sms.Sms, error) {
+func (client *SMSClient) Send(from string, to string, text string, opts SMSOpts) (Sms, error) {
 
 	smsClient := sms.NewAPIClient(client.Config)
 
@@ -72,13 +78,13 @@ func (client *SMSClient) Send(from string, to string, text string, opts SMSOpts)
 
 	// catch HTTP errors
 	if err != nil {
-		return sms.Sms{}, err
+		return Sms{}, err
 	}
 
 	// now worry about the status code in the response
 	if result.Messages[0].Status != "0" {
-		return result, errors.New("Status code: " + result.Messages[0].Status)
+		return Sms(result), errors.New("Status code: " + result.Messages[0].Status)
 	}
 
-	return result, nil
+	return Sms(result), nil
 }
