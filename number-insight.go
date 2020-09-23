@@ -36,8 +36,20 @@ type NiOpts struct {
 	Country string
 }
 
+type NiResponseJsonBasic struct {
+	Status                    numberInsight.NiBasicStatus
+	StatusMessage             string
+	RequestId                 string
+	InternationalFormatNumber string
+	NationalFormatNumber      string
+	CountryCode               string
+	CountryCodeIso3           string
+	CountryName               string
+	CountryPrefix             string
+}
+
 // Basic does a basic-level lookup for data about a number
-func (client *NumberInsightClient) Basic(number string, opts NiOpts) (numberInsight.NiResponseJsonBasic, NiErrorResponse, error) {
+func (client *NumberInsightClient) Basic(number string, opts NiOpts) (NiResponseJsonBasic, NiErrorResponse, error) {
 	// create the client
 	numberInsightClient := numberInsight.NewAPIClient(client.Config)
 
@@ -56,7 +68,7 @@ func (client *NumberInsightClient) Basic(number string, opts NiOpts) (numberInsi
 
 	// catch HTTP errors
 	if err != nil {
-		return numberInsight.NiResponseJsonBasic{}, NiErrorResponse{}, err
+		return NiResponseJsonBasic{}, NiErrorResponse{}, err
 	}
 
 	if result.Status != 0 {
@@ -64,14 +76,38 @@ func (client *NumberInsightClient) Basic(number string, opts NiOpts) (numberInsi
 			Status:        int32(result.Status),
 			StatusMessage: result.StatusMessage,
 		}
-		return result, errResp, nil
+		return NiResponseJsonBasic(result), errResp, nil
 	}
 
-	return result, NiErrorResponse{}, nil
+	return NiResponseJsonBasic(result), NiErrorResponse{}, nil
+}
+
+type NiResponseJsonStandard struct {
+	Status                    numberInsight.NiBasicStatus
+	StatusMessage             string
+	RequestId                 string
+	InternationalFormatNumber string
+	NationalFormatNumber      string
+	CountryCode               string
+	CountryCodeIso3           string
+	CountryName               string
+	CountryPrefix             string
+	RequestPrice              string
+	RefundPrice               string
+	RemainingBalance          string
+	CurrentCarrier            numberInsight.NiCurrentCarrierProperties
+	OriginalCarrier           numberInsight.NiInitialCarrierProperties
+	Ported                    string
+	Roaming                   numberInsight.NiRoaming
+	CallerIdentity            numberInsight.NiCallerIdentity
+	CallerName                string
+	LastName                  string
+	FirstName                 string
+	CallerType                string
 }
 
 // Standard does a Standard-level lookup for data about a number
-func (client *NumberInsightClient) Standard(number string, opts NiOpts) (numberInsight.NiResponseJsonStandard, NiErrorResponse, error) {
+func (client *NumberInsightClient) Standard(number string, opts NiOpts) (NiResponseJsonStandard, NiErrorResponse, error) {
 	// create the client
 	numberInsightClient := numberInsight.NewAPIClient(client.Config)
 
@@ -86,7 +122,7 @@ func (client *NumberInsightClient) Standard(number string, opts NiOpts) (numberI
 
 	// catch HTTP errors
 	if err != nil {
-		return numberInsight.NiResponseJsonStandard{}, NiErrorResponse{}, err
+		return NiResponseJsonStandard{}, NiErrorResponse{}, err
 	}
 
 	if result.Status != 0 {
@@ -94,14 +130,23 @@ func (client *NumberInsightClient) Standard(number string, opts NiOpts) (numberI
 			Status:        int32(result.Status),
 			StatusMessage: result.StatusMessage,
 		}
-		return result, errResp, nil
+		return NiResponseJsonStandard(result), errResp, nil
 	}
 
-	return result, NiErrorResponse{}, nil
+	return NiResponseJsonStandard(result), NiErrorResponse{}, nil
+}
+
+type NiResponseAsync struct {
+	RequestId        string
+	Number           string
+	RemainingBalance string
+	RequestPrice     string
+	Status           numberInsight.NiStandardAdvancedStatus
+	StatusMessage    string
 }
 
 // AdvancedAsync requests a callback with advanced-level information about a number
-func (client *NumberInsightClient) AdvancedAsync(number string, callback string, opts NiOpts) (numberInsight.NiResponseAsync, NiErrorResponse, error) {
+func (client *NumberInsightClient) AdvancedAsync(number string, callback string, opts NiOpts) (NiResponseAsync, NiErrorResponse, error) {
 	// create the client
 	numberInsightClient := numberInsight.NewAPIClient(client.Config)
 
@@ -116,7 +161,7 @@ func (client *NumberInsightClient) AdvancedAsync(number string, callback string,
 
 	// catch HTTP errors
 	if err != nil {
-		return numberInsight.NiResponseAsync{}, NiErrorResponse{}, err
+		return NiResponseAsync{}, NiErrorResponse{}, err
 	}
 
 	if result.Status != 0 {
@@ -124,8 +169,8 @@ func (client *NumberInsightClient) AdvancedAsync(number string, callback string,
 			Status:        int32(result.Status),
 			StatusMessage: result.StatusMessage,
 		}
-		return result, errResp, nil
+		return NiResponseAsync(result), errResp, nil
 	}
 
-	return result, NiErrorResponse{}, nil
+	return NiResponseAsync(result), NiErrorResponse{}, nil
 }
