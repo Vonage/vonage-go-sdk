@@ -40,7 +40,7 @@ type VerifyOpts struct {
 	WorkflowID    int32
 }
 
-type RequestResponse struct {
+type VerifyRequestResponse struct {
 	// The unique ID of the Verify request. You need this `request_id` for the Verify check.
 	RequestId string
 	Status    string
@@ -53,7 +53,7 @@ type VerifyErrorResponse struct {
 }
 
 // Request a number is verified for ownership
-func (client *VerifyClient) Request(number string, brand string, opts VerifyOpts) (RequestResponse, VerifyErrorResponse, error) {
+func (client *VerifyClient) Request(number string, brand string, opts VerifyOpts) (VerifyRequestResponse, VerifyErrorResponse, error) {
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
@@ -81,7 +81,7 @@ func (client *VerifyClient) Request(number string, brand string, opts VerifyOpts
 
 	// catch HTTP errors
 	if err != nil {
-		return RequestResponse{}, VerifyErrorResponse{}, err
+		return VerifyRequestResponse{}, VerifyErrorResponse{}, err
 	}
 
 	// non-zero statuses are also errors
@@ -91,13 +91,13 @@ func (client *VerifyClient) Request(number string, brand string, opts VerifyOpts
 		var errResp VerifyErrorResponse
 		jsonErr := json.Unmarshal(data, &errResp)
 		if jsonErr == nil {
-			return RequestResponse(result), errResp, nil
+			return VerifyRequestResponse(result), errResp, nil
 		}
 	}
-	return RequestResponse(result), VerifyErrorResponse{}, nil
+	return VerifyRequestResponse(result), VerifyErrorResponse{}, nil
 }
 
-type CheckResponse struct {
+type VerifyCheckResponse struct {
 	RequestId                  string
 	EventId                    string
 	Status                     string
@@ -107,7 +107,7 @@ type CheckResponse struct {
 }
 
 // Check the user-supplied code for this request ID
-func (client *VerifyClient) Check(requestID string, code string) (CheckResponse, VerifyErrorResponse, error) {
+func (client *VerifyClient) Check(requestID string, code string) (VerifyCheckResponse, VerifyErrorResponse, error) {
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
@@ -122,7 +122,7 @@ func (client *VerifyClient) Check(requestID string, code string) (CheckResponse,
 
 	// catch HTTP errors
 	if err != nil {
-		return CheckResponse{}, VerifyErrorResponse{}, err
+		return VerifyCheckResponse{}, VerifyErrorResponse{}, err
 	}
 
 	// non-zero statuses are also errors
@@ -132,14 +132,14 @@ func (client *VerifyClient) Check(requestID string, code string) (CheckResponse,
 		var errResp VerifyErrorResponse
 		jsonErr := json.Unmarshal(data, &errResp)
 		if jsonErr == nil {
-			return CheckResponse(result), errResp, nil
+			return VerifyCheckResponse(result), errResp, nil
 		}
 	}
 
-	return CheckResponse(result), VerifyErrorResponse{}, nil
+	return VerifyCheckResponse(result), VerifyErrorResponse{}, nil
 }
 
-type SearchResponse struct {
+type VerifySearchResponse struct {
 	RequestId                  string
 	AccountId                  string
 	Status                     string
@@ -151,13 +151,13 @@ type SearchResponse struct {
 	DateFinalized              string
 	FirstEventDate             string
 	LastEventDate              string
-	Checks                     []verify.SearchResponseChecks
-	Events                     []verify.SearchResponseEvents
+	Checks                     []verify.VerifySearchResponseChecks
+	Events                     []verify.VerifySearchResponseEvents
 	EstimatedPriceMessagesSent string
 }
 
 // Search for an earlier request by id
-func (client *VerifyClient) Search(requestID string) (SearchResponse, VerifyErrorResponse, error) {
+func (client *VerifyClient) Search(requestID string) (VerifySearchResponse, VerifyErrorResponse, error) {
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
@@ -173,7 +173,7 @@ func (client *VerifyClient) Search(requestID string) (SearchResponse, VerifyErro
 
 	// catch HTTP errors
 	if err != nil {
-		return SearchResponse{}, VerifyErrorResponse{}, err
+		return VerifySearchResponse{}, VerifyErrorResponse{}, err
 	}
 
 	// search failed if we didn't get a request ID
@@ -183,20 +183,20 @@ func (client *VerifyClient) Search(requestID string) (SearchResponse, VerifyErro
 		var errResp VerifyErrorResponse
 		jsonErr := json.Unmarshal(data, &errResp)
 		if jsonErr == nil {
-			return SearchResponse{}, errResp, nil
+			return VerifySearchResponse{}, errResp, nil
 		}
 	}
 
-	return SearchResponse(result), VerifyErrorResponse{}, nil
+	return VerifySearchResponse(result), VerifyErrorResponse{}, nil
 }
 
-type ControlResponse struct {
+type VerifyControlResponse struct {
 	Status  string
 	Command string
 }
 
 // Cancel an in-progress request (check API docs for when this is possible)
-func (client *VerifyClient) Cancel(requestID string) (ControlResponse, VerifyErrorResponse, error) {
+func (client *VerifyClient) Cancel(requestID string) (VerifyControlResponse, VerifyErrorResponse, error) {
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
@@ -209,7 +209,7 @@ func (client *VerifyClient) Cancel(requestID string) (ControlResponse, VerifyErr
 
 	// catch HTTP errors
 	if err != nil {
-		return ControlResponse{}, VerifyErrorResponse{}, err
+		return VerifyControlResponse{}, VerifyErrorResponse{}, err
 	}
 
 	// search statuses are strings
@@ -219,15 +219,15 @@ func (client *VerifyClient) Cancel(requestID string) (ControlResponse, VerifyErr
 		var errResp VerifyErrorResponse
 		jsonErr := json.Unmarshal(data, &errResp)
 		if jsonErr == nil {
-			return ControlResponse(result), errResp, nil
+			return VerifyControlResponse(result), errResp, nil
 		}
 	}
 
-	return ControlResponse(result), VerifyErrorResponse{}, nil
+	return VerifyControlResponse(result), VerifyErrorResponse{}, nil
 }
 
 // TriggerNextEvent moves on to the next event in the workflow
-func (client *VerifyClient) TriggerNextEvent(requestID string) (ControlResponse, VerifyErrorResponse, error) {
+func (client *VerifyClient) TriggerNextEvent(requestID string) (VerifyControlResponse, VerifyErrorResponse, error) {
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
@@ -240,7 +240,7 @@ func (client *VerifyClient) TriggerNextEvent(requestID string) (ControlResponse,
 
 	// catch HTTP errors
 	if err != nil {
-		return ControlResponse{}, VerifyErrorResponse{}, err
+		return VerifyControlResponse{}, VerifyErrorResponse{}, err
 	}
 
 	// search statuses are strings
@@ -250,9 +250,9 @@ func (client *VerifyClient) TriggerNextEvent(requestID string) (ControlResponse,
 		var errResp VerifyErrorResponse
 		jsonErr := json.Unmarshal(data, &errResp)
 		if jsonErr == nil {
-			return ControlResponse(result), errResp, nil
+			return VerifyControlResponse(result), errResp, nil
 		}
 	}
 
-	return ControlResponse(result), VerifyErrorResponse{}, nil
+	return VerifyControlResponse(result), VerifyErrorResponse{}, nil
 }
