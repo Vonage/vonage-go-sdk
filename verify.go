@@ -151,8 +151,8 @@ type VerifySearchResponse struct {
 	DateFinalized              string
 	FirstEventDate             string
 	LastEventDate              string
-	Checks                     []verify.VerifySearchResponseChecks
-	Events                     []verify.VerifySearchResponseEvents
+	Checks                     []verify.SearchResponseChecks
+	Events                     []verify.SearchResponseEvents
 	EstimatedPriceMessagesSent string
 }
 

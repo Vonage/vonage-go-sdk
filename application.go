@@ -41,8 +41,27 @@ type GetApplicationsOpts struct {
 	Page     int32
 }
 
+type ApplicationResponse struct {
+	Id           string
+	Name         string
+	Capabilities application.ApplicationResponseCapabilities
+	Keys         application.ApplicationResponseKeys
+}
+
+type ApplicationResponseCollectionEmbedded struct {
+	Applications []ApplicationResponse
+}
+
+type ApplicationResponseCollection struct {
+	PageSize   int32
+	Page       int32
+	TotalItems int32
+	TotalPages int32
+	Embedded   ApplicationResponseCollectionEmbedded
+}
+
 // List your Applications
-func (client *ApplicationClient) GetApplications(opts GetApplicationsOpts) (application.ApplicationResponseCollection, ApplicationErrorResponse, error) {
+func (client *ApplicationClient) GetApplications(opts GetApplicationsOpts) (ApplicationResponseCollection, ApplicationErrorResponse, error) {
 	// create the client
 	applicationClient := application.NewAPIClient(client.Config)
 
@@ -69,17 +88,29 @@ func (client *ApplicationClient) GetApplications(opts GetApplicationsOpts) (appl
 
 			var errResp ApplicationErrorResponse
 			json.Unmarshal(data, &errResp)
-			return application.ApplicationResponseCollection{}, errResp, err
+			return ApplicationResponseCollection{}, errResp, err
 		}
 
 		// this catches other error types
-		return result, ApplicationErrorResponse{}, err
+		return ApplicationResponseCollection{}, ApplicationErrorResponse{}, err
 	}
-	return result, ApplicationErrorResponse{}, nil
+	// deep-convert the collection into our wrapper structs
+	var collection ApplicationResponseCollection
+	var apps []ApplicationResponse
+	for _, app := range result.Embedded.Applications {
+		apps = append(apps, ApplicationResponse(app))
+	}
+	collection.Embedded = ApplicationResponseCollectionEmbedded{Applications: apps}
+	collection.PageSize = result.PageSize
+	collection.Page = result.Page
+	collection.TotalItems = result.TotalItems
+	collection.TotalPages = result.TotalPages
+
+	return collection, ApplicationErrorResponse{}, nil
 }
 
 // GetApplication returns one application, by app ID
-func (client *ApplicationClient) GetApplication(app_id string) (application.ApplicationResponse, ApplicationErrorResponse, error) {
+func (client *ApplicationClient) GetApplication(app_id string) (ApplicationResponse, ApplicationErrorResponse, error) {
 	// create the client
 	applicationClient := application.NewAPIClient(client.Config)
 
@@ -96,12 +127,12 @@ func (client *ApplicationClient) GetApplication(app_id string) (application.Appl
 
 			var errResp ApplicationErrorResponse
 			json.Unmarshal(data, &errResp)
-			return application.ApplicationResponse{}, errResp, err
+			return ApplicationResponse{}, errResp, err
 		}
-		return result, ApplicationErrorResponse{}, err
+		return ApplicationResponse(result), ApplicationErrorResponse{}, err
 	}
 
-	return result, ApplicationErrorResponse{}, nil
+	return ApplicationResponse(result), ApplicationErrorResponse{}, nil
 }
 
 type ApplicationUrl struct {
@@ -166,7 +197,7 @@ type CreateApplicationRequestOpts struct {
 }
 
 // CreateApplication creates a new application
-func (client *ApplicationClient) CreateApplication(name string, opts CreateApplicationOpts) (application.ApplicationResponse, ApplicationErrorResponse, error) {
+func (client *ApplicationClient) CreateApplication(name string, opts CreateApplicationOpts) (ApplicationResponse, ApplicationErrorResponse, error) {
 	// create the client
 	applicationClient := application.NewAPIClient(client.Config)
 
@@ -194,12 +225,12 @@ func (client *ApplicationClient) CreateApplication(name string, opts CreateAppli
 
 			var errResp ApplicationErrorResponse
 			json.Unmarshal(data, &errResp)
-			return application.ApplicationResponse{}, errResp, err
+			return ApplicationResponse{}, errResp, err
 		}
-		return result, ApplicationErrorResponse{}, err
+		return ApplicationResponse(result), ApplicationErrorResponse{}, err
 	}
 
-	return result, ApplicationErrorResponse{}, nil
+	return ApplicationResponse(result), ApplicationErrorResponse{}, nil
 }
 
 // Delete application deletes an application
@@ -243,7 +274,7 @@ type UpdateApplicationRequestOpts struct {
 }
 
 // UpdateApplication updates an existing application
-func (client *ApplicationClient) UpdateApplication(id string, name string, opts UpdateApplicationOpts) (application.ApplicationResponse, ApplicationErrorResponse, error) {
+func (client *ApplicationClient) UpdateApplication(id string, name string, opts UpdateApplicationOpts) (ApplicationResponse, ApplicationErrorResponse, error) {
 	// create the client
 	applicationClient := application.NewAPIClient(client.Config)
 
@@ -271,10 +302,10 @@ func (client *ApplicationClient) UpdateApplication(id string, name string, opts 
 
 			var errResp ApplicationErrorResponse
 			json.Unmarshal(data, &errResp)
-			return application.ApplicationResponse{}, errResp, err
+			return ApplicationResponse{}, errResp, err
 		}
-		return result, ApplicationErrorResponse{}, err
+		return ApplicationResponse(result), ApplicationErrorResponse{}, err
 	}
 
-	return result, ApplicationErrorResponse{}, nil
+	return ApplicationResponse(result), ApplicationErrorResponse{}, nil
 }
