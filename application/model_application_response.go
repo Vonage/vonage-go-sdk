@@ -16,4 +16,7 @@ type ApplicationResponse struct {
 	// Friendly identifier for your application. This is not unique
 	Name string `json:"name,omitempty"`
 	Capabilities ApplicationResponseCapabilities `json:"capabilities,omitempty"`
+
+	// **WARNING** Manually added because the AllOf from the spec didn't help
+	Keys ApplicationResponseKeys `json:"keys,omitempty"`
 }

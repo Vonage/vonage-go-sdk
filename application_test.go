@@ -238,3 +238,23 @@ func TestApplicationCreate(t *testing.T) {
 		t.Errorf("Create an application failed")
 	}
 }
+
+func TestApplicationDelete(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("DELETE", "https://api.nexmo.com/v2/applications/abc12345",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(204, "")
+			return resp, nil
+		},
+	)
+
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewApplicationClient(auth)
+	response, _, _ := client.DeleteApplication("abc12345")
+
+	if !response {
+		t.Errorf("Delete an application failed")
+	}
+}

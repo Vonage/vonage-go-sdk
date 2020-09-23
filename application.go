@@ -174,6 +174,11 @@ func (client *ApplicationClient) CreateApplication(name string, opts CreateAppli
 	AppOpts.Name = name
 	AppOpts.Capabilities = opts.Capabilities
 
+	if opts.Keys.PublicKey != "" {
+		// the user supplied a public key
+		AppOpts.Keys = &opts.Keys
+	}
+
 	createOpts := application.CreateApplicationOpts{Opts: optional.NewInterface(AppOpts)}
 
 	ctx := context.WithValue(context.Background(), application.ContextBasicAuth, application.BasicAuth{
