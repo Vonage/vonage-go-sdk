@@ -1,129 +1,321 @@
-package nexmo
+package vonage
 
 import (
+	"context"
 	"encoding/json"
-	"fmt"
-	"net/http"
+	"runtime"
+
+	"github.com/antihax/optional"
+	"github.com/vonage/vonage-go-sdk/application"
 )
 
-type CreateApplicationRequest struct {
-	Credentials
-	Name         string `json:"name"`
-	Type         string `json:"type"`
-	AnswerURL    string `json:"answer_url"`
-	AnswerMethod string `json:"answer_method,omitempty"`
-	EventURL     string `json:"event_url"`
-	EventMethod  string `json:"event_method,omitempty"`
+// ApplicationClient for working with the Application API
+type ApplicationClient struct {
+	Config    *application.Configuration
+	apiKey    string
+	apiSecret string
 }
 
-type ApplicationConfiguration struct {
-	ID    string `json:"id"`
-	Name  string `json:"name"`
-	Voice struct {
-		Webhooks []struct {
-			EndpointType string `json:"endpoint_type"`
-			Endpoint     string `json:"endpoint"`
-			HTTPMethod   string `json:"http_method"`
-		} `json:"webhooks"`
+// NewApplicationClient Creates a new Application Client, supplying an Auth to work with
+func NewApplicationClient(Auth Auth) *ApplicationClient {
+	client := new(ApplicationClient)
+	creds := Auth.GetCreds()
+	client.apiKey = creds[0]
+	client.apiSecret = creds[1]
+
+	client.Config = application.NewConfiguration()
+	client.Config.UserAgent = "vonage-go/0.15-dev Go/" + runtime.Version()
+	return client
+}
+
+// ApplicationErrorResponse respresents error responses
+type ApplicationErrorResponse struct {
+	Type     string `json:"type,omitempty"`
+	Title    string `json:"title,omitempty"`
+	Detail   string `json:"detail,omitempty"`
+	Instance string `json:"instance,omitempty"`
+}
+
+type GetApplicationsOpts struct {
+	PageSize int32
+	Page     int32
+}
+
+type ApplicationResponse struct {
+	Id           string
+	Name         string
+	Capabilities application.ApplicationResponseCapabilities
+	Keys         application.ApplicationResponseKeys
+}
+
+type ApplicationResponseCollectionEmbedded struct {
+	Applications []ApplicationResponse
+}
+
+type ApplicationResponseCollection struct {
+	PageSize   int32
+	Page       int32
+	TotalItems int32
+	TotalPages int32
+	Embedded   ApplicationResponseCollectionEmbedded
+}
+
+// List your Applications
+func (client *ApplicationClient) GetApplications(opts GetApplicationsOpts) (ApplicationResponseCollection, ApplicationErrorResponse, error) {
+	// create the client
+	applicationClient := application.NewAPIClient(client.Config)
+
+	AppOpts := application.ListApplicationOpts{}
+
+	if opts.Page != 0 {
+		AppOpts.Page = optional.NewInt32(opts.Page)
 	}
-	Keys struct {
-		PublicKey  string `json:"public_key"`
-		PrivateKey string `json:"private_key"`
-	} `json:"keys"`
-	Links Links `json:"_links"`
-}
 
-type CreateApplicationResponse ApplicationConfiguration
+	if opts.PageSize != 0 {
+		AppOpts.PageSize = optional.NewInt32(opts.PageSize)
+	}
 
-// Create a new application in your Nexmo account
-func (s *ApplicationService) CreateApplication(request CreateApplicationRequest) (*CreateApplicationResponse, *http.Response, error) {
-	s.authSet.ApplyAPICredentials(&request)
-	response := new(CreateApplicationResponse)
-	httpResponse, err := s.sling.New().
-		Post("").
-		BodyJSON(request).
-		ReceiveSuccess(response)
-	return response, httpResponse, err
-}
+	ctx := context.WithValue(context.Background(), application.ContextBasicAuth, application.BasicAuth{
+		UserName: client.apiKey,
+		Password: client.apiSecret,
+	})
 
-type ListApplicationsRequest struct {
-	Credentials
-	PageSize  int64 `url:"page_size,omitempty"`
-	PageIndex int64 `url:"page_index,omitempty"`
-}
-
-type ListApplicationsResponse struct {
-	Count    int64 `json:"count,omitempty"`
-	PageSize int64 `json:"page_size,omitempty"`
-	Embedded struct {
-		Applications []ApplicationConfiguration `json:"applications"`
-	} `json:"_embedded"`
-	Links Links `json:"_links"`
-}
-
-// List the applications on the Nexmo account
-func (s *ApplicationService) ListApplications(request ListApplicationsRequest) (*ListApplicationsResponse, *http.Response, error) {
-	s.authSet.ApplyAPICredentials(&request)
-	response := new(ListApplicationsResponse)
-	httpResponse, err := s.sling.New().
-		Get("").
-		QueryStruct(request).
-		ReceiveSuccess(response)
-	return response, httpResponse, err
-}
-
-type GetApplicationRequest struct {
-	// Created with embedded Credentials, so this will support setApiCredentials
-	// (if we alias to Credentials, we lose the implementation)
-	Credentials
-}
-
-type GetApplicationResponse ApplicationConfiguration
-
-// Fetch a specific application's details
-func (s *ApplicationService) GetApplication(id string) (*GetApplicationResponse, *http.Response, error) {
-	request := GetApplicationRequest{}
-	s.authSet.ApplyAPICredentials(&request)
-	response := new(GetApplicationResponse)
-	httpResponse, err := s.sling.New().
-		Get(id).
-		QueryStruct(request).
-		ReceiveSuccess(response)
-	return response, httpResponse, err
-}
-
-type ModifyApplicationRequest CreateApplicationRequest
-
-type ModifyApplicationResponse ApplicationConfiguration
-
-// Update an existing application by applying changed config to it
-func (s *ApplicationService) ModifyApplication(id string, request ModifyApplicationRequest) (*ModifyApplicationResponse, *http.Response, error) {
-	s.authSet.ApplyAPICredentials(&request)
-	response := new(ModifyApplicationResponse)
-	httpResponse, err := s.sling.New().
-		Put(id).
-		BodyJSON(request).
-		ReceiveSuccess(response)
-	return response, httpResponse, err
-}
-
-// Destroy an application
-func (s *ApplicationService) DeleteApplication(id string) (*http.Response, error) {
-	credentials := Credentials{}
-	s.authSet.ApplyAPICredentials(&credentials)
-	httpResponse, err := s.sling.New().
-		Delete(id).
-		QueryStruct(credentials).
-		ReceiveSuccess(new(interface{}))
-	return httpResponse, err
-}
-
-// TODO: This is vaguely useful. Work out what to do with it.
-func jsonError(e interface{}) error {
-	// TODO: Need to remove this function
-	rep, err := json.MarshalIndent(e, "", "  ")
+	result, _, err := applicationClient.DefaultApi.ListApplication(ctx, &AppOpts)
 	if err != nil {
-		return err
+		e, ok := err.(application.GenericOpenAPIError)
+		if ok {
+			data := e.Body()
+
+			var errResp ApplicationErrorResponse
+			jsonErr := json.Unmarshal(data, &errResp)
+			if jsonErr == nil {
+				return ApplicationResponseCollection{}, errResp, err
+			}
+		}
+
+		// this catches other error types
+		return ApplicationResponseCollection{}, ApplicationErrorResponse{}, err
 	}
-	return fmt.Errorf("%s", string(rep))
+	// deep-convert the collection into our wrapper structs
+	var collection ApplicationResponseCollection
+	var apps []ApplicationResponse
+	for _, app := range result.Embedded.Applications {
+		apps = append(apps, ApplicationResponse(app))
+	}
+	collection.Embedded = ApplicationResponseCollectionEmbedded{Applications: apps}
+	collection.PageSize = result.PageSize
+	collection.Page = result.Page
+	collection.TotalItems = result.TotalItems
+	collection.TotalPages = result.TotalPages
+
+	return collection, ApplicationErrorResponse{}, nil
+}
+
+// GetApplication returns one application, by app ID
+func (client *ApplicationClient) GetApplication(app_id string) (ApplicationResponse, ApplicationErrorResponse, error) {
+	// create the client
+	applicationClient := application.NewAPIClient(client.Config)
+
+	ctx := context.WithValue(context.Background(), application.ContextBasicAuth, application.BasicAuth{
+		UserName: client.apiKey,
+		Password: client.apiSecret,
+	})
+
+	result, _, err := applicationClient.DefaultApi.GetApplication(ctx, app_id)
+	if err != nil {
+		e, ok := err.(application.GenericOpenAPIError)
+		if ok {
+			data := e.Body()
+
+			var errResp ApplicationErrorResponse
+			jsonErr := json.Unmarshal(data, &errResp)
+			if jsonErr == nil {
+				return ApplicationResponse{}, errResp, err
+			}
+		}
+		return ApplicationResponse(result), ApplicationErrorResponse{}, err
+	}
+
+	return ApplicationResponse(result), ApplicationErrorResponse{}, nil
+}
+
+type ApplicationUrl struct {
+	Address    string `json:"address,omitempty"`
+	HttpMethod string `json:"http_method,omitempty"`
+}
+
+type ApplicationMessagesWebhooks struct {
+	InboundUrl ApplicationUrl `json:"inbound_url,omitempty"`
+	StatusUrl  ApplicationUrl `json:"status_url,omitempty"`
+}
+
+type ApplicationVoiceWebhooks struct {
+	AnswerUrl         ApplicationUrl `json:"answer_url,omitempty"`
+	FallbackAnswerUrl ApplicationUrl `json:"fallback_answer_url,omitempty"`
+	EventUrl          ApplicationUrl `json:"event_url,omitempty"`
+}
+
+type ApplicationRtcWebhooks struct {
+	EventUrl ApplicationUrl `json:"event_url,omitempty"`
+}
+
+type ApplicationMessages struct {
+	Webhooks ApplicationMessagesWebhooks `json:"webhooks,omitempty"`
+}
+
+type ApplicationVoice struct {
+	Webhooks ApplicationVoiceWebhooks `json:"webhooks,omitempty"`
+}
+
+type ApplicationRtc struct {
+	Webhooks ApplicationRtcWebhooks `json:"webhooks,omitempty"`
+}
+
+type ApplicationVbc struct {
+}
+
+// Use pointers so we can tell which things were intentionally sent, or not
+type ApplicationCapabilities struct {
+	Voice    *ApplicationVoice    `json:"voice,omitempty"`
+	Rtc      *ApplicationRtc      `json:"rtc,omitempty"`
+	Messages *ApplicationMessages `json:"messages,omitempty"`
+	Vbc      *ApplicationVbc      `json:"vbc,omitempty"`
+}
+
+type ApplicationKeys struct {
+	PublicKey string `json:"public_key,omitempty"`
+}
+
+// CreateApplicationOpts holds the optional values for a CreateApplication operation
+type CreateApplicationOpts struct {
+	Keys         ApplicationKeys
+	Capabilities ApplicationCapabilities
+}
+
+// CreateApplicationRequestOpts the data structure to send to the API calling code,
+// used inside CreateApplication rather than as an incoming argument
+type CreateApplicationRequestOpts struct {
+	Name         string                  `json:"name,omitempty"`
+	Keys         *ApplicationKeys        `json:"keys,omitempty"`
+	Capabilities ApplicationCapabilities `json:"capabilities,omitempty"`
+}
+
+// CreateApplication creates a new application
+func (client *ApplicationClient) CreateApplication(name string, opts CreateApplicationOpts) (ApplicationResponse, ApplicationErrorResponse, error) {
+	// create the client
+	applicationClient := application.NewAPIClient(client.Config)
+
+	AppOpts := CreateApplicationRequestOpts{}
+	AppOpts.Name = name
+	AppOpts.Capabilities = opts.Capabilities
+
+	if opts.Keys.PublicKey != "" {
+		// the user supplied a public key
+		AppOpts.Keys = &opts.Keys
+	}
+
+	createOpts := application.CreateApplicationOpts{Opts: optional.NewInterface(AppOpts)}
+
+	ctx := context.WithValue(context.Background(), application.ContextBasicAuth, application.BasicAuth{
+		UserName: client.apiKey,
+		Password: client.apiSecret,
+	})
+
+	result, _, err := applicationClient.DefaultApi.CreateApplication(ctx, &createOpts)
+	if err != nil {
+		e, ok := err.(application.GenericOpenAPIError)
+		if ok {
+			data := e.Body()
+
+			var errResp ApplicationErrorResponse
+			jsonErr := json.Unmarshal(data, &errResp)
+			if jsonErr == nil {
+				return ApplicationResponse{}, errResp, err
+			}
+		}
+		return ApplicationResponse(result), ApplicationErrorResponse{}, err
+	}
+
+	return ApplicationResponse(result), ApplicationErrorResponse{}, nil
+}
+
+// Delete application deletes an application
+func (client *ApplicationClient) DeleteApplication(app_id string) (bool, ApplicationErrorResponse, error) {
+	// create the client
+	applicationClient := application.NewAPIClient(client.Config)
+
+	ctx := context.WithValue(context.Background(), application.ContextBasicAuth, application.BasicAuth{
+		UserName: client.apiKey,
+		Password: client.apiSecret,
+	})
+
+	_, err := applicationClient.DefaultApi.DeleteApplication(ctx, app_id)
+	if err != nil {
+		e, ok := err.(application.GenericOpenAPIError)
+		if ok {
+			data := e.Body()
+
+			var errResp ApplicationErrorResponse
+			jsonErr := json.Unmarshal(data, &errResp)
+			if jsonErr == nil {
+				return false, errResp, err
+			}
+		}
+		return false, ApplicationErrorResponse{}, err
+	}
+
+	return true, ApplicationErrorResponse{}, nil
+}
+
+// UpdateApplicationOpts holds the optional values for a UpdateApplication operation
+type UpdateApplicationOpts struct {
+	Keys         ApplicationKeys
+	Capabilities ApplicationCapabilities
+}
+
+// UpdateApplicationRequestOpts the data structure to send to the API calling code,
+// used inside UpdateApplication rather than as an incoming argument
+type UpdateApplicationRequestOpts struct {
+	Name         string                  `json:"name,omitempty"`
+	Keys         *ApplicationKeys        `json:"keys,omitempty"`
+	Capabilities ApplicationCapabilities `json:"capabilities,omitempty"`
+}
+
+// UpdateApplication updates an existing application
+func (client *ApplicationClient) UpdateApplication(id string, name string, opts UpdateApplicationOpts) (ApplicationResponse, ApplicationErrorResponse, error) {
+	// create the client
+	applicationClient := application.NewAPIClient(client.Config)
+
+	AppOpts := UpdateApplicationRequestOpts{}
+	AppOpts.Name = name
+	AppOpts.Capabilities = opts.Capabilities
+
+	if opts.Keys.PublicKey != "" {
+		// the user supplied a public key
+		AppOpts.Keys = &opts.Keys
+	}
+
+	updateOpts := application.UpdateApplicationOpts{Opts: optional.NewInterface(AppOpts)}
+
+	ctx := context.WithValue(context.Background(), application.ContextBasicAuth, application.BasicAuth{
+		UserName: client.apiKey,
+		Password: client.apiSecret,
+	})
+
+	result, _, err := applicationClient.DefaultApi.UpdateApplication(ctx, id, &updateOpts)
+	if err != nil {
+		e, ok := err.(application.GenericOpenAPIError)
+		if ok {
+			data := e.Body()
+
+			var errResp ApplicationErrorResponse
+			jsonErr := json.Unmarshal(data, &errResp)
+			if jsonErr == nil {
+				return ApplicationResponse{}, errResp, err
+			}
+		}
+		return ApplicationResponse(result), ApplicationErrorResponse{}, err
+	}
+
+	return ApplicationResponse(result), ApplicationErrorResponse{}, nil
 }

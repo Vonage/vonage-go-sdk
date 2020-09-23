@@ -4,20 +4,16 @@ sudo: false
 
 matrix:
   include:
-    - go: 1.8.7
-    - go: 1.9.7
-    - go: 1.10.8
     - go: 1.11.13
-    - go: 1.12.9
-    - go: 1.13.5
+    - go: 1.12.17
+    - go: 1.13.10
+    - go: 1.14.2
     - go: tip
   allow_failures:
     - go: tip
 script:
   - go test -v -covermode=atomic -coverprofile=coverage.out
-  - diff -u <(echo -n) <(gofmt -d -s .)
-  - if [ -z $NOVET ]; then
-      diff -u <(echo -n) <(go vet . 2>&1 | grep -vE 'ExampleCommand|bash_completions.*Fprint');
-    fi
+  - gofmt -l *.go
+  - gofmt -l examples/
 after_success:
   - bash <(curl -s https://codecov.io/bash)

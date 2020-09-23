@@ -1,122 +1,68 @@
-package nexmo
+// This package offers a simple API wrapper and helper functions to get
+// users started with the Nexmo APIs
+// Pull requests, issues and comments are all welcome and gratefully received
+
+package vonage
 
 import (
-	"crypto/rsa"
-	"math/rand"
-	"strconv"
-	"time"
-
-	"fmt"
-
-	"github.com/dghubble/sling"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/vonage/vonage-go-sdk/jwt"
 )
 
-type AuthType uint8
-
-type RandomProvider interface {
-	Int31() int32
+// Auth types are various but support a common interface
+type Auth interface {
+	GetCreds() []string
 }
 
-const (
-	ApiSecretAuth AuthType = iota + 1
-	ApiSecretPathAuth
-	JwtAuth
-)
-
-// API credentials to access the Nexmo APIs
-type AuthSet struct {
-	apiSecret *apiSecretAuth
-	appAuth   *applicationAuth
-}
-
-func NewAuthSet() *AuthSet {
-	return new(AuthSet)
-}
-
-func (a *AuthSet) ApplyAPICredentials(request apiSecretRequest) {
-	a.apiSecret.apply(request)
-}
-
-func (a *AuthSet) ApplyJWT(sling *sling.Sling) error {
-	token, err := a.GenerateToken()
-	if err != nil {
-		return err
-	}
-	sling.Set("Authorization", fmt.Sprintf("Bearer %s", token))
-	return nil
-}
-
-func (a *AuthSet) GenerateToken() (string, error) {
-	if a.appAuth == nil {
-		return "", fmt.Errorf("must call SetApplicationAuth before calling GenerateToken")
-	}
-	return a.appAuth.generateToken()
-}
-
-func (a *AuthSet) SetAPISecret(apiKey, apiSecret string) {
-	a.apiSecret = &apiSecretAuth{
-		apiKey:    apiKey,
-		apiSecret: apiSecret,
-	}
-}
-
-func (a *AuthSet) SetApplicationAuth(appID string, key []byte) error {
-	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(key)
-	if err != nil {
-		return err
-	}
-	a.appAuth = &applicationAuth{
-		appID:      appID,
-		privateKey: privateKey,
-		r:          rand.New(rand.NewSource(time.Now().UnixNano())),
-	}
-	return nil
-}
-
-type apiSecretRequest interface {
-	setApiCredentials(apiKey, apiSecret string)
-}
-
-type apiSecretAuth struct {
+// KeySecretAuth is an Auth type to represent the API key and API secret combination
+type KeySecretAuth struct {
 	apiKey    string
 	apiSecret string
 }
 
-func (a apiSecretAuth) apply(request apiSecretRequest) error {
-	request.setApiCredentials(a.apiKey, a.apiSecret)
-	return nil
+// GetCreds gives an array of credential strings
+func (auth *KeySecretAuth) GetCreds() []string {
+	creds := []string{auth.apiKey, auth.apiSecret}
+	return creds
 }
 
-type jwtClaims struct {
-	ApplicationID string `json:"application_id"`
-	jwt.StandardClaims
+// CreateAuthFromKeySecret returns an Auth type given an API key and API secret
+func CreateAuthFromKeySecret(apiKey string, apiSecret string) *KeySecretAuth {
+	auth := new(KeySecretAuth)
+	auth.apiKey = apiKey
+	auth.apiSecret = apiSecret
+	return auth
 }
 
-type applicationAuth struct {
-	appID      string
-	privateKey *rsa.PrivateKey
-	r          RandomProvider
+// JWTAuth is an Auth type to represent a JWT token
+type JWTAuth struct {
+	JWT string
 }
 
-func (a applicationAuth) generateToken() (string, error) {
-	claims := jwtClaims{
-		a.appID,
-		jwt.StandardClaims{
-			Id:       strconv.Itoa(int(a.r.Int31())),
-			IssuedAt: time.Now().UTC().Unix(),
-		},
+// GetCreds returns an array of strings, this time just one element which is
+// the JWT token
+func (auth *JWTAuth) GetCreds() []string {
+	creds := []string{auth.JWT}
+	return creds
+}
+
+// CreateAuthFromAppPrivateKey is a helper method to generate auth from an
+// Application ID and a []byte of the private key (use with ioutil.ReadFile)
+func CreateAuthFromAppPrivateKey(appID string, privateKey []byte) (*JWTAuth, error) {
+	jwtGen := jwt.NewGenerator(appID, privateKey)
+	token, tokenErr := jwtGen.GenerateToken()
+	if tokenErr != nil {
+		return &JWTAuth{}, tokenErr
 	}
-	token := jwt.NewWithClaims(jwt.GetSigningMethod("RS256"), claims)
-	return token.SignedString(a.privateKey)
+
+	auth := new(JWTAuth)
+	auth.JWT = token
+	return auth, nil
 }
 
-type Credentials struct {
-	APIKey    string `json:"api_key" url:"api_key"`
-	APISecret string `json:"api_secret" url:"api_secret"`
-}
-
-func (c *Credentials) setApiCredentials(apiKey, apiSecret string) {
-	c.APIKey = apiKey
-	c.APISecret = apiSecret
+// CreateAuthFromJwtTokenGenerator accepts a token generator struct, use this
+// to set more of the options on the generator.
+func CreateAuthFromJwtTokenGenerator(generator jwt.Generator) *JWTAuth {
+	auth := new(JWTAuth)
+	auth.JWT, _ = generator.GenerateToken()
+	return auth
 }
