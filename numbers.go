@@ -48,8 +48,25 @@ type NumbersOpts struct {
 	Index          int32
 }
 
+type NumberDetail struct {
+	Country               string
+	Msisdn                string
+	MoHttpUrl             string
+	Type                  string
+	Features              []string
+	MessagesCallbackType  string
+	MessagesCallbackValue string
+	VoiceCallbackType     string
+	VoiceCallbackValue    string
+}
+
+type NumberCollection struct {
+	Count   int32
+	Numbers []NumberDetail
+}
+
 // List shows the numbers you already own, filters and pagination are available
-func (client *NumbersClient) List(opts NumbersOpts) (numbers.InboundNumbers, error) {
+func (client *NumbersClient) List(opts NumbersOpts) (NumberCollection, NumbersErrorResponse, error) {
 
 	numbersClient := numbers.NewAPIClient(client.Config)
 
@@ -97,10 +114,27 @@ func (client *NumbersClient) List(opts NumbersOpts) (numbers.InboundNumbers, err
 	result, _, err := numbersClient.DefaultApi.GetOwnedNumbers(ctx, &numbersOpts)
 
 	if err != nil {
-		return numbers.InboundNumbers{}, err
+		e := err.(numbers.GenericOpenAPIError)
+		data := e.Body()
+
+		var errResp NumbersErrorResponse
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			return NumberCollection{}, errResp, err
+		}
+		return NumberCollection{}, NumbersErrorResponse{}, err
 	}
 
-	return result, nil
+	// deep-convert the numbers collection
+	var collection NumberCollection
+	var numbers []NumberDetail
+	for _, num := range result.Numbers {
+		numbers = append(numbers, NumberDetail(num))
+	}
+	collection.Numbers = numbers
+	collection.Count = result.Count
+
+	return collection, NumbersErrorResponse{}, nil
 
 }
 
@@ -114,8 +148,21 @@ type NumberSearchOpts struct {
 	Index         int32
 }
 
+type NumberSearch struct {
+	Count   int32
+	Numbers []NumberAvailable
+}
+
+type NumberAvailable struct {
+	Country  string
+	Msisdn   string
+	Type     string
+	Cost     string
+	Features []string
+}
+
 // Search lets you find a great phone number to use in your application
-func (client *NumbersClient) Search(country string, opts NumberSearchOpts) (numbers.AvailableNumbers, error) {
+func (client *NumbersClient) Search(country string, opts NumberSearchOpts) (NumberSearch, NumbersErrorResponse, error) {
 
 	numbersClient := numbers.NewAPIClient(client.Config)
 
@@ -153,10 +200,19 @@ func (client *NumbersClient) Search(country string, opts NumberSearchOpts) (numb
 	result, _, err := numbersClient.DefaultApi.GetAvailableNumbers(ctx, country, &numbersSearchOpts)
 
 	if err != nil {
-		return numbers.AvailableNumbers{}, err
+		return NumberSearch{}, NumbersErrorResponse{}, err
 	}
 
-	return result, nil
+	// deep-convert the numbers collection
+	var collection NumberSearch
+	var numbers []NumberAvailable
+	for _, num := range result.Numbers {
+		numbers = append(numbers, NumberAvailable(num))
+	}
+	collection.Numbers = numbers
+	collection.Count = result.Count
+
+	return collection, NumbersErrorResponse{}, nil
 }
 
 // NumberBuyOpts enables users to set the Target API Key (and any future params)

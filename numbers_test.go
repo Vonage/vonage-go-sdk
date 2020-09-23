@@ -48,7 +48,7 @@ func TestNumbersList(t *testing.T) {
 
 	auth := CreateAuthFromKeySecret("12345678", "456")
 	client := NewNumbersClient(auth)
-	response, _ := client.List(NumbersOpts{})
+	response, _, _ := client.List(NumbersOpts{})
 
 	for _, number := range response.Numbers {
 		message := "Number: " + number.Msisdn
@@ -77,7 +77,7 @@ func TestNumbersListNone(t *testing.T) {
 
 	auth := CreateAuthFromKeySecret("12345678", "456")
 	client := NewNumbersClient(auth)
-	response, _ := client.List(NumbersOpts{})
+	response, _, _ := client.List(NumbersOpts{})
 
 	if response.Count > 0 {
 		t.Errorf("Empty number list failed")
@@ -125,7 +125,7 @@ func TestNumbersFilteredList(t *testing.T) {
 		Pattern:        "447",
 		SearchPattern:  0,
 	}
-	response, _ := client.List(opts)
+	response, _, _ := client.List(opts)
 
 	for _, number := range response.Numbers {
 		message := "Number: " + number.Msisdn
@@ -168,7 +168,7 @@ func TestNumbersSearchOptions(t *testing.T) {
 	auth := CreateAuthFromKeySecret("12345678", "456")
 	client := NewNumbersClient(auth)
 	opts := NumberSearchOpts{Index: 1, Size: 1, Pattern: "900", SearchPattern: 1, Features: "SMS"}
-	response, _ := client.Search("GB", opts)
+	response, _, _ := client.Search("GB", opts)
 
 	for _, number := range response.Numbers {
 		message := "Number: " + number.Msisdn
@@ -211,7 +211,7 @@ func TestNumbersSearch(t *testing.T) {
 	auth := CreateAuthFromKeySecret("12345678", "456")
 	client := NewNumbersClient(auth)
 	opts := NumberSearchOpts{}
-	response, _ := client.Search("ES", opts)
+	response, _, _ := client.Search("ES", opts)
 
 	for _, number := range response.Numbers {
 		message := "Number: " + number.Msisdn
