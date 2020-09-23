@@ -87,8 +87,10 @@ func (client *ApplicationClient) GetApplications(opts GetApplicationsOpts) (Appl
 			data := e.Body()
 
 			var errResp ApplicationErrorResponse
-			json.Unmarshal(data, &errResp)
-			return ApplicationResponseCollection{}, errResp, err
+			jsonErr := json.Unmarshal(data, &errResp)
+			if jsonErr == nil {
+				return ApplicationResponseCollection{}, errResp, err
+			}
 		}
 
 		// this catches other error types
@@ -126,8 +128,10 @@ func (client *ApplicationClient) GetApplication(app_id string) (ApplicationRespo
 			data := e.Body()
 
 			var errResp ApplicationErrorResponse
-			json.Unmarshal(data, &errResp)
-			return ApplicationResponse{}, errResp, err
+			jsonErr := json.Unmarshal(data, &errResp)
+			if jsonErr == nil {
+				return ApplicationResponse{}, errResp, err
+			}
 		}
 		return ApplicationResponse(result), ApplicationErrorResponse{}, err
 	}
@@ -224,8 +228,10 @@ func (client *ApplicationClient) CreateApplication(name string, opts CreateAppli
 			data := e.Body()
 
 			var errResp ApplicationErrorResponse
-			json.Unmarshal(data, &errResp)
-			return ApplicationResponse{}, errResp, err
+			jsonErr := json.Unmarshal(data, &errResp)
+			if jsonErr == nil {
+				return ApplicationResponse{}, errResp, err
+			}
 		}
 		return ApplicationResponse(result), ApplicationErrorResponse{}, err
 	}
@@ -250,8 +256,10 @@ func (client *ApplicationClient) DeleteApplication(app_id string) (bool, Applica
 			data := e.Body()
 
 			var errResp ApplicationErrorResponse
-			json.Unmarshal(data, &errResp)
-			return false, errResp, err
+			jsonErr := json.Unmarshal(data, &errResp)
+			if jsonErr == nil {
+				return false, errResp, err
+			}
 		}
 		return false, ApplicationErrorResponse{}, err
 	}
@@ -301,8 +309,10 @@ func (client *ApplicationClient) UpdateApplication(id string, name string, opts 
 			data := e.Body()
 
 			var errResp ApplicationErrorResponse
-			json.Unmarshal(data, &errResp)
-			return ApplicationResponse{}, errResp, err
+			jsonErr := json.Unmarshal(data, &errResp)
+			if jsonErr == nil {
+				return ApplicationResponse{}, errResp, err
+			}
 		}
 		return ApplicationResponse(result), ApplicationErrorResponse{}, err
 	}

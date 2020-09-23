@@ -20,7 +20,7 @@ jobs:
       - uses: golangci/golangci-lint-action@v2
         with:
           version: v1.29
-          args: -v --skip-dirs sms --skip-dirs voice --skip-dirs verify --skip-dirs verify --skip-dirs numberInsight --skip-dirs numbers
+          args: -v --skip-dirs sms --skip-dirs voice --skip-dirs verify --skip-dirs verify --skip-dirs numberInsight --skip-dirs numbers --skip-dirs application
 
   test:
     name: Run tests
@@ -34,4 +34,4 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
       - uses: actions/checkout@v2
-      - run: go test -v
+      - run: go test -v github.com/vonage/vonage-go-sdk github.com/vonage/vonage-go-sdk/jwt github.com/vonage/vonage-go-sdk/ncco
