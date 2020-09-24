@@ -20,7 +20,7 @@ jobs:
       - uses: golangci/golangci-lint-action@v2
         with:
           version: v1.29
-          args: -v --skip-dirs sms --skip-dirs voice --skip-dirs verify --skip-dirs verify --skip-dirs numberInsight --skip-dirs numbers --skip-dirs application
+          args: -v --skip-dirs internal
 
   test:
     name: Run tests
