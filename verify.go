@@ -7,7 +7,7 @@ import (
 	"runtime"
 
 	"github.com/antihax/optional"
-	"github.com/vonage/vonage-go-sdk/verify"
+	"github.com/vonage/vonage-go-sdk/internal/verify"
 )
 
 // VerifyClient for working with the Verify API

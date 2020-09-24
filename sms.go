@@ -6,7 +6,7 @@ import (
 	"runtime"
 
 	"github.com/antihax/optional"
-	"github.com/vonage/vonage-go-sdk/sms"
+	"github.com/vonage/vonage-go-sdk/internal/sms"
 )
 
 // SMSClient for working with the SMS API

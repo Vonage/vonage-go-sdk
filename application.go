@@ -6,7 +6,7 @@ import (
 	"runtime"
 
 	"github.com/antihax/optional"
-	"github.com/vonage/vonage-go-sdk/application"
+	"github.com/vonage/vonage-go-sdk/internal/application"
 )
 
 // ApplicationClient for working with the Application API

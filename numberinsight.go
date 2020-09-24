@@ -5,12 +5,12 @@ import (
 	"runtime"
 
 	"github.com/antihax/optional"
-	"github.com/vonage/vonage-go-sdk/numberInsight"
+	"github.com/vonage/vonage-go-sdk/internal/numberinsight"
 )
 
 // NumberInsightClient for working with the NumberInsight API
 type NumberInsightClient struct {
-	Config    *numberInsight.Configuration
+	Config    *numberinsight.Configuration
 	apiKey    string
 	apiSecret string
 }
@@ -22,7 +22,7 @@ func NewNumberInsightClient(Auth Auth) *NumberInsightClient {
 	client.apiKey = creds[0]
 	client.apiSecret = creds[1]
 
-	client.Config = numberInsight.NewConfiguration()
+	client.Config = numberinsight.NewConfiguration()
 	client.Config.UserAgent = "vonage-go/0.15-dev Go/" + runtime.Version()
 	return client
 }
@@ -37,7 +37,7 @@ type NiOpts struct {
 }
 
 type NiResponseJsonBasic struct {
-	Status                    numberInsight.NiBasicStatus
+	Status                    numberinsight.NiBasicStatus
 	StatusMessage             string
 	RequestId                 string
 	InternationalFormatNumber string
@@ -51,9 +51,9 @@ type NiResponseJsonBasic struct {
 // Basic does a basic-level lookup for data about a number
 func (client *NumberInsightClient) Basic(number string, opts NiOpts) (NiResponseJsonBasic, NiErrorResponse, error) {
 	// create the client
-	numberInsightClient := numberInsight.NewAPIClient(client.Config)
+	numberinsightClient := numberinsight.NewAPIClient(client.Config)
 
-	niOpts := numberInsight.GetNumberInsightBasicOpts{}
+	niOpts := numberinsight.GetNumberInsightBasicOpts{}
 
 	if opts.Country != "" {
 		niOpts.Country = optional.NewString(opts.Country)
@@ -61,10 +61,10 @@ func (client *NumberInsightClient) Basic(number string, opts NiOpts) (NiResponse
 
 	// we need context for the API key
 	ctx := context.Background()
-	ctx = context.WithValue(ctx, numberInsight.ContextAPIKey, numberInsight.APIKey{Key: client.apiKey})
-	ctx = context.WithValue(ctx, numberInsight.ContextAPISecret, numberInsight.APIKey{Key: client.apiSecret})
+	ctx = context.WithValue(ctx, numberinsight.ContextAPIKey, numberinsight.APIKey{Key: client.apiKey})
+	ctx = context.WithValue(ctx, numberinsight.ContextAPISecret, numberinsight.APIKey{Key: client.apiSecret})
 
-	result, _, err := numberInsightClient.DefaultApi.GetNumberInsightBasic(ctx, "json", number, &niOpts)
+	result, _, err := numberinsightClient.DefaultApi.GetNumberInsightBasic(ctx, "json", number, &niOpts)
 
 	// catch HTTP errors
 	if err != nil {
@@ -83,7 +83,7 @@ func (client *NumberInsightClient) Basic(number string, opts NiOpts) (NiResponse
 }
 
 type NiResponseJsonStandard struct {
-	Status                    numberInsight.NiBasicStatus
+	Status                    numberinsight.NiBasicStatus
 	StatusMessage             string
 	RequestId                 string
 	InternationalFormatNumber string
@@ -95,11 +95,11 @@ type NiResponseJsonStandard struct {
 	RequestPrice              string
 	RefundPrice               string
 	RemainingBalance          string
-	CurrentCarrier            numberInsight.NiCurrentCarrierProperties
-	OriginalCarrier           numberInsight.NiInitialCarrierProperties
+	CurrentCarrier            numberinsight.NiCurrentCarrierProperties
+	OriginalCarrier           numberinsight.NiInitialCarrierProperties
 	Ported                    string
-	Roaming                   numberInsight.NiRoaming
-	CallerIdentity            numberInsight.NiCallerIdentity
+	Roaming                   numberinsight.NiRoaming
+	CallerIdentity            numberinsight.NiCallerIdentity
 	CallerName                string
 	LastName                  string
 	FirstName                 string
@@ -109,16 +109,16 @@ type NiResponseJsonStandard struct {
 // Standard does a Standard-level lookup for data about a number
 func (client *NumberInsightClient) Standard(number string, opts NiOpts) (NiResponseJsonStandard, NiErrorResponse, error) {
 	// create the client
-	numberInsightClient := numberInsight.NewAPIClient(client.Config)
+	numberinsightClient := numberinsight.NewAPIClient(client.Config)
 
-	niOpts := numberInsight.GetNumberInsightStandardOpts{}
+	niOpts := numberinsight.GetNumberInsightStandardOpts{}
 
 	// we need context for the API key
 	ctx := context.Background()
-	ctx = context.WithValue(ctx, numberInsight.ContextAPIKey, numberInsight.APIKey{Key: client.apiKey})
-	ctx = context.WithValue(ctx, numberInsight.ContextAPISecret, numberInsight.APIKey{Key: client.apiSecret})
+	ctx = context.WithValue(ctx, numberinsight.ContextAPIKey, numberinsight.APIKey{Key: client.apiKey})
+	ctx = context.WithValue(ctx, numberinsight.ContextAPISecret, numberinsight.APIKey{Key: client.apiSecret})
 
-	result, _, err := numberInsightClient.DefaultApi.GetNumberInsightStandard(ctx, "json", number, &niOpts)
+	result, _, err := numberinsightClient.DefaultApi.GetNumberInsightStandard(ctx, "json", number, &niOpts)
 
 	// catch HTTP errors
 	if err != nil {
@@ -141,23 +141,23 @@ type NiResponseAsync struct {
 	Number           string
 	RemainingBalance string
 	RequestPrice     string
-	Status           numberInsight.NiStandardAdvancedStatus
+	Status           numberinsight.NiStandardAdvancedStatus
 	StatusMessage    string
 }
 
 // AdvancedAsync requests a callback with advanced-level information about a number
 func (client *NumberInsightClient) AdvancedAsync(number string, callback string, opts NiOpts) (NiResponseAsync, NiErrorResponse, error) {
 	// create the client
-	numberInsightClient := numberInsight.NewAPIClient(client.Config)
+	numberinsightClient := numberinsight.NewAPIClient(client.Config)
 
-	niOpts := numberInsight.GetNumberInsightAsyncOpts{}
+	niOpts := numberinsight.GetNumberInsightAsyncOpts{}
 
 	// we need context for the API key
 	ctx := context.Background()
-	ctx = context.WithValue(ctx, numberInsight.ContextAPIKey, numberInsight.APIKey{Key: client.apiKey})
-	ctx = context.WithValue(ctx, numberInsight.ContextAPISecret, numberInsight.APIKey{Key: client.apiSecret})
+	ctx = context.WithValue(ctx, numberinsight.ContextAPIKey, numberinsight.APIKey{Key: client.apiKey})
+	ctx = context.WithValue(ctx, numberinsight.ContextAPISecret, numberinsight.APIKey{Key: client.apiSecret})
 
-	result, _, err := numberInsightClient.DefaultApi.GetNumberInsightAsync(ctx, "json", callback, number, &niOpts)
+	result, _, err := numberinsightClient.DefaultApi.GetNumberInsightAsync(ctx, "json", callback, number, &niOpts)
 
 	// catch HTTP errors
 	if err != nil {

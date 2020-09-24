@@ -6,12 +6,12 @@ import (
 	"runtime"
 
 	"github.com/antihax/optional"
-	"github.com/vonage/vonage-go-sdk/numbers"
+	"github.com/vonage/vonage-go-sdk/internal/number"
 )
 
 // NumbersClient for working with the Numbers API
 type NumbersClient struct {
-	Config    *numbers.Configuration
+	Config    *number.Configuration
 	apiKey    string
 	apiSecret string
 }
@@ -24,7 +24,7 @@ func NewNumbersClient(Auth Auth) *NumbersClient {
 	client.apiSecret = creds[1]
 
 	// Use a default set of config but make it accessible
-	client.Config = numbers.NewConfiguration()
+	client.Config = number.NewConfiguration()
 	client.Config.UserAgent = "vonage-go/0.15-dev Go/" + runtime.Version()
 	transport := &APITransport{APISecret: client.apiSecret}
 	client.Config.HTTPClient = transport.Client()
@@ -68,10 +68,10 @@ type NumberCollection struct {
 // List shows the numbers you already own, filters and pagination are available
 func (client *NumbersClient) List(opts NumbersOpts) (NumberCollection, NumbersErrorResponse, error) {
 
-	numbersClient := numbers.NewAPIClient(client.Config)
+	numbersClient := number.NewAPIClient(client.Config)
 
 	// set up the options and parse them
-	numbersOpts := numbers.GetOwnedNumbersOpts{}
+	numbersOpts := number.GetOwnedNumbersOpts{}
 
 	if opts.ApplicationID != "" {
 		numbersOpts.ApplicationId = optional.NewString(opts.ApplicationID)
@@ -107,14 +107,14 @@ func (client *NumbersClient) List(opts NumbersOpts) (NumberCollection, NumbersEr
 	}
 
 	// we need context for the API key
-	ctx := context.WithValue(context.Background(), numbers.ContextAPIKey, numbers.APIKey{
+	ctx := context.WithValue(context.Background(), number.ContextAPIKey, number.APIKey{
 		Key: client.apiKey,
 	})
 
 	result, _, err := numbersClient.DefaultApi.GetOwnedNumbers(ctx, &numbersOpts)
 
 	if err != nil {
-		e := err.(numbers.GenericOpenAPIError)
+		e := err.(number.GenericOpenAPIError)
 		data := e.Body()
 
 		var errResp NumbersErrorResponse
@@ -164,14 +164,14 @@ type NumberAvailable struct {
 // Search lets you find a great phone number to use in your application
 func (client *NumbersClient) Search(country string, opts NumberSearchOpts) (NumberSearch, NumbersErrorResponse, error) {
 
-	numbersClient := numbers.NewAPIClient(client.Config)
+	numbersClient := number.NewAPIClient(client.Config)
 
 	// we need context for the API key
-	ctx := context.WithValue(context.Background(), numbers.ContextAPIKey, numbers.APIKey{
+	ctx := context.WithValue(context.Background(), number.ContextAPIKey, number.APIKey{
 		Key: client.apiKey,
 	})
 
-	numbersSearchOpts := numbers.GetAvailableNumbersOpts{}
+	numbersSearchOpts := number.GetAvailableNumbersOpts{}
 
 	if opts.Type != "" {
 		numbersSearchOpts.Type_ = optional.NewString(opts.Type)
@@ -221,16 +221,16 @@ type NumberBuyOpts struct {
 }
 
 // Buy the best phone number to use in your app
-func (client *NumbersClient) Buy(country string, msisdn string, opts NumberBuyOpts) (numbers.Response, NumbersErrorResponse, error) {
+func (client *NumbersClient) Buy(country string, msisdn string, opts NumberBuyOpts) (number.Response, NumbersErrorResponse, error) {
 
-	numbersClient := numbers.NewAPIClient(client.Config)
+	numbersClient := number.NewAPIClient(client.Config)
 
 	// we need context for the API key
-	ctx := context.WithValue(context.Background(), numbers.ContextAPIKey, numbers.APIKey{
+	ctx := context.WithValue(context.Background(), number.ContextAPIKey, number.APIKey{
 		Key: client.apiKey,
 	})
 
-	numbersBuyOpts := numbers.BuyANumberOpts{}
+	numbersBuyOpts := number.BuyANumberOpts{}
 
 	if opts.TargetAPIKey != "" {
 		numbersBuyOpts.TargetApiKey = optional.NewString(opts.TargetAPIKey)
@@ -240,7 +240,7 @@ func (client *NumbersClient) Buy(country string, msisdn string, opts NumberBuyOp
 	// check for non-200 status codes first, err will be set but we handle these specifically
 	if resp.StatusCode != 200 {
 		// handle a 4xx error
-		e := err.(numbers.GenericOpenAPIError)
+		e := err.(number.GenericOpenAPIError)
 		data := e.Body()
 
 		var errResp NumbersErrorResponse
@@ -254,7 +254,7 @@ func (client *NumbersClient) Buy(country string, msisdn string, opts NumberBuyOp
 	}
 
 	if err != nil {
-		return numbers.Response{}, NumbersErrorResponse{}, err
+		return number.Response{}, NumbersErrorResponse{}, err
 	}
 
 	return result, NumbersErrorResponse{}, nil
@@ -266,15 +266,15 @@ type NumberCancelOpts struct {
 }
 
 // Cancel a number already in your account
-func (client *NumbersClient) Cancel(country string, msisdn string, opts NumberCancelOpts) (numbers.Response, NumbersErrorResponse, error) {
-	numbersClient := numbers.NewAPIClient(client.Config)
+func (client *NumbersClient) Cancel(country string, msisdn string, opts NumberCancelOpts) (number.Response, NumbersErrorResponse, error) {
+	numbersClient := number.NewAPIClient(client.Config)
 
 	// we need context for the API key
-	ctx := context.WithValue(context.Background(), numbers.ContextAPIKey, numbers.APIKey{
+	ctx := context.WithValue(context.Background(), number.ContextAPIKey, number.APIKey{
 		Key: client.apiKey,
 	})
 
-	numbersCancelOpts := numbers.CancelANumberOpts{}
+	numbersCancelOpts := number.CancelANumberOpts{}
 
 	if opts.TargetAPIKey != "" {
 		numbersCancelOpts.TargetApiKey = optional.NewString(opts.TargetAPIKey)
@@ -283,7 +283,7 @@ func (client *NumbersClient) Cancel(country string, msisdn string, opts NumberCa
 	result, resp, err := numbersClient.DefaultApi.CancelANumber(ctx, country, msisdn, &numbersCancelOpts)
 	if resp.StatusCode != 200 {
 		// handle a 4xx error
-		e := err.(numbers.GenericOpenAPIError)
+		e := err.(number.GenericOpenAPIError)
 		data := e.Body()
 
 		var errResp NumbersErrorResponse
@@ -298,7 +298,7 @@ func (client *NumbersClient) Cancel(country string, msisdn string, opts NumberCa
 	}
 
 	if err != nil {
-		return numbers.Response{}, NumbersErrorResponse{}, err
+		return number.Response{}, NumbersErrorResponse{}, err
 	}
 
 	return result, NumbersErrorResponse{}, nil
@@ -316,15 +316,15 @@ type NumberUpdateOpts struct {
 }
 
 // Update the configuration for your number
-func (client *NumbersClient) Update(country string, msisdn string, opts NumberUpdateOpts) (numbers.Response, NumbersErrorResponse, error) {
-	numbersClient := numbers.NewAPIClient(client.Config)
+func (client *NumbersClient) Update(country string, msisdn string, opts NumberUpdateOpts) (number.Response, NumbersErrorResponse, error) {
+	numbersClient := number.NewAPIClient(client.Config)
 
 	// we need context for the API key
-	ctx := context.WithValue(context.Background(), numbers.ContextAPIKey, numbers.APIKey{
+	ctx := context.WithValue(context.Background(), number.ContextAPIKey, number.APIKey{
 		Key: client.apiKey,
 	})
 
-	numbersUpdateOpts := numbers.UpdateANumberOpts{}
+	numbersUpdateOpts := number.UpdateANumberOpts{}
 
 	if opts.AppID != "" {
 		numbersUpdateOpts.AppId = optional.NewString(opts.AppID)
@@ -348,12 +348,12 @@ func (client *NumbersClient) Update(country string, msisdn string, opts NumberUp
 
 	result, resp, err := numbersClient.DefaultApi.UpdateANumber(ctx, country, msisdn, &numbersUpdateOpts)
 	if err != nil {
-		return numbers.Response{}, NumbersErrorResponse{}, err
+		return number.Response{}, NumbersErrorResponse{}, err
 	}
 
 	if resp.StatusCode != 200 {
 		// handle a 4xx error
-		e := err.(numbers.GenericOpenAPIError)
+		e := err.(number.GenericOpenAPIError)
 		data := e.Body()
 
 		var errResp NumbersErrorResponse
