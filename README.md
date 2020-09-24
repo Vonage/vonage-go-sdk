@@ -63,6 +63,7 @@ If you don't already know Vonage: We make telephony APIs. If you need to make a 
   * [Tips, Tricks and Troubleshooting](#tips-tricks-and-troubleshooting)
     * [Changing the Base URL](#changing-the-base-url)
     * [Handling Date Fields](#handling-date-fields)
+  * [API Support](#api-support)
   * [Contributions](#contributions)
     * [Using a Local Branch](#using-a-local-branch)
   * [Getting Help](#getting-help)
@@ -1184,6 +1185,30 @@ Many of our APIs use dates but they come from the API as strings that Go underst
 ```
 
 You can then go ahead and use the time object as you usually would.
+
+## API Support
+
+Current state of API support in this library:
+
+| API   | API Release Status |  Supported?
+|----------|:---------:|:-------------:|
+| Account API | General Availability |❌|
+| Alerts API | General Availability |❌|
+| Application API | General Availability |✅|
+| Audit API | Beta |❌|
+| Conversation API | Beta |❌|
+| Dispatch API | Beta |❌|
+| External Accounts API | Beta |❌|
+| Media API | Beta | ❌|
+| Messages API | Beta |❌|
+| Number Insight API | General Availability |✅|
+| Number Management API | General Availability |✅|
+| Pricing API | General Availability |❌|
+| Redact API | Developer Preview |❌|
+| Reports API | Beta |❌|
+| SMS API | General Availability |✅|
+| Verify API | General Availability |✅|
+| Voice API | General Availability |✅|
 
 ## Contributions
 
