@@ -1,0 +1,11 @@
+title: Vonage Go SDK Docs
+description: Documentation for the Vonage Go SDK, including usage examples
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "" # the base hostname & protocol for your site, e.g. http://example.com
+twitter_username: vonagedev
+
+# Build settings
+theme: just-the-docs
+plugins:
+  - jekyll-feed
+
