@@ -27,8 +27,8 @@ import (
 
 func main() {
     privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
-	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
-	client := NewVoiceClient(auth)
+	auth, _ := vonage.CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := vonage.NewVoiceClient(auth)
 
 	response, _, _ := client.GetCalls()
 	fmt.Println(response.Embedded.Calls[0].Uuid + " status: " + response.Embedded.Calls[0].Status)
@@ -48,8 +48,8 @@ import (
 
 func main() {
     privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
-	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
-	client := NewVoiceClient(auth)
+	auth, _ := vonage.CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := vonage.NewVoiceClient(auth)
 
 	response, _, _ := client.GetCall("aaaabbbb-0000-1111-2222-abcdef01234567")
     t1, _ := time.Parse(time.RFC3339, response.StartTime)
@@ -74,8 +74,8 @@ import (
 
 func main() {
     privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
-	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
-	client := NewVoiceClient(auth)
+	auth, _ := vonage.CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := vonage.NewVoiceClient(auth)
 
 	from := CallFrom{Type: "phone", Number: "447770007777"}
 	to := CallTo{Type: "phone", Number: "447770007788"}
@@ -109,8 +109,8 @@ import (
 
 func main() {
     privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
-	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
-	client := NewVoiceClient(auth)
+	auth, _ := vonage.CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := vonage.NewVoiceClient(auth)
 	result, _, _ := client.Hangup("aaaabbbb-0000-1111-2222-abcdef01234567")
 	fmt.Println("Status: " + result.Status) // Status: 0 is good
 }
@@ -131,8 +131,8 @@ import (
 
 func main() {
     privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
-	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
-	client := NewVoiceClient(auth)
+	auth, _ := vonage.CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := vonage.NewVoiceClient(auth)
 
 	MyNcco := ncco.Ncco{}
 	talk := ncco.TalkAction{Text: "Go library calling to interrupt", VoiceName: "Nicole"}
@@ -169,8 +169,8 @@ import (
 
 func main() {
     privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
-	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
-	client := NewVoiceClient(auth)
+	auth, _ := vonage.CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := vonage.NewVoiceClient(auth)
 
 	result, _, _ := client.Mute("aaaabbbb-0000-1111-2222-abcdef01234567")
 	fmt.Println("Status: " + result.Status) // Status: 0 is good
@@ -193,8 +193,8 @@ import (
 
 func main() {
     privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
-	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
-	client := NewVoiceClient(auth)
+	auth, _ := vonage.CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := vonage.NewVoiceClient(auth)
 
     result, _, _:= client.PlayAudioStream("aaaabbbb-0000-1111-2222-abcdef01234567", 
         "https://raw.githubusercontent.com/nexmo-community/ncco-examples/gh-pages/assets/welcome_to_nexmo.mp3",
@@ -220,8 +220,8 @@ import (
 
 func main() {
     privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
-	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
-	client := NewVoiceClient(auth)
+	auth, _ := vonage.CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := vonage.NewVoiceClient(auth)
 
     result, _, _:= client.PlayTts("aaaabbbb-0000-1111-2222-abcdef01234567",
         "Hello, my friend",
@@ -247,8 +247,8 @@ import (
 
 func main() {
     privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
-	auth, _ := CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
-	client := NewVoiceClient(auth)
+	auth, _ := vonage.CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := vonage.NewVoiceClient(auth)
 
     result, _, _:= client.PlayDtmf("aaaabbbb-0000-1111-2222-abcdef01234567", "123")
 	fmt.Println("Update message: " + result.Message)
