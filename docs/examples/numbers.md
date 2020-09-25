@@ -1,5 +1,4 @@
 ---
-layout: page
 title: Numbers API
 permalink: examples/numbers
 ---

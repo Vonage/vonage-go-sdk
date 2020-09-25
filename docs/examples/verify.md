@@ -1,5 +1,4 @@
 ---
-layout: page
 title: Verify API
 permalink: examples/verify
 ---

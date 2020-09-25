@@ -1,5 +1,4 @@
 ---
-layout: page
 title: Number Insight API
 permalink: examples/numberinsight
 ---

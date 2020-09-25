@@ -1,5 +1,4 @@
 ---
-layout: page
 title: Application API
 permalink: examples/application
 ---

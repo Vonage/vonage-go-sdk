@@ -1,6 +1,7 @@
 ---
-layout: home
+title: Home
 ---
+
 
 The Vonage Go SDK is an unofficial library enabling the use of the Vonage APIs from Go.
 

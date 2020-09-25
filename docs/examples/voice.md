@@ -1,5 +1,4 @@
 ---
-layout: page
 title: Voice API
 permalink: examples/voice
 ---
