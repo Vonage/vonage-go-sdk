@@ -1,4 +1,3 @@
-remote_theme: pmarsceill/just-the-docs
 title: Vonage Go SDK Docs
 description: Documentation for the Vonage Go SDK, including usage examples
 baseurl: "" # the subpath of your site, e.g. /blog
@@ -6,7 +5,16 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: vonagedev
 
 # Build settings
-theme: just-the-docs
+remote_theme: pmarsceill/just-the-docs
 plugins:
   - jekyll-feed
+
+# Just-the-docs specific settings
+gh_edit_link: true
+gh_edit_link_text: "Edit this page on GitHub."
+gh_edit_repository: "https://github.com/vonage/vonage-go-sdk"
+gh_edit_branch: "master"
+gh_edit_source: docs
+gh_edit_view_mode: "edit"
+
 
