@@ -7,7 +7,7 @@ permalink: examples/sms
 * [Send Unicode SMS](#send-unicode-sms)
 * [Receive SMS](#receive-sms)
 
-#### Send SMS
+## Send SMS
 
 To send an SMS, try the code below:
 
@@ -35,7 +35,7 @@ func main() {
 }
 ```
 
-#### Send Unicode SMS
+## Send Unicode SMS
 
 Add `Type` to the `opts` parameter and set it to "unicode":
 
@@ -63,7 +63,7 @@ func main() {
 }
 ```
 
-#### Receive SMS
+## Receive SMS
 
 To receive an SMS, you will need to run a local webserver and expose the URL publicly (you can use a tool such as [ngrok](https://ngrok.com).
 
