@@ -21,16 +21,16 @@ import ("github.com/vonage/vonage-go-sdk")
 Usage examples are organised by the API they access. You can find out more about all the Vonage APIs on the [Developer Portal](https://developer.nexmo.com).
 
 
-* [SMS API](/examples/sms)
-* [Verify API](/examples/verify)
-* [Application API](/examples/application)
-* [Voice API](/examples/voice) and [NCCOs](examples/ncco)
-* [Number Insight API](/examples/numberinsight)
-* [Numbers API](/examples/numbers)
+* [SMS API](examples/sms)
+* [Verify API](examples/verify)
+* [Application API](examples/application)
+* [Voice API](examples/voice) and [NCCOs](examples/ncco)
+* [Number Insight API](examples/numberinsight)
+* [Numbers API](examples/numbers)
 
 ## More Information
 
 More than just the APIs, this section covers other useful topics for using the Go SDK.
 
-* [JWTs](/examples/jwt)
-* [Tips, Tricks and Troubleshooting](/examples/tips)
+* [JWTs](examples/jwt)
+* [Tips, Tricks and Troubleshooting](examples/tips)

@@ -1,3 +1,4 @@
+remote_theme: pmarsceill/just-the-docs
 title: Vonage Go SDK Docs
 description: Documentation for the Vonage Go SDK, including usage examples
 baseurl: "" # the subpath of your site, e.g. /blog
