@@ -77,15 +77,15 @@ func main() {
 	auth, _ := vonage.CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
 	client := vonage.NewVoiceClient(auth)
 
-	from := CallFrom{Type: "phone", Number: "447770007777"}
-	to := CallTo{Type: "phone", Number: "447770007788"}
+	from := vonage.CallFrom{Type: "phone", Number: "447770007777"}
+	to := vonage.CallTo{Type: "phone", Number: "447770007788"}
 
-	MyNcco := Ncco{}
+	MyNcco := ncco.Ncco{}
 	talk := ncco.TalkAction{Text: "Go library calling to say hello", VoiceName: "Nicole"}
 	MyNcco.AddAction(talk)
 
     // NCCO example
-	result, _, _ := client.CreateCall(CreateCallOpts{From: from, To: to, Ncco: MyNcco})
+	result, _, _ := client.CreateCall(vonage.CreateCallOpts{From: from, To: to, Ncco: MyNcco})
     // alternate version with answer URL
     //result, _, _ := client.CreateCall(CreateCallOpts{From: from, To: to, AnswerUrl: []string{"https://example.com/answer"}})
 	fmt.Println(result.Uuid + " call ID started")
@@ -140,7 +140,7 @@ func main() {
 
 
     // NCCO example
-	result, _, _ := client.TransferCall(TransferCallOpts{Uuid: result.Uuid, Ncco: MyNcco})
+	result, _, _ := client.TransferCall(vonage.TransferCallOpts{Uuid: result.Uuid, Ncco: MyNcco})
     // handy AnswerUrl example
 	// result, _, _ := client.TransferCall(TransferCallOpts{Uuid: result.Uuid, AnswerUrl: []string{"https://raw.githubusercontent.com/nexmo-community/ncco-examples/gh-pages/talk.json"}})
 	fmt.Println("Status: " + result.Status)
@@ -182,7 +182,7 @@ Replace `Mute()` with your desired method name.
 
 ## Stream Audio into a Call
 
-You can stream (and stop streaming) audio from a public URL into an in-progress call, like this: 
+You can stream (and stop streaming) audio from a public URL into an in-progress call, like this:
 
 ```go
 package main
@@ -196,7 +196,7 @@ func main() {
 	auth, _ := vonage.CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
 	client := vonage.NewVoiceClient(auth)
 
-    result, _, _:= client.PlayAudioStream("aaaabbbb-0000-1111-2222-abcdef01234567", 
+    result, _, _:= client.PlayAudioStream("aaaabbbb-0000-1111-2222-abcdef01234567",
         "https://raw.githubusercontent.com/nexmo-community/ncco-examples/gh-pages/assets/welcome_to_nexmo.mp3",
         vonage.PlayAudioOpts{}
     )
@@ -209,7 +209,7 @@ func main() {
 
 ## Play Text-To-Speech into a Call
 
-You can send (and stop sending) TTS (Text To Speech) into an in-progress call. Here's an example: 
+You can send (and stop sending) TTS (Text To Speech) into an in-progress call. Here's an example:
 
 ```go
 package main
@@ -236,7 +236,7 @@ func main() {
 
 ## Play DTMF Tones into a Call
 
-You can send DTMF (keypad tones) into an in-progress call. Here's an example: 
+You can send DTMF (keypad tones) into an in-progress call. Here's an example:
 
 ```go
 package main
@@ -272,5 +272,3 @@ There are three return values on most methods. The first two are structs represe
 	}
 
 ```
-
-
