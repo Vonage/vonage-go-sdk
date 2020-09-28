@@ -26,7 +26,7 @@ func main() {
 	smsClient := vonage.NewSMSClient(auth)
     smsClient.Config.BasePath = "http://localhost:4010"
 
-	response, err := smsClient.Send("NexmoGolang", "44777000777", "This is a message from golang", vonage.SMSOpts{})
+	response, err := smsClient.Send("VonageGolang", "44777000777", "This is a message from golang", vonage.SMSOpts{})
 
 	if err != nil {
 		panic(err)
@@ -53,5 +53,3 @@ Many of our APIs use dates but they come from the API as strings that Go underst
 ```
 
 You can then go ahead and use the time object as you usually would.
-
-

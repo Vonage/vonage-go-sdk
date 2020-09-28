@@ -1,5 +1,5 @@
 // This package offers a simple API wrapper and helper functions to get
-// users started with the Nexmo APIs
+// users started with the Vonage APIs
 // Pull requests, issues and comments are all welcome and gratefully received
 
 package vonage
