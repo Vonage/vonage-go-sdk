@@ -20,7 +20,8 @@ func (n *Ncco) AddAction(action Action) {
 	n.actions = append(n.actions, action.prepare())
 }
 
-// GetActions to get all the actions
+// GetActions to return the NCCO array, ready to be JSON Marshalled
+// This calls the prepare() actions for any additional transforms needed
 func (n *Ncco) GetActions() []interface{} {
 	return n.actions
 }

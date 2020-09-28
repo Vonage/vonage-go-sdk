@@ -3,9 +3,10 @@ title: Voice API
 permalink: examples/voice
 ---
 
+* [Make a Phone Call](#make-a-phone-call)
+* [Answer a Call or Return an NCCO Response](#answer-a-call-or-return-an-ncco-response)
 * [List all Calls](#list-all-calls)
 * [Call Detail](#call-detail)
-* [Make a Phone Call](#make-a-phone-call)
 * [End a Call](#end-a-call)
 * [Transfer a Call](#transfer-a-call)
 * [Mute or Earmuff a Call](#mute-or-earmuff-a-call)
@@ -14,6 +15,76 @@ permalink: examples/voice
 * [Play DTMF Tones into a Call](#play-dtmf-tones-into-a-call)
 * [Error Handling](#error-handling)
 
+## Make a Phone Call
+
+Start a call (the from number should be a Nexmo number you own), supplying either `AnswerUrl` *or* `Ncco`:
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/vonage/vonage-go-sdk/ncco"
+)
+
+func main() {
+    privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
+	auth, _ := vonage.CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
+	client := vonage.NewVoiceClient(auth)
+
+	from := vonage.CallFrom{Type: "phone", Number: "447770007777"}
+	to := vonage.CallTo{Type: "phone", Number: "447770007788"}
+
+	MyNcco := ncco.Ncco{}
+	talk := ncco.TalkAction{Text: "Go library calling to say hello", VoiceName: "Nicole"}
+	MyNcco.AddAction(talk)
+
+    // NCCO example
+	result, _, _ := client.CreateCall(vonage.CreateCallOpts{From: from, To: to, Ncco: MyNcco})
+    // alternate version with answer URL
+    //result, _, _ := client.CreateCall(CreateCallOpts{From: from, To: to, AnswerUrl: []string{"https://example.com/answer"}})
+	fmt.Println(result.Uuid + " call ID started")
+}
+
+```
+
+See [NCCO](#nccos) for more information and examples for all other supported NCCO types.
+
+## Answer a Call or Return an NCCO Response
+
+Often, you will want to return an NCCO as an HTTP response rather than pass the object into an API call. Here's an example of serving an NCCO as a response:
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+
+	"github.com/vonage/vonage-go-sdk/ncco"
+)
+
+func answer(w http.ResponseWriter, req *http.Request) {
+
+	MyNcco := ncco.Ncco{}
+
+	talk := ncco.TalkAction{Text: "Thank you for calling."}
+	MyNcco.AddAction(talk)
+
+	data, _ := json.Marshal(MyNcco.GetActions())
+	fmt.Fprintf(w, "%s", data)
+}
+
+func main() {
+
+	http.HandleFunc("/answer", answer)
+
+	http.ListenAndServe(":8081", nil)
+}
+```
+
+This is useful for answering a call (as shown above) but also for handling webhooks that expect an NCCO response such as notify, input, and so on.
 ## List all Calls
 
 A list of all the calls associated with your account.
@@ -59,41 +130,6 @@ func main() {
 ```
 
 The example includes how to parse and then format a date.
-
-## Make a Phone Call
-
-Start a call (the from number should be a Nexmo number you own), supplying either `AnswerUrl` *or* `Ncco`:
-
-```go
-package main
-
-import (
-	"fmt"
-	"github.com/vonage/vonage-go-sdk/ncco"
-)
-
-func main() {
-    privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
-	auth, _ := vonage.CreateAuthFromAppPrivateKey("00001111-aaaa-bbbb-cccc-0123456789abcd", privateKey)
-	client := vonage.NewVoiceClient(auth)
-
-	from := vonage.CallFrom{Type: "phone", Number: "447770007777"}
-	to := vonage.CallTo{Type: "phone", Number: "447770007788"}
-
-	MyNcco := ncco.Ncco{}
-	talk := ncco.TalkAction{Text: "Go library calling to say hello", VoiceName: "Nicole"}
-	MyNcco.AddAction(talk)
-
-    // NCCO example
-	result, _, _ := client.CreateCall(vonage.CreateCallOpts{From: from, To: to, Ncco: MyNcco})
-    // alternate version with answer URL
-    //result, _, _ := client.CreateCall(CreateCallOpts{From: from, To: to, AnswerUrl: []string{"https://example.com/answer"}})
-	fmt.Println(result.Uuid + " call ID started")
-}
-
-```
-
-See [NCCO](#nccos) for more information and examples for all other supported NCCO types.
 
 
 ## End a Call
