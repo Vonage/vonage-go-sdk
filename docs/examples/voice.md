@@ -17,7 +17,7 @@ permalink: examples/voice
 
 ## Make a Phone Call
 
-Start a call (the from number should be a Nexmo number you own), supplying either `AnswerUrl` *or* `Ncco`:
+Start a call (the from number should be a Vonage number you own), supplying either `AnswerUrl` *or* `Ncco`:
 
 ```go
 package main
