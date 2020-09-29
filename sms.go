@@ -44,7 +44,7 @@ type Sms struct {
 }
 
 // Send an SMS. Give some text to send and the number to send to - there are
-// some restrictions on what you can send from, to be safe try using a Nexmo
+// some restrictions on what you can send from, to be safe try using a Vonage
 // number associated with your account
 func (client *SMSClient) Send(from string, to string, text string, opts SMSOpts) (Sms, error) {
 

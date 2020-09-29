@@ -33,7 +33,7 @@ func TestVerifyRequest(t *testing.T) {
 
 	auth := CreateAuthFromKeySecret("12345678", "456")
 	client := NewVerifyClient(auth)
-	response, _, _ := client.Request("44777000777", "NexmoGoTest", VerifyOpts{})
+	response, _, _ := client.Request("44777000777", "VonageGoTest", VerifyOpts{})
 
 	message := "Request ID: " + response.RequestId
 	if message != "Request ID: abcdef0123456789abcdef0123456789" {
@@ -65,7 +65,7 @@ func TestVerifyRequestConcurrent(t *testing.T) {
 
 	auth := CreateAuthFromKeySecret("12345678", "456")
 	client := NewVerifyClient(auth)
-	_, errResp, _ := client.Request("44777000777", "NexmoGoTest", VerifyOpts{})
+	_, errResp, _ := client.Request("44777000777", "VonageGoTest", VerifyOpts{})
 
 	message := "Error status " + errResp.Status + ": " + errResp.ErrorText
 	if message != "Error status 10: Concurrent verifications to the same number are not allowed" {
@@ -90,7 +90,7 @@ Go away
 
 	auth := CreateAuthFromKeySecret("12345678", "456")
 	client := NewVerifyClient(auth)
-	_, _, err := client.Request("44777000777", "NexmoGoTest", VerifyOpts{})
+	_, _, err := client.Request("44777000777", "VonageGoTest", VerifyOpts{})
 
 	if err == nil {
 		t.Errorf("This should have produced an error")
@@ -177,7 +177,7 @@ func TestVerifySearch(t *testing.T) {
     "sender_id": "verify",
     "date_submitted": "2020-01-01 12:00:00",
     "date_finalized": "2020-01-01 12:00:00",
-    "checks": 
+    "checks":
 
 [
 
@@ -204,7 +204,7 @@ func TestVerifySearch(t *testing.T) {
 "currency": "EUR",
 "status": "SUCCESS",
 "estimated_price_messages_sent": "0.06660000",
-"events": 
+"events":
 [
 
 {

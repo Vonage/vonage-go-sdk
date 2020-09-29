@@ -49,7 +49,7 @@ Send a `record` action to start a recording:
     record := ncco.RecordAction{BeepStart: true}
 ```
 
-When the recording completes, Nexmo sends a webhook containing the recording URL so that you can download the file.
+When the recording completes, Vonage sends a webhook containing the recording URL so that you can download the file.
 
 ## Conversation Action
 
@@ -76,6 +76,4 @@ Connects the current call to another endpoint (currently only phone is supported
     endpoint := []ncco.PhoneEndpoint{Number: "44777000777"}
 	connect := ncco.ConnectAction{Endpoint: endpoint, From: "44777000888"}
 ```
-The `from` field when connecting to a phone endpoint should be a Nexmo number that you own.
-
-
+The `from` field when connecting to a phone endpoint should be a Vonage number that you own.
