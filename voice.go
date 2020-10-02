@@ -173,7 +173,7 @@ func (client *VoiceClient) CreateCall(opts CreateCallOpts) (voice.CreateCallResp
 		voiceCallOpts.RingingTimer = commonFields.RingingTimer
 
 		// add NCCO
-		voiceCallOpts.Ncco = opts.Ncco
+		voiceCallOpts.Ncco = opts.Ncco.GetActions()
 
 		callOpts := optional.NewInterface(voiceCallOpts)
 
