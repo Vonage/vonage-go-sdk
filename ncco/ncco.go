@@ -1,6 +1,7 @@
 package ncco
 
 import (
+	"encoding/json"
 	"strconv"
 	"strings"
 )
@@ -24,6 +25,11 @@ func (n *Ncco) AddAction(action Action) {
 // This calls the prepare() actions for any additional transforms needed
 func (n *Ncco) GetActions() []interface{} {
 	return n.actions
+}
+
+// MarshalJSON to return the NCCO array, ready to be JSON Marshalled
+func (n Ncco) MarshalJSON() ([]byte, error) {
+	return json.Marshal(n.GetActions())
 }
 
 // TalkAction is a text-to-speech feature. Beware that the "Loop"
