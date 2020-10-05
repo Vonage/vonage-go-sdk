@@ -265,8 +265,8 @@ type TransferWithUrlOpts struct {
 }
 
 type TransferDestinationNcco struct {
-	Type string        `json:"type"`
-	Ncco []interface{} `json:"ncco"`
+	Type string    `json:"type"`
+	Ncco ncco.Ncco `json:"ncco"`
 }
 
 type TransferWithNccoOpts struct {
@@ -302,7 +302,7 @@ func (client *VoiceClient) TransferCall(opts TransferCallOpts) (ModifyCallRespon
 			return ModifyCallResponse{Status: "0"}, VoiceErrorResponse{}, nil
 		}
 	} else if len(opts.Ncco.GetActions()) > 0 {
-		destination := TransferDestinationNcco{Type: "ncco", Ncco: opts.Ncco.GetActions()}
+		destination := TransferDestinationNcco{Type: "ncco", Ncco: opts.Ncco}
 		transfer := TransferWithNccoOpts{Action: "transfer", Destination: destination}
 		modifyCallOpts := voice.ModifyCallOpts{Opts: optional.NewInterface(transfer)}
 		ctx := context.Background()

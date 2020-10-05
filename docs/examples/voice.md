@@ -72,7 +72,7 @@ func answer(w http.ResponseWriter, req *http.Request) {
 	talk := ncco.TalkAction{Text: "Thank you for calling."}
 	MyNcco.AddAction(talk)
 
-	data, _ := json.Marshal(MyNcco.GetActions())
+	data, _ := json.Marshal(MyNcco)
 	fmt.Fprintf(w, "%s", data)
 }
 

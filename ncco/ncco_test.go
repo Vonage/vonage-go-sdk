@@ -16,7 +16,7 @@ func TestNccoTalkSimple(t *testing.T) {
 	}
 
 	// check the JSON
-	j, _ := json.Marshal(ncco.GetActions())
+	j, _ := json.Marshal(ncco)
 	if string(j) != "[{\"action\":\"talk\",\"text\":\"Hello\",\"bargeIn\":false,\"loop\":1}]" {
 		t.Errorf("Unexpected JSON format for: simple Talk")
 	}
@@ -28,7 +28,7 @@ func TestNccoTalkAll(t *testing.T) {
 	ncco.AddAction(talk)
 
 	// check the JSON
-	j, _ := json.Marshal(ncco.GetActions())
+	j, _ := json.Marshal(ncco)
 	if string(j) != "[{\"action\":\"talk\",\"text\":\"Hello\",\"bargeIn\":true,\"level\":1,\"voiceName\":\"Nicole\",\"loop\":4}]" {
 		t.Errorf("Unexpected JSON format for: All Talk fields")
 	}
@@ -44,7 +44,7 @@ func TestNccoNotify(t *testing.T) {
 	ncco.AddAction(ping)
 
 	// check the JSON
-	j, _ := json.Marshal(ncco.GetActions())
+	j, _ := json.Marshal(ncco)
 	if string(j) != "[{\"action\":\"notify\",\"payload\":{\"count\":\"7\",\"key\":\"If that is a key, this is a value\"},\"eventUrl\":[\"https://example.com/notify\"],\"eventMethod\":\"POST\"}]" {
 		t.Errorf("Unexpected JSON format for: Notify action")
 	}
@@ -56,7 +56,7 @@ func TestNccoRecordSimple(t *testing.T) {
 	ncco.AddAction(record)
 
 	// check the JSON
-	j, _ := json.Marshal(ncco.GetActions())
+	j, _ := json.Marshal(ncco)
 	if string(j) != "[{\"action\":\"record\"}]" {
 		t.Errorf("Unexpected JSON format for: simple Record")
 	}
@@ -69,7 +69,7 @@ func TestNccoRecordAll(t *testing.T) {
 	ncco.AddAction(record)
 
 	// check the JSON
-	j, _ := json.Marshal(ncco.GetActions())
+	j, _ := json.Marshal(ncco)
 	if string(j) != "[{\"action\":\"record\",\"format\":\"ogg\",\"split\":\"conversation\",\"channels\":8,\"endOnSilence\":5,\"endOnKey\":\"#\",\"timeOut\":10,\"beepStart\":true,\"eventUrl\":[\"https://example.com/record\"],\"eventMethod\":\"GET\"}]" {
 		t.Errorf("Unexpected JSON format for: Record all")
 	}
@@ -81,7 +81,7 @@ func TestNccoConversationSimple(t *testing.T) {
 	ncco.AddAction(conversation)
 
 	// check the JSON
-	j, _ := json.Marshal(ncco.GetActions())
+	j, _ := json.Marshal(ncco)
 	if string(j) != "[{\"action\":\"conversation\",\"name\":\"convo1\",\"startOnEnter\":true}]" {
 		t.Errorf("Unexpected JSON format for: simple Conversation")
 	}
@@ -94,7 +94,7 @@ func TestNccoConversationAll(t *testing.T) {
 	ncco.AddAction(conversation)
 
 	// check the JSON
-	j, _ := json.Marshal(ncco.GetActions())
+	j, _ := json.Marshal(ncco)
 	if string(j) != "[{\"action\":\"conversation\",\"name\":\"convo1\",\"musicOnHoldUrl\":[\"https://example.com/music.mp3\"],\"endOnExit\":true,\"record\":true,\"startOnEnter\":false}]" {
 		t.Errorf("Unexpected JSON format for: Conversation all")
 	}
@@ -108,7 +108,7 @@ func TestNccoConnectSimplePhone(t *testing.T) {
 	ncco.AddAction(connect)
 
 	// check the JSON
-	j, _ := json.Marshal(ncco.GetActions())
+	j, _ := json.Marshal(ncco)
 	if string(j) != "[{\"action\":\"connect\",\"endpoint\":[{\"type\":\"phone\",\"number\":\"447770007777\"}],\"from\":\"447770008888\"}]" {
 		t.Errorf("Unexpected JSON format for: simple Connect phone")
 	}
@@ -123,7 +123,7 @@ func TestNccoConnectAllPhone(t *testing.T) {
 	ncco.AddAction(connect)
 
 	// check the JSON
-	j, _ := json.Marshal(ncco.GetActions())
+	j, _ := json.Marshal(ncco)
 	if string(j) != "[{\"action\":\"connect\",\"endpoint\":[{\"type\":\"phone\",\"number\":\"447770007777\",\"dtmfAnswer\":\"41\"}],\"from\":\"447770008888\",\"timeout\":3,\"limit\":5,\"machineDetection\":\"continue\",\"eventUrl\":[\"https://example.com/event\"],\"eventMethod\":\"GET\"}]" {
 		t.Errorf("Unexpected JSON format for: simple Connect phone")
 	}
@@ -135,7 +135,7 @@ func TestNccoStreamSimple(t *testing.T) {
 	ncco.AddAction(stream)
 
 	// check the JSON
-	j, _ := json.Marshal(ncco.GetActions())
+	j, _ := json.Marshal(ncco)
 	if string(j) != "[{\"action\":\"stream\",\"streamUrl\":[\"https://example.com/music.mp3\"],\"bargeIn\":false,\"loop\":1}]" {
 		t.Errorf("Unexpected JSON format for: simple Stream")
 	}
@@ -147,7 +147,7 @@ func TestNccoStreamOptions(t *testing.T) {
 	ncco.AddAction(stream)
 
 	// check the JSON
-	j, _ := json.Marshal(ncco.GetActions())
+	j, _ := json.Marshal(ncco)
 	if string(j) != "[{\"action\":\"stream\",\"streamUrl\":[\"https://example.com/music.mp3\"],\"level\":1,\"bargeIn\":true,\"loop\":4}]" {
 		t.Errorf("Unexpected JSON format for: Stream options")
 	}
@@ -159,7 +159,7 @@ func TestNccoInputDtmfEmpty(t *testing.T) {
 	ncco.AddAction(dtmf)
 
 	// check the JSON
-	j, _ := json.Marshal(ncco.GetActions())
+	j, _ := json.Marshal(ncco)
 	if string(j) != "[{\"action\":\"input\",\"dtmf\":{}}]" {
 		t.Errorf("Unexpected JSON format for: Input DTMF empty")
 	}
@@ -171,7 +171,7 @@ func TestNccoInputDtmfOptions(t *testing.T) {
 	ncco.AddAction(dtmf)
 
 	// check the JSON
-	j, _ := json.Marshal(ncco.GetActions())
+	j, _ := json.Marshal(ncco)
 	// fmt.Println(string(j))
 	if string(j) != "[{\"action\":\"input\",\"dtmf\":{\"timeOut\":8,\"maxDigits\":2,\"submitOnHash\":true},\"eventUrl\":[\"https://example.com/event\"],\"eventMethod\":\"GET\"}]" {
 		t.Errorf("Unexpected JSON format for: Input DTMF options")
