@@ -28,6 +28,12 @@ Create a `talk` action to read some text into the call:
 	talk := ncco.TalkAction{Text: "Greetings from the golang library", VoiceName: "Nicole"}
 ```
 
+or
+
+```go
+	talk := ncco.TalkAction{Text: "Greetings from the golang library", Style: 0, Language: "en-US}
+```
+
 ## Notify Action
 
 Use `notify` to send a particular data payload to a nominated URL:
