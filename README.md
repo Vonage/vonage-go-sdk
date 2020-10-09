@@ -84,3 +84,5 @@ We love to hear from you so if you have questions, comments or find a bug in the
 ## License
 
 This library is released under the [Apache 2.0 License][license]
+
+[license]: LICENSE.txt
