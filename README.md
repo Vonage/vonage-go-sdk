@@ -71,7 +71,7 @@ Refer to [this excellent blog post](https://thewebivore.com/using-replace-in-go-
  
 We love to hear from you so if you have questions, comments or find a bug in the project, let us know! You can either:
  
-* Open an issue on this repository
+* Open an [issue on this repository](https://github.com/Vonage/vonage-go-sdk/issues)
 * Tweet at us! We're [@VonageDev on Twitter](https://twitter.com/VonageDev)
 * Or [join the Vonage Community Slack](https://developer.nexmo.com/community/slack)
  
@@ -79,3 +79,10 @@ We love to hear from you so if you have questions, comments or find a bug in the
  
 * Check out the Developer Documentation at <https://developer.nexmo.com> - you'll find the API references for all the APIs there as well
 * The documentation for the library: <https://godoc.org/github.com/vonage/vonage-go-sdk>
+
+
+## License
+
+This library is released under the [Apache 2.0 License][license]
+
+[license]: LICENSE.txt
