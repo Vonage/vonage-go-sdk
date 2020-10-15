@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
-	"runtime"
 
 	"github.com/antihax/optional"
 	"github.com/vonage/vonage-go-sdk/internal/verify"
@@ -25,7 +24,7 @@ func NewVerifyClient(Auth Auth) *VerifyClient {
 	client.apiSecret = creds[1]
 
 	client.Config = verify.NewConfiguration()
-	client.Config.UserAgent = "vonage-go/0.15-dev Go/" + runtime.Version()
+	client.Config.UserAgent = GetUserAgent()
 	return client
 }
 

@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"runtime"
 
 	"github.com/antihax/optional"
 	"github.com/vonage/vonage-go-sdk/internal/voice"
@@ -24,7 +23,7 @@ func NewVoiceClient(Auth Auth) *VoiceClient {
 	client.JWT = creds[0]
 
 	client.Config = voice.NewConfiguration()
-	client.Config.UserAgent = "vonage-go/0.15-dev Go/" + runtime.Version()
+	client.Config.UserAgent = GetUserAgent()
 	client.Config.AddDefaultHeader("Authorization", "Bearer "+client.JWT)
 	return client
 }

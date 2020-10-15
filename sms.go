@@ -3,7 +3,6 @@ package vonage
 import (
 	"context"
 	"errors"
-	"runtime"
 
 	"github.com/antihax/optional"
 	"github.com/vonage/vonage-go-sdk/internal/sms"
@@ -25,7 +24,7 @@ func NewSMSClient(Auth Auth) *SMSClient {
 
 	// Use a default set of config but make it accessible
 	client.Config = sms.NewConfiguration()
-	client.Config.UserAgent = "vonage-go/0.15-dev Go/" + runtime.Version()
+	client.Config.UserAgent = GetUserAgent()
 	return client
 }
 
