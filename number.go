@@ -3,7 +3,6 @@ package vonage
 import (
 	"context"
 	"encoding/json"
-	"runtime"
 
 	"github.com/antihax/optional"
 	"github.com/vonage/vonage-go-sdk/internal/number"
@@ -25,7 +24,7 @@ func NewNumbersClient(Auth Auth) *NumbersClient {
 
 	// Use a default set of config but make it accessible
 	client.Config = number.NewConfiguration()
-	client.Config.UserAgent = "vonage-go/0.15-dev Go/" + runtime.Version()
+	client.Config.UserAgent = GetUserAgent()
 	transport := &APITransport{APISecret: client.apiSecret}
 	client.Config.HTTPClient = transport.Client()
 	return client

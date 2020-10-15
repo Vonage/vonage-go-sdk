@@ -3,7 +3,6 @@ package vonage
 import (
 	"context"
 	"encoding/json"
-	"runtime"
 
 	"github.com/antihax/optional"
 	"github.com/vonage/vonage-go-sdk/internal/application"
@@ -24,7 +23,7 @@ func NewApplicationClient(Auth Auth) *ApplicationClient {
 	client.apiSecret = creds[1]
 
 	client.Config = application.NewConfiguration()
-	client.Config.UserAgent = "vonage-go/0.15-dev Go/" + runtime.Version()
+	client.Config.UserAgent = GetUserAgent()
 	return client
 }
 

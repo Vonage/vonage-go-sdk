@@ -2,7 +2,6 @@ package vonage
 
 import (
 	"context"
-	"runtime"
 
 	"github.com/antihax/optional"
 	"github.com/vonage/vonage-go-sdk/internal/numberinsight"
@@ -23,7 +22,7 @@ func NewNumberInsightClient(Auth Auth) *NumberInsightClient {
 	client.apiSecret = creds[1]
 
 	client.Config = numberinsight.NewConfiguration()
-	client.Config.UserAgent = "vonage-go/0.15-dev Go/" + runtime.Version()
+	client.Config.UserAgent = GetUserAgent()
 	return client
 }
 
