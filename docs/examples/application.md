@@ -11,6 +11,8 @@ permalink: examples/application
 * [Update an Application](#update-an-application)
 * [Delete an Application](#delete-an-application)
 
+Working with the Voice, Messages or Conversation APIs relies on using applications. Check out the [docs](https://developer.nexmo.com/application/overview) and [API reference](https://developer.nexmo.com/api/application.v2) for more details.
+
 ## List Applications
 
 To see all the applications associated with your account:

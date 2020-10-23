@@ -9,6 +9,8 @@ permalink: examples/numbers
 * [Update number configuration](#update-number-configuration)
 * [Cancel a bought number](#cancel-a-bought-number)
 
+Learn more about the Numbers API by visiting the [docs on the developer portal](https://developer.nexmo.com/numbers/overview) and the [API reference](https://developer.nexmo.com/api/numbers).
+
 #### List the Numbers You Own
 
 To check on the numbers already associated with your account:

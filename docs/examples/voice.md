@@ -15,6 +15,8 @@ permalink: examples/voice
 * [Play DTMF Tones into a Call](#play-dtmf-tones-into-a-call)
 * [Error Handling](#error-handling)
 
+Check out more resources on Voice API including guides and code snippets on the [developer portal](https://developer.nexmo.com/voice/voice-api/overview). The [API reference](https://developer.nexmo.com/api/voice) will be useful, and there's a [section on NCCOs](/examples/ncco) in these docs too.
+
 ## Make a Phone Call
 
 Start a call (the from number should be a Vonage number you own), supplying either `AnswerUrl` *or* `Ncco`:

@@ -9,6 +9,8 @@ permalink: examples/verify
 * [Trigger the Next Event in a Verification](#trigger-the-next-event-in-a-verification)
 * [Search for a Verification](#search-for-a-verification)
 
+Verify API is great for checking contact numbers and for 2fa. Read more on the [developer portal](https://developer.nexmo.com/verify/overview) and [API reference](https://developer.nexmo.com/api/verify).
+
 ## Verify a User's Phone Number
 
 This is a multi-step process. First: request that the number be verified and state what "brand" is asking.

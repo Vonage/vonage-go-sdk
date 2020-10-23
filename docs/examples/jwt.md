@@ -37,6 +37,15 @@ func main() {
 You can also set up the generator with the options needed on your token, such as expiry time or ACLs.
 
 ```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/vonage/vonage-go-sdk/jwt"
+)
+
+func main() {
     privateKey, _ := ioutil.ReadFile(PATH_TO_PRIVATE_KEY_FILE)
     g := jwt.Generator{
         ApplicationID: APPLICATION_ID,
@@ -47,6 +56,7 @@ You can also set up the generator with the options needed on your token, such as
 
     token, _ := g.GenerateToken()
     fmt.Println(token)
+}
 ```
 
 

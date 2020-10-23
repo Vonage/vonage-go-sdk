@@ -7,6 +7,8 @@ permalink: examples/sms
 * [Send Unicode SMS](#send-unicode-sms)
 * [Receive SMS](#receive-sms)
 
+SMS API is one of our most-used APIs. Check out the [documentation](https://developer.nexmo.com/messaging/sms/overview) and [API reference](https://developer.nexmo.com/api/sms) for more details.
+
 ## Send SMS
 
 To send an SMS, try the code below:
@@ -72,8 +74,9 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+
+	"github.com/vonage/vonage-go-sdk"
 )
 
 func main() {
