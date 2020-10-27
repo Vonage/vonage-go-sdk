@@ -6,9 +6,12 @@ permalink: examples/numberinsight
 * [Number Insight Basic/Standard](#number-insight-basic-standard)
 * [Number Insight Advanced](#number-insight-advanced)
 
+Use Number Insight to get additional data about a phone number and check its validity. See also:
+* Docs: https://developer.nexmo.com/number-insight/overview
+* API reference: https://developer.nexmo.com/api/number-insight
+
 ## Number Insight Basic/Standard
 
-Get additional data about a phone number and check its validity.
 
 This is available in Basic/Standard versions:
 
