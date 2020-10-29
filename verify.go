@@ -71,6 +71,10 @@ func (client *VerifyClient) Request(number string, brand string, opts VerifyOpts
 		verifyOpts.WorkflowId = optional.NewInt32(opts.WorkflowID)
 	}
 
+	if opts.SenderID != "" {
+		verifyOpts.SenderId = optional.NewString(opts.SenderID)
+	}
+
 	// we need context for the API key
 	ctx := context.WithValue(context.Background(), verify.ContextAPIKey, verify.APIKey{
 		Key: client.apiKey,
