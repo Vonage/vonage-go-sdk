@@ -233,3 +233,53 @@ func (client *VerifyClient) TriggerNextEvent(requestID string) (VerifyControlRes
 
 	return VerifyControlResponse(result), VerifyErrorResponse{}, nil
 }
+
+// VerifyPsd2Opts holds all the optional arguments for the verify psd2 function
+type VerifyPsd2Opts struct {
+	Country       string
+	CodeLength    int32
+	Lg            string
+	PinExpiry     int32
+	NextEventWait int32
+	WorkflowID    int32
+}
+
+// Psd2 requests a user confirm a payment with amount and payee
+func (client *VerifyClient) Psd2(number string, payee string, amount float64, opts VerifyPsd2Opts) (VerifyRequestResponse, VerifyErrorResponse, error) {
+	// create the client
+	verifyClient := verify.NewAPIClient(client.Config)
+
+	// set up and then parse the options
+	verifyOpts := verify.VerifyRequestWithPSD2Opts{}
+
+	if opts.CodeLength != 0 {
+		verifyOpts.CodeLength = optional.NewInt32(opts.CodeLength)
+	}
+
+	if opts.Lg != "" {
+		verifyOpts.Lg = optional.NewString(opts.Lg)
+	}
+
+	if opts.WorkflowID != 0 {
+		verifyOpts.WorkflowId = optional.NewInt32(opts.WorkflowID)
+	}
+
+	result, resp, err := verifyClient.DefaultApi.VerifyRequestWithPSD2(nil, "json", client.apiKey, client.apiSecret, number, payee, float32(amount), &verifyOpts)
+
+	// catch HTTP errors
+	if err != nil {
+		return VerifyRequestResponse{}, VerifyErrorResponse{}, err
+	}
+
+	// non-zero statuses are also errors
+	if result.Status != "0" {
+		data, _ := ioutil.ReadAll(resp.Body)
+
+		var errResp VerifyErrorResponse
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			return VerifyRequestResponse(result), errResp, nil
+		}
+	}
+	return VerifyRequestResponse(result), VerifyErrorResponse{}, nil
+}

@@ -4,6 +4,7 @@ permalink: examples/verify
 ---
 
 * [Verify a User's Phone Number](#verify-a-users-phone-number)
+* [Verify a Payment via Phone (PSD2)](#verify-a-payment-via-phone-psd2)
 * [Check Verification Code](#check-verification-code)
 * [Cancel a Verification](#cancel-a-verification)
 * [Trigger the Next Event in a Verification](#trigger-the-next-event-in-a-verification)
@@ -29,6 +30,37 @@ func main() {
 	verifyClient := vonage.NewVerifyClient(auth)
 
     response, errResp, err := verifyClient.Request("44777000777", "GoTest", vonage.VerifyOpts{CodeLength: 6, Lg: "es-es", WorkflowID: 4})
+
+    if err != nil {
+        fmt.Printf("%#v\n", err)
+    } else if response.Status != "0" {
+        fmt.Println("Error status " + errResp.Status + ": " + errResp.ErrorText)
+    } else {
+        fmt.Println("Request started: " + response.RequestId)
+    }
+}
+```
+
+Copy the request ID; the user will receive a PIN code and when they have it, you can check the code (see [Check PIN Code section](#check-verification-code))
+
+## Verify a Payment via Phone (PSD2)
+
+Just like verifying a user's number, this is a multi-step process. First: send a code to the user alongside information about the amount and destination of the payment.
+
+```golang
+package main
+
+import (
+	"fmt"
+
+	"github.com/vonage/vonage-go-sdk"
+)
+
+func main() {
+	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	verifyClient := vonage.NewVerifyClient(auth)
+
+    response, errResp, err := verifyClient.Psd2("44777000777", "GoTestRetail", 45.67, vonage.VerifyPsd2Opts{})
 
     if err != nil {
         fmt.Printf("%#v\n", err)

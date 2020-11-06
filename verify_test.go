@@ -412,3 +412,32 @@ func TestVerifyTriggerNextEventFail(t *testing.T) {
 		t.Errorf("Verify throttled trigger next event failed")
 	}
 }
+
+func TestVerifyPsd2Request(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/psd2/json",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+	{
+		"request_id": "abcdef0123456789abcdef0123456789",
+		"status": "0"
+	}
+	`,
+			)
+
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewVerifyClient(auth)
+	response, _, _ := client.Psd2("44777000777", "VonageGoTest", 42.31, VerifyPsd2Opts{})
+
+	message := "Request ID: " + response.RequestId
+	if message != "Request ID: abcdef0123456789abcdef0123456789" {
+		t.Errorf("Verify request failed")
+	}
+}
