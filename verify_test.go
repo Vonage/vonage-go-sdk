@@ -16,7 +16,7 @@ func TestVerifyRequest(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 	{
@@ -45,7 +45,7 @@ func TestVerifyRequestConcurrent(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 {
@@ -77,7 +77,7 @@ func TestVerifyRequestFail(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(401, `
 Go away
@@ -102,7 +102,7 @@ func TestVerifyCheck(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/check/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/check/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 {
@@ -135,7 +135,7 @@ func TestVerifyCheckError(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/check/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/check/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 {
@@ -272,7 +272,7 @@ func TestVerifyCancel(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/control/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/control/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 {
@@ -301,7 +301,7 @@ func TestVerifyCancelTooSoon(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/control/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/control/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 {
@@ -330,7 +330,7 @@ func TestVerifyCancelNotNow(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/control/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/control/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 {
@@ -359,7 +359,7 @@ func TestVerifyTriggerNextEvent(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/control/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/control/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 {
@@ -388,7 +388,7 @@ func TestVerifyTriggerNextEventFail(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/control/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/control/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 {

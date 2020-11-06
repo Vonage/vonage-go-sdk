@@ -1,7 +1,6 @@
 package vonage
 
 import (
-	"context"
 	"encoding/json"
 	"io/ioutil"
 
@@ -75,12 +74,7 @@ func (client *VerifyClient) Request(number string, brand string, opts VerifyOpts
 		verifyOpts.SenderId = optional.NewString(opts.SenderID)
 	}
 
-	// we need context for the API key
-	ctx := context.WithValue(context.Background(), verify.ContextAPIKey, verify.APIKey{
-		Key: client.apiKey,
-	})
-
-	result, resp, err := verifyClient.DefaultApi.VerifyRequest(ctx, "json", client.apiSecret, number, brand, &verifyOpts)
+	result, resp, err := verifyClient.DefaultApi.VerifyRequest(nil, "json", client.apiKey, client.apiSecret, number, brand, &verifyOpts)
 
 	// catch HTTP errors
 	if err != nil {
@@ -114,14 +108,9 @@ func (client *VerifyClient) Check(requestID string, code string) (VerifyCheckRes
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
-	// we need context for the API key
-	ctx := context.WithValue(context.Background(), verify.ContextAPIKey, verify.APIKey{
-		Key: client.apiKey,
-	})
-
 	// set up and then parse the options
 	verifyOpts := verify.VerifyCheckOpts{}
-	result, resp, err := verifyClient.DefaultApi.VerifyCheck(ctx, "json", client.apiSecret, requestID, code, &verifyOpts)
+	result, resp, err := verifyClient.DefaultApi.VerifyCheck(nil, "json", client.apiKey, client.apiSecret, requestID, code, &verifyOpts)
 
 	// catch HTTP errors
 	if err != nil {
@@ -164,15 +153,10 @@ func (client *VerifyClient) Search(requestID string) (VerifySearchResponse, Veri
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
-	// we need context for the API key
-	ctx := context.WithValue(context.Background(), verify.ContextAPIKey, verify.APIKey{
-		Key: client.apiKey,
-	})
-
 	// set up and then parse the options
 	verifyOpts := verify.VerifySearchOpts{}
 	verifyOpts.RequestId = optional.NewString(requestID)
-	result, resp, err := verifyClient.DefaultApi.VerifySearch(ctx, "json", client.apiSecret, &verifyOpts)
+	result, resp, err := verifyClient.DefaultApi.VerifySearch(nil, "json", client.apiKey, client.apiSecret, &verifyOpts)
 
 	// catch HTTP errors
 	if err != nil {
@@ -203,12 +187,7 @@ func (client *VerifyClient) Cancel(requestID string) (VerifyControlResponse, Ver
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
-	// we need context for the API key
-	ctx := context.WithValue(context.Background(), verify.ContextAPIKey, verify.APIKey{
-		Key: client.apiKey,
-	})
-
-	result, resp, err := verifyClient.DefaultApi.VerifyControl(ctx, "json", client.apiSecret, requestID, "cancel")
+	result, resp, err := verifyClient.DefaultApi.VerifyControl(nil, "json", client.apiKey, client.apiSecret, requestID, "cancel")
 
 	// catch HTTP errors
 	if err != nil {
@@ -234,12 +213,7 @@ func (client *VerifyClient) TriggerNextEvent(requestID string) (VerifyControlRes
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
-	// we need context for the API key
-	ctx := context.WithValue(context.Background(), verify.ContextAPIKey, verify.APIKey{
-		Key: client.apiKey,
-	})
-
-	result, resp, err := verifyClient.DefaultApi.VerifyControl(ctx, "json", client.apiSecret, requestID, "trigger_next_event")
+	result, resp, err := verifyClient.DefaultApi.VerifyControl(nil, "json", client.apiKey, client.apiSecret, requestID, "trigger_next_event")
 
 	// catch HTTP errors
 	if err != nil {
