@@ -21,20 +21,22 @@ To see all the applications associated with your account:
 package main
 
 import (
-	"fmt"
+    "fmt"
+    "strconv"
 
-	"github.com/vonage/vonage-go-sdk"
+    "github.com/vonage/vonage-go-sdk"
 )
 
 func main() {
 	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
 	appClient := vonage.NewApplicationClient(auth)
 
-    result, errResp, err := appClient.GetApplications(vonage.GetApplicationsOpts{})
+    result, _, _:= appClient.GetApplications(vonage.GetApplicationsOpts{})
     fmt.Println("Application count: " + strconv.FormatInt(int64(result.TotalItems), 10))
     for _, app := range result.Embedded.Applications {
         fmt.Println(app.Name)
     }
+}
 ```
 
 ## Get One Application By ID
