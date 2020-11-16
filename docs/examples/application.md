@@ -21,10 +21,10 @@ To see all the applications associated with your account:
 package main
 
 import (
-	"fmt"
+    "fmt"
     "strconv"
 
-	"github.com/vonage/vonage-go-sdk"
+    "github.com/vonage/vonage-go-sdk"
 )
 
 func main() {
