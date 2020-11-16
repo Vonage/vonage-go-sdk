@@ -9,10 +9,16 @@
  */
 
 package verify
-// ControlResponse Success
-type ControlResponse struct {
-	// `cmd` | Code | Description -- | -- | -- Any | 0 | Success 
-	Status string `json:"status,omitempty"`
-	// The `cmd` you sent in the request.
-	Command string `json:"command,omitempty"`
+// CheckRequest struct for CheckRequest
+type CheckRequest struct {
+	// You can find your API key in your [account dashboard](https://dashboard.nexmo.com)
+	ApiKey string `json:"api_key"`
+	// You can find your API secret in your [account dashboard](https://dashboard.nexmo.com)
+	ApiSecret string `json:"api_secret"`
+	// The Verify request to check. This is the `request_id` you received in the response to the Verify request.
+	RequestId string `json:"request_id"`
+	// The verification code entered by your user.
+	Code string `json:"code"`
+	// (This field is no longer used)
+	IpAddress string `json:"ip_address,omitempty"`
 }

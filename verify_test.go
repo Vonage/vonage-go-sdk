@@ -16,7 +16,7 @@ func TestVerifyRequest(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 	{
@@ -45,7 +45,7 @@ func TestVerifyRequestConcurrent(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 {
@@ -77,7 +77,7 @@ func TestVerifyRequestFail(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(401, `
 Go away
@@ -102,7 +102,7 @@ func TestVerifyCheck(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/check/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/check/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 {
@@ -135,7 +135,7 @@ func TestVerifyCheckError(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/check/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/check/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 {
@@ -272,7 +272,7 @@ func TestVerifyCancel(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/control/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/control/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 {
@@ -301,7 +301,7 @@ func TestVerifyCancelTooSoon(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/control/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/control/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 {
@@ -330,7 +330,7 @@ func TestVerifyCancelNotNow(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/control/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/control/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 {
@@ -359,7 +359,7 @@ func TestVerifyTriggerNextEvent(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/control/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/control/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 {
@@ -388,7 +388,7 @@ func TestVerifyTriggerNextEventFail(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.nexmo.com/verify/control/json",
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/control/json",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 {
@@ -410,5 +410,34 @@ func TestVerifyTriggerNextEventFail(t *testing.T) {
 	message := "Status: " + errResp.Status
 	if message != "Status: 1" {
 		t.Errorf("Verify throttled trigger next event failed")
+	}
+}
+
+func TestVerifyPsd2Request(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/psd2/json",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+	{
+		"request_id": "abcdef0123456789abcdef0123456789",
+		"status": "0"
+	}
+	`,
+			)
+
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewVerifyClient(auth)
+	response, _, _ := client.Psd2("44777000777", "VonageGoTest", 42.31, VerifyPsd2Opts{})
+
+	message := "Request ID: " + response.RequestId
+	if message != "Request ID: abcdef0123456789abcdef0123456789" {
+		t.Errorf("Verify request failed")
 	}
 }

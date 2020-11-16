@@ -75,12 +75,8 @@ func (client *VerifyClient) Request(number string, brand string, opts VerifyOpts
 		verifyOpts.SenderId = optional.NewString(opts.SenderID)
 	}
 
-	// we need context for the API key
-	ctx := context.WithValue(context.Background(), verify.ContextAPIKey, verify.APIKey{
-		Key: client.apiKey,
-	})
-
-	result, resp, err := verifyClient.DefaultApi.VerifyRequest(ctx, "json", client.apiSecret, number, brand, &verifyOpts)
+	ctx := context.Background()
+	result, resp, err := verifyClient.DefaultApi.VerifyRequest(ctx, "json", client.apiKey, client.apiSecret, number, brand, &verifyOpts)
 
 	// catch HTTP errors
 	if err != nil {
@@ -114,14 +110,10 @@ func (client *VerifyClient) Check(requestID string, code string) (VerifyCheckRes
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
-	// we need context for the API key
-	ctx := context.WithValue(context.Background(), verify.ContextAPIKey, verify.APIKey{
-		Key: client.apiKey,
-	})
-
 	// set up and then parse the options
 	verifyOpts := verify.VerifyCheckOpts{}
-	result, resp, err := verifyClient.DefaultApi.VerifyCheck(ctx, "json", client.apiSecret, requestID, code, &verifyOpts)
+	ctx := context.Background()
+	result, resp, err := verifyClient.DefaultApi.VerifyCheck(ctx, "json", client.apiKey, client.apiSecret, requestID, code, &verifyOpts)
 
 	// catch HTTP errors
 	if err != nil {
@@ -164,15 +156,11 @@ func (client *VerifyClient) Search(requestID string) (VerifySearchResponse, Veri
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
-	// we need context for the API key
-	ctx := context.WithValue(context.Background(), verify.ContextAPIKey, verify.APIKey{
-		Key: client.apiKey,
-	})
-
 	// set up and then parse the options
 	verifyOpts := verify.VerifySearchOpts{}
 	verifyOpts.RequestId = optional.NewString(requestID)
-	result, resp, err := verifyClient.DefaultApi.VerifySearch(ctx, "json", client.apiSecret, &verifyOpts)
+	ctx := context.Background()
+	result, resp, err := verifyClient.DefaultApi.VerifySearch(ctx, "json", client.apiKey, client.apiSecret, &verifyOpts)
 
 	// catch HTTP errors
 	if err != nil {
@@ -203,12 +191,8 @@ func (client *VerifyClient) Cancel(requestID string) (VerifyControlResponse, Ver
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
-	// we need context for the API key
-	ctx := context.WithValue(context.Background(), verify.ContextAPIKey, verify.APIKey{
-		Key: client.apiKey,
-	})
-
-	result, resp, err := verifyClient.DefaultApi.VerifyControl(ctx, "json", client.apiSecret, requestID, "cancel")
+	ctx := context.Background()
+	result, resp, err := verifyClient.DefaultApi.VerifyControl(ctx, "json", client.apiKey, client.apiSecret, requestID, "cancel")
 
 	// catch HTTP errors
 	if err != nil {
@@ -234,12 +218,8 @@ func (client *VerifyClient) TriggerNextEvent(requestID string) (VerifyControlRes
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
-	// we need context for the API key
-	ctx := context.WithValue(context.Background(), verify.ContextAPIKey, verify.APIKey{
-		Key: client.apiKey,
-	})
-
-	result, resp, err := verifyClient.DefaultApi.VerifyControl(ctx, "json", client.apiSecret, requestID, "trigger_next_event")
+	ctx := context.Background()
+	result, resp, err := verifyClient.DefaultApi.VerifyControl(ctx, "json", client.apiKey, client.apiSecret, requestID, "trigger_next_event")
 
 	// catch HTTP errors
 	if err != nil {
@@ -258,4 +238,55 @@ func (client *VerifyClient) TriggerNextEvent(requestID string) (VerifyControlRes
 	}
 
 	return VerifyControlResponse(result), VerifyErrorResponse{}, nil
+}
+
+// VerifyPsd2Opts holds all the optional arguments for the verify psd2 function
+type VerifyPsd2Opts struct {
+	Country       string
+	CodeLength    int32
+	Lg            string
+	PinExpiry     int32
+	NextEventWait int32
+	WorkflowID    int32
+}
+
+// Psd2 requests a user confirm a payment with amount and payee
+func (client *VerifyClient) Psd2(number string, payee string, amount float64, opts VerifyPsd2Opts) (VerifyRequestResponse, VerifyErrorResponse, error) {
+	// create the client
+	verifyClient := verify.NewAPIClient(client.Config)
+
+	// set up and then parse the options
+	verifyOpts := verify.VerifyRequestWithPSD2Opts{}
+
+	if opts.CodeLength != 0 {
+		verifyOpts.CodeLength = optional.NewInt32(opts.CodeLength)
+	}
+
+	if opts.Lg != "" {
+		verifyOpts.Lg = optional.NewString(opts.Lg)
+	}
+
+	if opts.WorkflowID != 0 {
+		verifyOpts.WorkflowId = optional.NewInt32(opts.WorkflowID)
+	}
+
+	ctx := context.Background()
+	result, resp, err := verifyClient.DefaultApi.VerifyRequestWithPSD2(ctx, "json", client.apiKey, client.apiSecret, number, payee, float32(amount), &verifyOpts)
+
+	// catch HTTP errors
+	if err != nil {
+		return VerifyRequestResponse{}, VerifyErrorResponse{}, err
+	}
+
+	// non-zero statuses are also errors
+	if result.Status != "0" {
+		data, _ := ioutil.ReadAll(resp.Body)
+
+		var errResp VerifyErrorResponse
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			return VerifyRequestResponse(result), errResp, nil
+		}
+	}
+	return VerifyRequestResponse(result), VerifyErrorResponse{}, nil
 }
