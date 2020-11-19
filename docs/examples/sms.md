@@ -23,17 +23,19 @@ import (
 )
 
 func main() {
-	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	smsClient := vonage.NewSMSClient(auth)
-	response, err := smsClient.Send("44777000000", "44777000777", "This is a message from golang", vonage.SMSOpts{})
+    auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+    smsClient := vonage.NewSMSClient(auth)
+    response, errResp, err := smsClient.Send("44777000000", "44777000777", "This is a message from golang", vonage.SMSOpts{})
 
-	if err != nil {
-		panic(err)
-	}
+    if err != nil {
+        panic(err)
+    }
 
-	if response.Messages[0].Status == "0" {
-		fmt.Println("Account Balance: " + response.Messages[0].RemainingBalance)
-	}
+    if response.Messages[0].Status == "0" {
+        fmt.Println("Account Balance: " + response.Messages[0].RemainingBalance)
+    } else {
+        fmt.Println("Error code " + errResp.Messages[0].Status + ": " + errResp.Messages[0].ErrorText)
+    }
 }
 ```
 
@@ -51,17 +53,19 @@ import (
 )
 
 func main() {
-	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
-	smsClient := vonage.NewSMSClient(auth)
-	response, err := smsClient.Send("44777000000", "44777000777", "こんにちは世界", vonage.SMSOpts{Type: "unicode"})
+    auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+    smsClient := vonage.NewSMSClient(auth)
+    response, errResp, err := smsClient.Send("44777000000", "44777000777", "こんにちは世界", vonage.SMSOpts{Type: "unicode"})
 
-	if err != nil {
-		panic(err)
-	}
+    if err != nil {
+        panic(err)
+    }
 
-	if response.Messages[0].Status == "0" {
-		fmt.Println("Account Balance: " + response.Messages[0].RemainingBalance)
-	}
+    if response.Messages[0].Status == "0" {
+        fmt.Println("Account Balance: " + response.Messages[0].RemainingBalance)
+    } else {
+        fmt.Println("Error code " + errResp.Messages[0].Status + ": " + errResp.Messages[0].ErrorText)
+    }
 }
 ```
 
