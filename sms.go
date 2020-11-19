@@ -2,7 +2,8 @@ package vonage
 
 import (
 	"context"
-	"errors"
+	"encoding/json"
+	"io/ioutil"
 
 	"github.com/antihax/optional"
 	"github.com/vonage/vonage-go-sdk/internal/sms"
@@ -42,10 +43,20 @@ type Sms struct {
 	Messages     []sms.Message
 }
 
+type SmsErrorResponse struct {
+	MessageCount string
+	Messages     []SmsError
+}
+
+type SmsError struct {
+	Status    string `json:"status"`
+	ErrorText string `json:"error-text"`
+}
+
 // Send an SMS. Give some text to send and the number to send to - there are
 // some restrictions on what you can send from, to be safe try using a Vonage
 // number associated with your account
-func (client *SMSClient) Send(from string, to string, text string, opts SMSOpts) (Sms, error) {
+func (client *SMSClient) Send(from string, to string, text string, opts SMSOpts) (Sms, SmsErrorResponse, error) {
 
 	smsClient := sms.NewAPIClient(client.Config)
 
@@ -73,17 +84,24 @@ func (client *SMSClient) Send(from string, to string, text string, opts SMSOpts)
 	ctx := context.Background()
 
 	// now send the SMS
-	result, _, err := smsClient.DefaultApi.SendAnSms(ctx, "json", client.apiKey, from, to, &smsOpts)
+	result, resp, err := smsClient.DefaultApi.SendAnSms(ctx, "json", client.apiKey, from, to, &smsOpts)
 
 	// catch HTTP errors
 	if err != nil {
-		return Sms{}, err
+		return Sms{}, SmsErrorResponse{}, err
 	}
 
 	// now worry about the status code in the response
 	if result.Messages[0].Status != "0" {
-		return Sms(result), errors.New("Status code: " + result.Messages[0].Status)
+		data, _ := ioutil.ReadAll(resp.Body)
+
+		var errResp SmsErrorResponse
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			return Sms(result), errResp, nil
+		}
+		return Sms(result), SmsErrorResponse{}, nil
 	}
 
-	return Sms(result), nil
+	return Sms(result), SmsErrorResponse{}, nil
 }
