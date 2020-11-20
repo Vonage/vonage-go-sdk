@@ -43,9 +43,10 @@ func TestSmsSend(t *testing.T) {
 
 	auth := CreateAuthFromKeySecret("12345678", "456")
 	client := NewSMSClient(auth)
-	_, err := client.Send("44777000777", "44777000888", "hello", SMSOpts{})
+	result, _, _ := client.Send("44777000777", "44777000888", "hello", SMSOpts{})
 
-	if err != nil {
+	messageId := result.Messages[0].MessageId
+	if messageId != "0A0000000123ABCD1" {
 		t.Error("Test SMS not sent")
 	}
 }
@@ -61,7 +62,8 @@ func TestSmsSendFail(t *testing.T) {
 	  "message-count": "1",
 	  "messages": [
 	    {
-	      "status": "4"
+			"status": "4",
+			"error-text": "This is an error"
 	    }
 	  ]
 	}
@@ -75,9 +77,11 @@ func TestSmsSendFail(t *testing.T) {
 
 	auth := CreateAuthFromKeySecret("12345678", "456")
 	client := NewSMSClient(auth)
-	_, err := client.Send("44777000777", "44777000888", "hello", SMSOpts{})
+	_, errResp, _ := client.Send("44777000777", "44777000888", "hello", SMSOpts{})
 
-	if err == nil {
+	msg := errResp.Messages[0].ErrorText
+
+	if msg != "This is an error" {
 		t.Error("The failure failed")
 	}
 }

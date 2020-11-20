@@ -30,6 +30,12 @@ func NewNumbersClient(Auth Auth) *NumbersClient {
 	return client
 }
 
+// NumbersResponse is the response format for the Numbers API
+type NumbersResponse struct {
+	ErrorCode      string `json:"error-code,omitempty"`
+	ErrorCodeLabel string `json:"error-code-label,omitempty"`
+}
+
 // NumbersErrorResponse is the error format for the Numbers API
 type NumbersErrorResponse struct {
 	ErrorCode      string `json:"error-code,omitempty"`
@@ -220,7 +226,7 @@ type NumberBuyOpts struct {
 }
 
 // Buy the best phone number to use in your app
-func (client *NumbersClient) Buy(country string, msisdn string, opts NumberBuyOpts) (number.Response, NumbersErrorResponse, error) {
+func (client *NumbersClient) Buy(country string, msisdn string, opts NumberBuyOpts) (NumbersResponse, NumbersErrorResponse, error) {
 
 	numbersClient := number.NewAPIClient(client.Config)
 
@@ -248,15 +254,15 @@ func (client *NumbersClient) Buy(country string, msisdn string, opts NumberBuyOp
 			if errResp.ErrorCode == "420" && errResp.ErrorCodeLabel == "method failed" {
 				errResp.ErrorCodeLabel = "method failed. This can also indicate that you already own this number"
 			}
-			return result, errResp, nil
+			return NumbersResponse(result), errResp, nil
 		}
 	}
 
 	if err != nil {
-		return number.Response{}, NumbersErrorResponse{}, err
+		return NumbersResponse{}, NumbersErrorResponse{}, err
 	}
 
-	return result, NumbersErrorResponse{}, nil
+	return NumbersResponse(result), NumbersErrorResponse{}, nil
 }
 
 // NumberCancelOpts enables users to set the Target API Key (and any future params)
@@ -265,7 +271,7 @@ type NumberCancelOpts struct {
 }
 
 // Cancel a number already in your account
-func (client *NumbersClient) Cancel(country string, msisdn string, opts NumberCancelOpts) (number.Response, NumbersErrorResponse, error) {
+func (client *NumbersClient) Cancel(country string, msisdn string, opts NumberCancelOpts) (NumbersResponse, NumbersErrorResponse, error) {
 	numbersClient := number.NewAPIClient(client.Config)
 
 	// we need context for the API key
@@ -292,15 +298,15 @@ func (client *NumbersClient) Cancel(country string, msisdn string, opts NumberCa
 				// expand on this error code, it's commonly because you don't own the number
 				errResp.ErrorCodeLabel = "method failed. This can also indicate that the number is not associated with this key"
 			}
-			return result, errResp, nil
+			return NumbersResponse(result), errResp, nil
 		}
 	}
 
 	if err != nil {
-		return number.Response{}, NumbersErrorResponse{}, err
+		return NumbersResponse{}, NumbersErrorResponse{}, err
 	}
 
-	return result, NumbersErrorResponse{}, nil
+	return NumbersResponse(result), NumbersErrorResponse{}, nil
 }
 
 // NumberUpdateOpts sets all the various fields for the number config
@@ -315,7 +321,7 @@ type NumberUpdateOpts struct {
 }
 
 // Update the configuration for your number
-func (client *NumbersClient) Update(country string, msisdn string, opts NumberUpdateOpts) (number.Response, NumbersErrorResponse, error) {
+func (client *NumbersClient) Update(country string, msisdn string, opts NumberUpdateOpts) (NumbersResponse, NumbersErrorResponse, error) {
 	numbersClient := number.NewAPIClient(client.Config)
 
 	// we need context for the API key
@@ -347,7 +353,7 @@ func (client *NumbersClient) Update(country string, msisdn string, opts NumberUp
 
 	result, resp, err := numbersClient.DefaultApi.UpdateANumber(ctx, country, msisdn, &numbersUpdateOpts)
 	if err != nil {
-		return number.Response{}, NumbersErrorResponse{}, err
+		return NumbersResponse{}, NumbersErrorResponse{}, err
 	}
 
 	if resp.StatusCode != 200 {
@@ -358,9 +364,9 @@ func (client *NumbersClient) Update(country string, msisdn string, opts NumberUp
 		var errResp NumbersErrorResponse
 		jsonErr := json.Unmarshal(data, &errResp)
 		if jsonErr == nil {
-			return result, errResp, nil
+			return NumbersResponse(result), errResp, nil
 		}
 	}
 
-	return result, NumbersErrorResponse{}, nil
+	return NumbersResponse(result), NumbersErrorResponse{}, nil
 }

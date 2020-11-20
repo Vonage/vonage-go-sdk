@@ -20,8 +20,8 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/vonage/vonage-go-sdk"
 	"github.com/spf13/cobra"
+	"github.com/vonage/vonage-go-sdk"
 )
 
 // smsCmd represents the sms command
@@ -51,7 +51,7 @@ use these features to get started and/or test your setup`,
 		auth := vonage.CreateAuthFromKeySecret(Key, Secret)
 		smsClient := vonage.NewSMSClient(auth)
 
-		response, err := smsClient.Send(From, To, Message, vonage.SMSOpts{})
+		response, _, err := smsClient.Send(From, To, Message, vonage.SMSOpts{})
 
 		if err != nil {
 			panic(err)

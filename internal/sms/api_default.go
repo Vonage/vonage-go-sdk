@@ -11,12 +11,15 @@
 package sms
 
 import (
+	"bytes"
 	_context "context"
+	"fmt"
+	"io/ioutil"
 	_ioutil "io/ioutil"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"fmt"
 	"strings"
+
 	"github.com/antihax/optional"
 )
 
@@ -195,6 +198,10 @@ func (a *DefaultApiService) SendAnSms(ctx _context.Context, format string, apiKe
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+
+	// hack to reinstate the body in case we need it
+	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
