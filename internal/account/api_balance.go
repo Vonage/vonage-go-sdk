@@ -179,7 +179,7 @@ func (a *BalanceApiService) TopUpAccountBalance(ctx _context.Context, apiKey str
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
-			var v OneOfErrorAuthenticationFailedErrorAutoReloadNotEnabled
+			var v ErrorAuthenticationFailed
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

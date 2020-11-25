@@ -44,7 +44,7 @@ func (a *SecretManagementApiService) CreateAPISecret(ctx _context.Context, apiKe
 
 	// create path and map variables
 	localVarPath := a.client.cfg.BasePath + "/accounts/{api_key}/secrets"
-	localVarPath = strings.Replace(localVarPath, "{"+"api_key"+"}", _neturl.QueryEscape(parameterToString(apiKey, "")) , -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"api_key"+"}", _neturl.QueryEscape(parameterToString(apiKey, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -153,9 +153,9 @@ func (a *SecretManagementApiService) RetrieveAPISecret(ctx _context.Context, api
 
 	// create path and map variables
 	localVarPath := a.client.cfg.BasePath + "/accounts/{api_key}/secrets/{secret_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"api_key"+"}", _neturl.QueryEscape(parameterToString(apiKey, "")) , -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"api_key"+"}", _neturl.QueryEscape(parameterToString(apiKey, "")), -1)
 
-	localVarPath = strings.Replace(localVarPath, "{"+"secret_id"+"}", _neturl.QueryEscape(parameterToString(secretId, "")) , -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"secret_id"+"}", _neturl.QueryEscape(parameterToString(secretId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -210,7 +210,7 @@ func (a *SecretManagementApiService) RetrieveAPISecret(ctx _context.Context, api
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
-			var v OneOfErrorApiKeyNotFoundErrorSecretIdNotFound
+			var v ErrorApiKeyNotFound
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -251,7 +251,7 @@ func (a *SecretManagementApiService) RetrieveAPISecrets(ctx _context.Context, ap
 
 	// create path and map variables
 	localVarPath := a.client.cfg.BasePath + "/accounts/{api_key}/secrets"
-	localVarPath = strings.Replace(localVarPath, "{"+"api_key"+"}", _neturl.QueryEscape(parameterToString(apiKey, "")) , -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"api_key"+"}", _neturl.QueryEscape(parameterToString(apiKey, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -346,9 +346,9 @@ func (a *SecretManagementApiService) RevokeAPISecret(ctx _context.Context, apiKe
 
 	// create path and map variables
 	localVarPath := a.client.cfg.BasePath + "/accounts/{api_key}/secrets/{secret_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"api_key"+"}", _neturl.QueryEscape(parameterToString(apiKey, "")) , -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"api_key"+"}", _neturl.QueryEscape(parameterToString(apiKey, "")), -1)
 
-	localVarPath = strings.Replace(localVarPath, "{"+"secret_id"+"}", _neturl.QueryEscape(parameterToString(secretId, "")) , -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"secret_id"+"}", _neturl.QueryEscape(parameterToString(secretId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -413,7 +413,7 @@ func (a *SecretManagementApiService) RevokeAPISecret(ctx _context.Context, apiKe
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
-			var v OneOfErrorApiKeyNotFoundErrorSecretIdNotFound
+			var v ErrorApiKeyNotFound
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
