@@ -2,7 +2,9 @@ package vonage
 
 import (
 	"context"
+	"encoding/json"
 
+	"github.com/antihax/optional"
 	"github.com/vonage/vonage-go-sdk/internal/account"
 )
 
@@ -34,13 +36,13 @@ type AccountBalance struct {
 	AutoReload bool
 }
 
-type AccountBalanceErrorResponse struct {
-	ErrorCode      string
-	ErrorCodeLabel string
+type AccountErrorResponse struct {
+	ErrorCode      string `json:"error-code,omitempty"`
+	ErrorCodeLabel string `json:"error-code-label,omitempty"`
 }
 
 // GetBalance fetches the current balance of the authenticated account, in Euros
-func (client *AccountClient) GetBalance() (AccountBalance, AccountBalanceErrorResponse, error) {
+func (client *AccountClient) GetBalance() (AccountBalance, AccountErrorResponse, error) {
 
 	accountClient := account.NewAPIClient(client.Config)
 
@@ -50,8 +52,54 @@ func (client *AccountClient) GetBalance() (AccountBalance, AccountBalanceErrorRe
 	result, _, err := accountClient.BalanceApi.GetAccountBalance(ctx, client.apiKey, client.apiSecret)
 
 	if err != nil {
-		return AccountBalance{}, AccountBalanceErrorResponse{}, err
+		return AccountBalance{}, AccountErrorResponse{}, err
 	}
 
-	return AccountBalance(result), AccountBalanceErrorResponse{}, nil
+	return AccountBalance(result), AccountErrorResponse{}, nil
+}
+
+type AccountConfigSettings struct {
+	MoCallbackUrl string
+	DrCallbackUrl string
+}
+
+type AccountConfigResponse struct {
+	MoCallbackUrl      string
+	DrCallbackUrl      string
+	MaxOutboundRequest int32
+	MaxInboundRequest  int32
+	MaxCallsPerSecond  int32
+}
+
+// SetConfig allows the user to set the URLs for incoming SMS (mo) and delivery receipt (dr) payloads
+func (client *AccountClient) SetConfig(config AccountConfigSettings) (AccountConfigResponse, AccountErrorResponse, error) {
+
+	accountClient := account.NewAPIClient(client.Config)
+
+	ctx := context.Background()
+
+	opts := account.ChangeAccountSettingsOpts{}
+	if config.MoCallbackUrl != "" {
+		opts.MoCallBackUrl = optional.NewString(config.MoCallbackUrl)
+	}
+	if config.DrCallbackUrl != "" {
+		opts.DrCallBackUrl = optional.NewString(config.DrCallbackUrl)
+	}
+
+	// update Account settings
+	result, _, err := accountClient.ConfigurationApi.ChangeAccountSettings(ctx, client.apiKey, client.apiSecret, &opts)
+
+	if err != nil {
+		e := err.(account.GenericOpenAPIError)
+		data := e.Body()
+
+		var errResp AccountErrorResponse
+		jsonErr := json.Unmarshal(data, &errResp)
+		if jsonErr == nil {
+			return AccountConfigResponse{}, errResp, err
+		}
+
+	}
+
+	return AccountConfigResponse(result), AccountErrorResponse{}, nil
 }

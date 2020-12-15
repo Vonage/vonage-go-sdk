@@ -30,3 +30,35 @@ func main() {
 	fmt.Printf("Account balance: %f EUR", response.Value)
 }
 ```
+
+## Configure Account
+
+Set the default URLs for incoming SMS and delivery receipt payloads to be sent to. If the number has settings, that will be used but otherwise we fall back to this account API setting.
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/vonage/vonage-go-sdk"
+)
+
+func main() {
+    auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	accountClient := vonage.NewAccountClient(auth)
+
+    opts := vonage.AccountConfigSettings{
+        MoCallbackUrl: "https://example.com/webhooks/inbound-sms",
+        DrCallbackUrl: "https://example.com/webhooks/delivery-receipt"
+    }
+	response, _, err := accountClient.SetConfig(opts)
+
+	if err != nil {
+		panic(err)
+	}
+
+    fmt.Println("Incoming SMS sent to: " + response.MoCallbackUrl)
+}
+```
+
