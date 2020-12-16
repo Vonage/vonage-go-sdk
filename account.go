@@ -174,3 +174,37 @@ func (client *AccountClient) ListSecrets() (AccountSecretCollection, AccountSecr
 	}
 	return collection, AccountSecretErrorResponse{}, nil
 }
+
+// GetSecret retrieves data about a single account secret
+func (client *AccountClient) GetSecret(id string) (AccountSecret, AccountSecretErrorResponse, error) {
+	accountClient := account.NewAPIClient(client.Config)
+
+	ctx := context.WithValue(context.Background(), account.ContextBasicAuth, account.BasicAuth{
+		UserName: client.apiKey,
+		Password: client.apiSecret,
+	})
+
+	// get secrets
+	result, _, err := accountClient.SecretManagementApi.RetrieveAPISecret(ctx, client.apiKey, id)
+
+	if err != nil {
+		e, ok := err.(account.GenericOpenAPIError)
+		if ok {
+			data := e.Body()
+
+			var errResp AccountSecretErrorResponse
+			jsonErr := json.Unmarshal(data, &errResp)
+			if jsonErr == nil {
+				return AccountSecret{}, errResp, err
+			}
+			// if we didn't get the expected format but it was an openapi error
+			return AccountSecret{}, AccountSecretErrorResponse{}, e
+		}
+		// something else went wrong
+		return AccountSecret{}, AccountSecretErrorResponse{}, err
+	}
+
+	createdAt, _ := time.Parse(time.RFC3339, result.CreatedAt)
+	secret := AccountSecret{ID: result.Id, CreatedAt: createdAt}
+	return secret, AccountSecretErrorResponse{}, nil
+}

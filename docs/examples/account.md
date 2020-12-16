@@ -91,3 +91,33 @@ func main() {
 	}
 }
 ```
+
+## Fetch One Account Secret
+
+This endpoint returns the secret ID and creation date for the secret requested.
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/vonage/vonage-go-sdk"
+)
+
+func main() {
+    auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	accountClient := vonage.NewAccountClient(auth)
+
+	response, _, err := accountClient.GetSecret("abcdefab-0000-1111-2222-0123456789ef")
+
+	if err != nil {
+		panic(err)
+	}
+
+	if response.ID != "" {
+		date := response.CreatedAt.Format("Jan 2 2006")
+		fmt.Println("Secret " + response.ID + " created " + date)
+	}
+}
+```

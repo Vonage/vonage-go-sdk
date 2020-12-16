@@ -140,3 +140,67 @@ func TestAccountListSecrets(t *testing.T) {
 		t.Error("Test account list secrets failed")
 	}
 }
+
+func TestAccountGetSecret(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("GET", "https://api.nexmo.com/accounts/12345678/secrets/ad6dc56f-07b5-46e1-a527-85530e625800",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+{
+	"_links": {
+	"self": {
+		"href": "abc123"
+	}
+	},
+	"id": "ad6dc56f-07b5-46e1-a527-85530e625800",
+	"created_at": "2017-03-02T16:34:49Z"
+}
+	`,
+			)
+
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewAccountClient(auth)
+	result, _, _ := client.GetSecret("ad6dc56f-07b5-46e1-a527-85530e625800")
+
+	if result.ID != "ad6dc56f-07b5-46e1-a527-85530e625800" {
+		t.Error("Test account get one failed")
+	}
+}
+func TestAccountGetMissingSecret(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("GET", "https://api.nexmo.com/accounts/12345678/secrets/does-not-exist",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(404, `
+{
+	"_links": {
+	"self": {
+		"href": "abc123"
+	}
+	},
+	"id": "ad6dc56f-07b5-46e1-a527-85530e625800",
+	"created_at": "2017-03-02T16:34:49Z"
+}
+	`,
+			)
+
+			return resp, nil
+		},
+	)
+
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewAccountClient(auth)
+	_, _, err := client.GetSecret("does-not-exist")
+
+	if err == nil {
+		t.Error("Test account get one missing secret failed")
+	}
+}
