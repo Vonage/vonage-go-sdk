@@ -62,3 +62,32 @@ func main() {
 }
 ```
 
+## Fetch All Account Secrets
+
+This endpoint returns the secret ID (needed to identify the secret for deletion) and creation date for all the secrets on this account.
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/vonage/vonage-go-sdk"
+)
+
+func main() {
+    auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	accountClient := vonage.NewAccountClient(auth)
+
+	response, _, err := accountClient.ListSecrets()
+
+	if err != nil {
+		panic(err)
+	}
+
+	for i := 0; i < len(response.Secrets); i++ {
+		date := response.Secrets[i].CreatedAt.Format("Jan 2 2006")
+		fmt.Println("Secret " + response.Secrets[i].ID + " created " + date)
+	}
+}
+```

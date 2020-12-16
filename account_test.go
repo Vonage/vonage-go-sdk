@@ -96,3 +96,47 @@ func TestAccountSetConfigNoAuth(t *testing.T) {
 		t.Error("Test account set config missing auth behaviour failed")
 	}
 }
+
+func TestAccountListSecrets(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("GET", "https://api.nexmo.com/accounts/12345678/secrets",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+{
+  "_links": {
+    "self": {
+      "href": "abc123"
+    }
+  },
+  "_embedded": {
+    "secrets": [
+      {
+        "_links": {
+          "self": {
+            "href": "abc123"
+          }
+        },
+        "id": "ad6dc56f-07b5-46e1-a527-85530e625800",
+        "created_at": "2017-03-02T16:34:49Z"
+      }
+    ]
+  }
+}
+	`,
+			)
+
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewAccountClient(auth)
+	result, _, _ := client.ListSecrets()
+
+	if result.Secrets[0].ID != "ad6dc56f-07b5-46e1-a527-85530e625800" {
+		t.Error("Test account list secrets failed")
+	}
+}
