@@ -5,6 +5,13 @@ permalink: examples/account
 
 Account API gives access to check your balance, rotate your account secrets and configure the default behaviour of your account. Check out the [documentation](https://developer.nexmo.com/account/overview) and [API reference](https://developer.nexmo.com/api/account) for more details.
 
+- [Get Account Balance](#get-account-balance)
+- [Configure Account](#configure-account)
+- [Fetch All Account Secrets](#fetch-all-account-secrets)
+- [Fetch One Account Secret](#fetch-one-account-secret)
+- [Create Account Secret](#create-account-secret)
+- [Revoke Account Secret](#revoke-account-secret)
+
 ## Get Account Balance
 
 Check the current balance on your account.
@@ -119,5 +126,67 @@ func main() {
 		date := response.CreatedAt.Format("Jan 2 2006")
 		fmt.Println("Secret " + response.ID + " created " + date)
 	}
+}
+```
+
+## Create Account Secret
+
+To change account secrets, first add a new secret. Then update your application and when it's using the new secret, revoke the old secret.
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/vonage/vonage-go-sdk"
+)
+
+func main() {
+    auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	accountClient := vonage.NewAccountClient(auth)
+
+	response, errResp, err := accountClient.CreateSecret("T0pS3cr3t!")
+
+	if err != nil {
+		fmt.Println("ERROR: " + errResp.Title + ": " + errResp.Detail)
+	}
+
+	if response.ID != "" {
+		date := response.CreatedAt.Format("Jan 2 2006")
+		fmt.Println("Secret " + response.ID + " created " + date)
+	}
+}
+```
+
+## Revoke Account Secret
+
+Revoke an account secret by its ID. Note that you can't revoke the only secret you have, so add a new one before attempting to delete the existing one.
+
+This method returns a boolean to indicate if the deletion was successful.
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/vonage/vonage-go-sdk"
+)
+
+func main() {
+    auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
+	accountClient := vonage.NewAccountClient(auth)
+
+	ok, errResp, err := accountClient.DeleteSecret("abcdefab-0000-1111-2222-0123456789ef")
+
+	if err != nil {
+		fmt.Println("ERROR: " + errResp.Title + ": " + errResp.Detail)
+	}
+
+	if ok {
+		fmt.Println("Secret deleted")
+	}
+
 }
 ```

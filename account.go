@@ -208,3 +208,70 @@ func (client *AccountClient) GetSecret(id string) (AccountSecret, AccountSecretE
 	secret := AccountSecret{ID: result.Id, CreatedAt: createdAt}
 	return secret, AccountSecretErrorResponse{}, nil
 }
+
+// CreateSecret adds an additional secret to the account (the number of secrets allowed is limited)
+func (client *AccountClient) CreateSecret(secret string) (AccountSecret, AccountSecretErrorResponse, error) {
+	accountClient := account.NewAPIClient(client.Config)
+
+	ctx := context.WithValue(context.Background(), account.ContextBasicAuth, account.BasicAuth{
+		UserName: client.apiKey,
+		Password: client.apiSecret,
+	})
+
+	request := account.CreateSecretRequest{Secret: secret}
+
+	result, _, err := accountClient.SecretManagementApi.CreateAPISecret(ctx, client.apiKey, request)
+
+	if err != nil {
+		e, ok := err.(account.GenericOpenAPIError)
+		if ok {
+			data := e.Body()
+
+			var errResp AccountSecretErrorResponse
+			jsonErr := json.Unmarshal(data, &errResp)
+			if jsonErr == nil {
+				return AccountSecret{}, errResp, err
+			}
+			// if we didn't get the expected format but it was an openapi error
+			return AccountSecret{}, AccountSecretErrorResponse{}, e
+		}
+		// something else went wrong
+		return AccountSecret{}, AccountSecretErrorResponse{}, err
+	}
+
+	createdAt, _ := time.Parse(time.RFC3339, result.CreatedAt)
+	new_secret := AccountSecret{ID: result.Id, CreatedAt: createdAt}
+	return new_secret, AccountSecretErrorResponse{}, nil
+}
+
+// DeleteSecret adds an additional secret to the account (the number of secrets allowed is limited)
+func (client *AccountClient) DeleteSecret(id string) (bool, AccountSecretErrorResponse, error) {
+	accountClient := account.NewAPIClient(client.Config)
+
+	ctx := context.WithValue(context.Background(), account.ContextBasicAuth, account.BasicAuth{
+		UserName: client.apiKey,
+		Password: client.apiSecret,
+	})
+
+	// this one only returns two values because it's a 204 so no actual response
+	_, err := accountClient.SecretManagementApi.RevokeAPISecret(ctx, client.apiKey, id)
+
+	if err != nil {
+		e, ok := err.(account.GenericOpenAPIError)
+		if ok {
+			data := e.Body()
+
+			var errResp AccountSecretErrorResponse
+			jsonErr := json.Unmarshal(data, &errResp)
+			if jsonErr == nil {
+				return false, errResp, err
+			}
+			// if we didn't get the expected format but it was an openapi error
+			return false, AccountSecretErrorResponse{}, e
+		}
+		// something else went wrong
+		return false, AccountSecretErrorResponse{}, err
+	}
+
+	return true, AccountSecretErrorResponse{}, nil
+}

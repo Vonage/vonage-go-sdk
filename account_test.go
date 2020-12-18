@@ -170,7 +170,7 @@ func TestAccountGetSecret(t *testing.T) {
 	result, _, _ := client.GetSecret("ad6dc56f-07b5-46e1-a527-85530e625800")
 
 	if result.ID != "ad6dc56f-07b5-46e1-a527-85530e625800" {
-		t.Error("Test account get one failed")
+		t.Error("Test account get one secret failed")
 	}
 }
 func TestAccountGetMissingSecret(t *testing.T) {
@@ -202,5 +202,59 @@ func TestAccountGetMissingSecret(t *testing.T) {
 
 	if err == nil {
 		t.Error("Test account get one missing secret failed")
+	}
+}
+
+func TestAccountCreateSecret(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/accounts/12345678/secrets",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(201, `
+{
+    "_links": {
+        "self": {
+            "href": "/accounts/12345678/secrets/c07c0604-dc5b-4520-94df-dc4964b2fbca"
+        }
+    },
+    "id": "c07c0604-dc5b-4520-94df-dc4964b2fbca",
+    "created_at": "2020-10-18T13:37:15Z"
+}
+	`,
+			)
+
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewAccountClient(auth)
+	result, _, _ := client.CreateSecret("V3ryS3cr3t!")
+
+	if result.ID != "c07c0604-dc5b-4520-94df-dc4964b2fbca" {
+		t.Error("Test account create secret failed")
+	}
+}
+
+func TestAccountDeleteSecret(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("DELETE", "https://api.nexmo.com/accounts/12345678/secrets/ad6dc56f-07b5-46e1-a527-85530e625800",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(204, "")
+
+			return resp, nil
+		},
+	)
+
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewAccountClient(auth)
+	result, _, _ := client.DeleteSecret("ad6dc56f-07b5-46e1-a527-85530e625800")
+
+	if result != true {
+		t.Error("Test account delete secret failed")
 	}
 }
