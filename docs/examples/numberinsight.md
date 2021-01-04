@@ -54,10 +54,10 @@ func main() {
 	auth := vonage.CreateAuthFromKeySecret(API_KEY, API_SECRET)
 	niClient := vonage.NewNumberInsightClient(auth)
 
-	result, _, _ := niClient.AsyncAdvanced("447770007777", "https://example.com/number-insight-data", vonage.NiOpts{})
+	result, _, _ := niClient.AsyncAdvanced("447770007777", "https://example.com/webhooks/insight", vonage.NiOpts{})
 
 	if result.Status == 0 {
-		http.HandleFunc("/number-insight-data", func(w http.ResponseWriter, r *http.Request) {
+		http.HandleFunc("/insight", func(w http.ResponseWriter, r *http.Request) {
 			data, _ := ioutil.ReadAll(r.Body)
 			fmt.Println(string(data))
 		})
