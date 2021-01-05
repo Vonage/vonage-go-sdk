@@ -3,7 +3,7 @@ package vonage
 import "runtime"
 
 func GetVersion() string {
-	return "0.13.0"
+	return "0.13.1"
 }
 
 func GetUserAgent() string {
