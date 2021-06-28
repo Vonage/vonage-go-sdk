@@ -53,6 +53,11 @@ type VerifyErrorResponse struct {
 
 // Request a number is verified for ownership
 func (client *VerifyClient) Request(number string, brand string, opts VerifyOpts) (VerifyRequestResponse, VerifyErrorResponse, error) {
+	return client.RequestContext(context.Background(), number, brand, opts)
+}
+
+// RequestContext a number is verified for ownership
+func (client *VerifyClient) RequestContext(ctx context.Context, number string, brand string, opts VerifyOpts) (VerifyRequestResponse, VerifyErrorResponse, error) {
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
@@ -75,7 +80,6 @@ func (client *VerifyClient) Request(number string, brand string, opts VerifyOpts
 		verifyOpts.SenderId = optional.NewString(opts.SenderID)
 	}
 
-	ctx := context.Background()
 	result, resp, err := verifyClient.DefaultApi.VerifyRequest(ctx, "json", client.apiKey, client.apiSecret, number, brand, &verifyOpts)
 
 	// catch HTTP errors
@@ -107,12 +111,16 @@ type VerifyCheckResponse struct {
 
 // Check the user-supplied code for this request ID
 func (client *VerifyClient) Check(requestID string, code string) (VerifyCheckResponse, VerifyErrorResponse, error) {
+	return client.CheckContext(context.Background(), requestID, code)
+}
+
+// CheckContext the user-supplied code for this request ID
+func (client *VerifyClient) CheckContext(ctx context.Context, requestID string, code string) (VerifyCheckResponse, VerifyErrorResponse, error) {
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
 	// set up and then parse the options
 	verifyOpts := verify.VerifyCheckOpts{}
-	ctx := context.Background()
 	result, resp, err := verifyClient.DefaultApi.VerifyCheck(ctx, "json", client.apiKey, client.apiSecret, requestID, code, &verifyOpts)
 
 	// catch HTTP errors
@@ -153,13 +161,17 @@ type VerifySearchResponse struct {
 
 // Search for an earlier request by id
 func (client *VerifyClient) Search(requestID string) (VerifySearchResponse, VerifyErrorResponse, error) {
+	return client.SearchContext(context.Background(), requestID)
+}
+
+// SearchContext for an earlier request by id
+func (client *VerifyClient) SearchContext(ctx context.Context, requestID string) (VerifySearchResponse, VerifyErrorResponse, error) {
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
 	// set up and then parse the options
 	verifyOpts := verify.VerifySearchOpts{}
 	verifyOpts.RequestId = optional.NewString(requestID)
-	ctx := context.Background()
 	result, resp, err := verifyClient.DefaultApi.VerifySearch(ctx, "json", client.apiKey, client.apiSecret, &verifyOpts)
 
 	// catch HTTP errors
@@ -188,10 +200,14 @@ type VerifyControlResponse struct {
 
 // Cancel an in-progress request (check API docs for when this is possible)
 func (client *VerifyClient) Cancel(requestID string) (VerifyControlResponse, VerifyErrorResponse, error) {
+	return client.CancelContext(context.Background(), requestID)
+}
+
+// CancelContext an in-progress request (check API docs for when this is possible)
+func (client *VerifyClient) CancelContext(ctx context.Context, requestID string) (VerifyControlResponse, VerifyErrorResponse, error) {
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
-	ctx := context.Background()
 	result, resp, err := verifyClient.DefaultApi.VerifyControl(ctx, "json", client.apiKey, client.apiSecret, requestID, "cancel")
 
 	// catch HTTP errors
@@ -215,10 +231,14 @@ func (client *VerifyClient) Cancel(requestID string) (VerifyControlResponse, Ver
 
 // TriggerNextEvent moves on to the next event in the workflow
 func (client *VerifyClient) TriggerNextEvent(requestID string) (VerifyControlResponse, VerifyErrorResponse, error) {
+	return client.TriggerNextEventContext(context.Background(), requestID)
+}
+
+// TriggerNextEventContext moves on to the next event in the workflow
+func (client *VerifyClient) TriggerNextEventContext(ctx context.Context, requestID string) (VerifyControlResponse, VerifyErrorResponse, error) {
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
-	ctx := context.Background()
 	result, resp, err := verifyClient.DefaultApi.VerifyControl(ctx, "json", client.apiKey, client.apiSecret, requestID, "trigger_next_event")
 
 	// catch HTTP errors
@@ -252,6 +272,11 @@ type VerifyPsd2Opts struct {
 
 // Psd2 requests a user confirm a payment with amount and payee
 func (client *VerifyClient) Psd2(number string, payee string, amount float64, opts VerifyPsd2Opts) (VerifyRequestResponse, VerifyErrorResponse, error) {
+	return client.Psd2Context(context.Background(), number, payee, amount, opts)
+}
+
+// Psd2Context requests a user confirm a payment with amount and payee
+func (client *VerifyClient) Psd2Context(ctx context.Context, number string, payee string, amount float64, opts VerifyPsd2Opts) (VerifyRequestResponse, VerifyErrorResponse, error) {
 	// create the client
 	verifyClient := verify.NewAPIClient(client.Config)
 
@@ -270,7 +295,6 @@ func (client *VerifyClient) Psd2(number string, payee string, amount float64, op
 		verifyOpts.WorkflowId = optional.NewInt32(opts.WorkflowID)
 	}
 
-	ctx := context.Background()
 	result, resp, err := verifyClient.DefaultApi.VerifyRequestWithPSD2(ctx, "json", client.apiKey, client.apiSecret, number, payee, float32(amount), &verifyOpts)
 
 	// catch HTTP errors

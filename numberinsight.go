@@ -49,6 +49,11 @@ type NiResponseJsonBasic struct {
 
 // Basic does a basic-level lookup for data about a number
 func (client *NumberInsightClient) Basic(number string, opts NiOpts) (NiResponseJsonBasic, NiErrorResponse, error) {
+	return client.BasicContext(context.Background(), number, opts)
+}
+
+// BasicContext does a basic-level lookup for data about a number
+func (client *NumberInsightClient) BasicContext(ctx context.Context, number string, opts NiOpts) (NiResponseJsonBasic, NiErrorResponse, error) {
 	// create the client
 	numberinsightClient := numberinsight.NewAPIClient(client.Config)
 
@@ -59,7 +64,6 @@ func (client *NumberInsightClient) Basic(number string, opts NiOpts) (NiResponse
 	}
 
 	// we need context for the API key
-	ctx := context.Background()
 	ctx = context.WithValue(ctx, numberinsight.ContextAPIKey, numberinsight.APIKey{Key: client.apiKey})
 	ctx = context.WithValue(ctx, numberinsight.ContextAPISecret, numberinsight.APIKey{Key: client.apiSecret})
 
@@ -107,13 +111,17 @@ type NiResponseJsonStandard struct {
 
 // Standard does a Standard-level lookup for data about a number
 func (client *NumberInsightClient) Standard(number string, opts NiOpts) (NiResponseJsonStandard, NiErrorResponse, error) {
+	return client.StandardContext(context.Background(), number, opts)
+}
+
+// StandardContext does a Standard-level lookup for data about a number
+func (client *NumberInsightClient) StandardContext(ctx context.Context, number string, opts NiOpts) (NiResponseJsonStandard, NiErrorResponse, error) {
 	// create the client
 	numberinsightClient := numberinsight.NewAPIClient(client.Config)
 
 	niOpts := numberinsight.GetNumberInsightStandardOpts{}
 
 	// we need context for the API key
-	ctx := context.Background()
 	ctx = context.WithValue(ctx, numberinsight.ContextAPIKey, numberinsight.APIKey{Key: client.apiKey})
 	ctx = context.WithValue(ctx, numberinsight.ContextAPISecret, numberinsight.APIKey{Key: client.apiSecret})
 
@@ -146,13 +154,17 @@ type NiResponseAsync struct {
 
 // AdvancedAsync requests a callback with advanced-level information about a number
 func (client *NumberInsightClient) AdvancedAsync(number string, callback string, opts NiOpts) (NiResponseAsync, NiErrorResponse, error) {
+	return client.AdvancedAsyncContext(context.Background(), number, callback, opts)
+}
+
+// AdvancedAsyncContext requests a callback with advanced-level information about a number
+func (client *NumberInsightClient) AdvancedAsyncContext(ctx context.Context, number string, callback string, opts NiOpts) (NiResponseAsync, NiErrorResponse, error) {
 	// create the client
 	numberinsightClient := numberinsight.NewAPIClient(client.Config)
 
 	niOpts := numberinsight.GetNumberInsightAsyncOpts{}
 
 	// we need context for the API key
-	ctx := context.Background()
 	ctx = context.WithValue(ctx, numberinsight.ContextAPIKey, numberinsight.APIKey{Key: client.apiKey})
 	ctx = context.WithValue(ctx, numberinsight.ContextAPISecret, numberinsight.APIKey{Key: client.apiSecret})
 
