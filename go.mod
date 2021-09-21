@@ -5,9 +5,8 @@ go 1.13
 require (
 	github.com/antihax/optional v1.0.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/google/uuid v1.1.1
-	github.com/jarcoal/httpmock v1.0.4
-	github.com/spf13/cobra v0.0.6
-	github.com/spf13/pflag v1.0.5 // indirect
-	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
+	github.com/google/uuid v1.3.0
+	github.com/jarcoal/httpmock v1.0.8
+	github.com/spf13/cobra v1.2.1
+	golang.org/x/oauth2 v0.0.0-20210402161424-2e8d93401602
 )
