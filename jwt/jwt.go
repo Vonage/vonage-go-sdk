@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 )
 
