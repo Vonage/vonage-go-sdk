@@ -42,6 +42,8 @@ type TalkAction struct {
 	BargeIn             bool   `json:"bargeIn"`
 	Level               int    `json:"level,omitempty"`
 	VoiceName           string `json:"voiceName,omitempty"`
+	Style               int    `json:"style,omitempty"`
+	Language            string `json:"language,omitempty"`
 	CalculatedLoopValue int    `json:"loop"`
 }
 

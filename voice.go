@@ -436,6 +436,8 @@ type PlayTtsOpts struct {
 	Loop      int32
 	Level     string
 	VoiceName string
+	Style     int32
+	Language  string
 }
 
 // PlayTts starts playing TTS into the call

@@ -264,7 +264,7 @@ func main() {
 
     result, _, _:= client.PlayTts("aaaabbbb-0000-1111-2222-abcdef01234567",
         "Hello, my friend",
-        vonage.PlayTtsOpts{Loop: 2, VoiceName: "Russell"}
+        vonage.PlayTtsOpts{Loop: 2, Style: 0, Language: "en-US"}
     )
     // or to stop an in-progress TTS
     // result, _, _:= client.StopTts("aaaabbbb-0000-1111-2222-abcdef01234567")
