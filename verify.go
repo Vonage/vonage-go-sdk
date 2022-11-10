@@ -3,10 +3,18 @@ package vonage
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 
 	"github.com/antihax/optional"
 	"github.com/vonage/vonage-go-sdk/internal/verify"
+)
+
+const (
+	verifyPinExpiryMax     = 3600
+	verifyPinExpiryMin     = 60
+	verifyNextEventWaitMax = 900
+	verifyNextEventWaitMin = 60
 )
 
 // VerifyClient for working with the Verify API
@@ -73,6 +81,48 @@ func (client *VerifyClient) Request(number string, brand string, opts VerifyOpts
 
 	if opts.SenderID != "" {
 		verifyOpts.SenderId = optional.NewString(opts.SenderID)
+	}
+
+	if opts.PinExpiry != 0 {
+		if opts.PinExpiry < verifyPinExpiryMin || opts.PinExpiry > verifyPinExpiryMax {
+			err := fmt.Errorf(
+				"bad option value: PinExpiry must be between %d and %d, but %d was given",
+				verifyPinExpiryMin,
+				verifyPinExpiryMax,
+				opts.PinExpiry,
+			)
+			return VerifyRequestResponse{}, VerifyErrorResponse{}, err
+		}
+		if opts.NextEventWait != 0 {
+			m := opts.PinExpiry % opts.NextEventWait
+			if m != 0 {
+				err := fmt.Errorf(
+					"bad option value: PinExpiry must be an integer multiple of NextEventWait, but PinExpiry = %d, NextEventWait = %d",
+					opts.PinExpiry,
+					opts.NextEventWait,
+				)
+				return VerifyRequestResponse{}, VerifyErrorResponse{}, err
+			}
+		}
+		verifyOpts.PinExpiry = optional.NewInt32(opts.PinExpiry)
+	}
+
+	if opts.NextEventWait != 0 {
+		if opts.NextEventWait < verifyNextEventWaitMin || opts.NextEventWait > verifyNextEventWaitMax {
+			err := fmt.Errorf(
+				"bad option value: NextEventWait must be between %d and %d, but %d was given",
+				verifyNextEventWaitMin,
+				verifyNextEventWaitMax,
+				opts.NextEventWait,
+			)
+			return VerifyRequestResponse{}, VerifyErrorResponse{}, err
+		}
+		verifyOpts.NextEventWait = optional.NewInt32(opts.NextEventWait)
+		if opts.PinExpiry == 0 {
+			// when NextEventWait is specified and PinExpiry is not,
+			// PinExpiry is defaulted to equal NextEventWait.
+			verifyOpts.PinExpiry = optional.NewInt32(opts.NextEventWait)
+		}
 	}
 
 	ctx := context.Background()
