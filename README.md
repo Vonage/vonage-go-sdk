@@ -5,7 +5,7 @@
 
 <img src="https://developer.nexmo.com/assets/images/Vonage_Nexmo.svg" height="48px" alt="Nexmo is now known as Vonage" />
 
-This is the community-supported Golang library for [Vonage](https://vonage.com). It has support for most of our APIs, but is still under active development. Issues, pull requests and other input is very welcome. The [package documentation is available on pkg.go](https://pkg.go.dev/mod/github.com/vonage/vonage-go-sdk).
+This is the community-supported Golang library for [Vonage](https://vonage.com). It has support for a handful of our APIs, but is no longer active development. Issues, pull requests, and other input are very welcome. The [package documentation is available on pkg.go](https://pkg.go.dev/mod/github.com/vonage/vonage-go-sdk).
 
 If you don't already know Vonage: We make telephony APIs. If you need to make a call, check a phone number, or send an SMS then you are in the right place! If you don't have one yet, you can [sign up for a Vonage account](https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&amp;utm_medium=github&amp;utm_campaign=vonage-go) and get some free credit to get you started.
 
