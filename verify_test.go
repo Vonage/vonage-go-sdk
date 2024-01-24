@@ -441,3 +441,51 @@ func TestVerifyPsd2Request(t *testing.T) {
 		t.Errorf("Verify request failed")
 	}
 }
+
+func TestVerifyRequestPinExpiryFail(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("POST", "https://api.nexmo.com/verify/json",
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, `
+	{
+		"request_id": "abcdef0123456789abcdef0123456789",
+		"status": "0"
+	}
+	`,
+			)
+
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	auth := CreateAuthFromKeySecret("12345678", "456")
+	client := NewVerifyClient(auth)
+	tests := []struct {
+		name      string
+		expiry    int32
+		next      int32
+		wantError bool
+	}{
+		{"success", verifyPinExpiryMax, 0, false},
+		{"success", verifyPinExpiryMin, 0, false},
+		{"success", 2 * verifyNextEventWaitMax, verifyNextEventWaitMax, false},
+		{"expiry is too big", verifyPinExpiryMax + 1, 0, true},
+		{"expiry is too small", verifyPinExpiryMin - 1, 0, true},
+		{"expiry is not an integer multiple of nextEventWait", 2*verifyNextEventWaitMax - 1, verifyNextEventWaitMax, true},
+		{"success", 0, verifyNextEventWaitMax, false},
+		{"success", 0, verifyNextEventWaitMin, false},
+		{"nextEventWait it too big", 0, verifyNextEventWaitMax + 1, true},
+		{"nextEventWait is too small", 0, verifyNextEventWaitMin - 1, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, _, err := client.Request("44777000777", "VonageGoTest", VerifyOpts{PinExpiry: tt.expiry, NextEventWait: tt.next})
+			if (err != nil) != tt.wantError {
+				t.Errorf("%s: %s", tt.name, err)
+			}
+		})
+	}
+}
