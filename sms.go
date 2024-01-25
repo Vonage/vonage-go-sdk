@@ -57,6 +57,13 @@ type SmsError struct {
 // some restrictions on what you can send from, to be safe try using a Vonage
 // number associated with your account
 func (client *SMSClient) Send(from string, to string, text string, opts SMSOpts) (Sms, SmsErrorResponse, error) {
+	return client.SendContext(context.Background(), from, to, text, opts)
+}
+
+// SendContext an SMS. Give some text to send and the number to send to - there are
+// some restrictions on what you can send from, to be safe try using a Vonage
+// number associated with your account
+func (client *SMSClient) SendContext(ctx context.Context, from string, to string, text string, opts SMSOpts) (Sms, SmsErrorResponse, error) {
 
 	smsClient := sms.NewAPIClient(client.Config)
 
@@ -80,8 +87,6 @@ func (client *SMSClient) Send(from string, to string, text string, opts SMSOpts)
 	if opts.StatusReportReq {
 		smsOpts.StatusReportReq = optional.NewBool(opts.StatusReportReq)
 	}
-
-	ctx := context.Background()
 
 	// now send the SMS
 	result, resp, err := smsClient.DefaultApi.SendAnSms(ctx, "json", client.apiKey, from, to, &smsOpts)

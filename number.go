@@ -72,6 +72,11 @@ type NumberCollection struct {
 
 // List shows the numbers you already own, filters and pagination are available
 func (client *NumbersClient) List(opts NumbersOpts) (NumberCollection, NumbersErrorResponse, error) {
+	return client.ListContext(context.Background(), opts)
+}
+
+// ListContext shows the numbers you already own, filters and pagination are available
+func (client *NumbersClient) ListContext(ctx context.Context, opts NumbersOpts) (NumberCollection, NumbersErrorResponse, error) {
 
 	numbersClient := number.NewAPIClient(client.Config)
 
@@ -112,7 +117,7 @@ func (client *NumbersClient) List(opts NumbersOpts) (NumberCollection, NumbersEr
 	}
 
 	// we need context for the API key
-	ctx := context.WithValue(context.Background(), number.ContextAPIKey, number.APIKey{
+	ctx = context.WithValue(ctx, number.ContextAPIKey, number.APIKey{
 		Key: client.apiKey,
 	})
 
@@ -168,11 +173,16 @@ type NumberAvailable struct {
 
 // Search lets you find a great phone number to use in your application
 func (client *NumbersClient) Search(country string, opts NumberSearchOpts) (NumberSearch, NumbersErrorResponse, error) {
+	return client.SearchContext(context.Background(), country, opts)
+}
+
+// SearchContext lets you find a great phone number to use in your application
+func (client *NumbersClient) SearchContext(ctx context.Context, country string, opts NumberSearchOpts) (NumberSearch, NumbersErrorResponse, error) {
 
 	numbersClient := number.NewAPIClient(client.Config)
 
 	// we need context for the API key
-	ctx := context.WithValue(context.Background(), number.ContextAPIKey, number.APIKey{
+	ctx = context.WithValue(ctx, number.ContextAPIKey, number.APIKey{
 		Key: client.apiKey,
 	})
 
@@ -227,11 +237,16 @@ type NumberBuyOpts struct {
 
 // Buy the best phone number to use in your app
 func (client *NumbersClient) Buy(country string, msisdn string, opts NumberBuyOpts) (NumbersResponse, NumbersErrorResponse, error) {
+	return client.BuyContext(context.Background(), country, msisdn, opts)
+}
+
+// BuyContext the best phone number to use in your app
+func (client *NumbersClient) BuyContext(ctx context.Context, country string, msisdn string, opts NumberBuyOpts) (NumbersResponse, NumbersErrorResponse, error) {
 
 	numbersClient := number.NewAPIClient(client.Config)
 
 	// we need context for the API key
-	ctx := context.WithValue(context.Background(), number.ContextAPIKey, number.APIKey{
+	ctx = context.WithValue(ctx, number.ContextAPIKey, number.APIKey{
 		Key: client.apiKey,
 	})
 
@@ -272,10 +287,15 @@ type NumberCancelOpts struct {
 
 // Cancel a number already in your account
 func (client *NumbersClient) Cancel(country string, msisdn string, opts NumberCancelOpts) (NumbersResponse, NumbersErrorResponse, error) {
+	return client.CancelContext(context.Background(), country, msisdn, opts)
+}
+
+// CancelContext a number already in your account
+func (client *NumbersClient) CancelContext(ctx context.Context, country string, msisdn string, opts NumberCancelOpts) (NumbersResponse, NumbersErrorResponse, error) {
 	numbersClient := number.NewAPIClient(client.Config)
 
 	// we need context for the API key
-	ctx := context.WithValue(context.Background(), number.ContextAPIKey, number.APIKey{
+	ctx = context.WithValue(ctx, number.ContextAPIKey, number.APIKey{
 		Key: client.apiKey,
 	})
 
@@ -322,10 +342,15 @@ type NumberUpdateOpts struct {
 
 // Update the configuration for your number
 func (client *NumbersClient) Update(country string, msisdn string, opts NumberUpdateOpts) (NumbersResponse, NumbersErrorResponse, error) {
+	return client.UpdateContext(context.Background(), country, msisdn, opts)
+}
+
+// UpdateContext the configuration for your number
+func (client *NumbersClient) UpdateContext(ctx context.Context, country string, msisdn string, opts NumberUpdateOpts) (NumbersResponse, NumbersErrorResponse, error) {
 	numbersClient := number.NewAPIClient(client.Config)
 
 	// we need context for the API key
-	ctx := context.WithValue(context.Background(), number.ContextAPIKey, number.APIKey{
+	ctx = context.WithValue(ctx, number.ContextAPIKey, number.APIKey{
 		Key: client.apiKey,
 	})
 

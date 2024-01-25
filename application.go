@@ -61,6 +61,11 @@ type ApplicationResponseCollection struct {
 
 // List your Applications
 func (client *ApplicationClient) GetApplications(opts GetApplicationsOpts) (ApplicationResponseCollection, ApplicationErrorResponse, error) {
+	return client.GetApplicationsContext(context.Background(), opts)
+}
+
+// List your Applications
+func (client *ApplicationClient) GetApplicationsContext(ctx context.Context, opts GetApplicationsOpts) (ApplicationResponseCollection, ApplicationErrorResponse, error) {
 	// create the client
 	applicationClient := application.NewAPIClient(client.Config)
 
@@ -74,7 +79,7 @@ func (client *ApplicationClient) GetApplications(opts GetApplicationsOpts) (Appl
 		AppOpts.PageSize = optional.NewInt32(opts.PageSize)
 	}
 
-	ctx := context.WithValue(context.Background(), application.ContextBasicAuth, application.BasicAuth{
+	ctx = context.WithValue(ctx, application.ContextBasicAuth, application.BasicAuth{
 		UserName: client.apiKey,
 		Password: client.apiSecret,
 	})
@@ -112,10 +117,15 @@ func (client *ApplicationClient) GetApplications(opts GetApplicationsOpts) (Appl
 
 // GetApplication returns one application, by app ID
 func (client *ApplicationClient) GetApplication(app_id string) (ApplicationResponse, ApplicationErrorResponse, error) {
+	return client.GetApplicationContext(context.Background(), app_id)
+}
+
+// GetApplicationContext returns one application, by app ID
+func (client *ApplicationClient) GetApplicationContext(ctx context.Context, app_id string) (ApplicationResponse, ApplicationErrorResponse, error) {
 	// create the client
 	applicationClient := application.NewAPIClient(client.Config)
 
-	ctx := context.WithValue(context.Background(), application.ContextBasicAuth, application.BasicAuth{
+	ctx = context.WithValue(ctx, application.ContextBasicAuth, application.BasicAuth{
 		UserName: client.apiKey,
 		Password: client.apiSecret,
 	})
@@ -201,6 +211,11 @@ type CreateApplicationRequestOpts struct {
 
 // CreateApplication creates a new application
 func (client *ApplicationClient) CreateApplication(name string, opts CreateApplicationOpts) (ApplicationResponse, ApplicationErrorResponse, error) {
+	return client.CreateApplicationContext(context.Background(), name, opts)
+}
+
+// CreateApplicationContext creates a new application
+func (client *ApplicationClient) CreateApplicationContext(ctx context.Context, name string, opts CreateApplicationOpts) (ApplicationResponse, ApplicationErrorResponse, error) {
 	// create the client
 	applicationClient := application.NewAPIClient(client.Config)
 
@@ -215,7 +230,7 @@ func (client *ApplicationClient) CreateApplication(name string, opts CreateAppli
 
 	createOpts := application.CreateApplicationOpts{Opts: optional.NewInterface(AppOpts)}
 
-	ctx := context.WithValue(context.Background(), application.ContextBasicAuth, application.BasicAuth{
+	ctx = context.WithValue(ctx, application.ContextBasicAuth, application.BasicAuth{
 		UserName: client.apiKey,
 		Password: client.apiSecret,
 	})
@@ -240,10 +255,15 @@ func (client *ApplicationClient) CreateApplication(name string, opts CreateAppli
 
 // Delete application deletes an application
 func (client *ApplicationClient) DeleteApplication(app_id string) (bool, ApplicationErrorResponse, error) {
+	return client.DeleteApplicationContext(context.Background(), app_id)
+}
+
+// DeleteContext application deletes an application
+func (client *ApplicationClient) DeleteApplicationContext(ctx context.Context, app_id string) (bool, ApplicationErrorResponse, error) {
 	// create the client
 	applicationClient := application.NewAPIClient(client.Config)
 
-	ctx := context.WithValue(context.Background(), application.ContextBasicAuth, application.BasicAuth{
+	ctx = context.WithValue(ctx, application.ContextBasicAuth, application.BasicAuth{
 		UserName: client.apiKey,
 		Password: client.apiSecret,
 	})
@@ -282,6 +302,11 @@ type UpdateApplicationRequestOpts struct {
 
 // UpdateApplication updates an existing application
 func (client *ApplicationClient) UpdateApplication(id string, name string, opts UpdateApplicationOpts) (ApplicationResponse, ApplicationErrorResponse, error) {
+	return client.UpdateApplicationContext(context.Background(), id, name, opts)
+}
+
+// UpdateApplicationContext updates an existing application
+func (client *ApplicationClient) UpdateApplicationContext(ctx context.Context, id string, name string, opts UpdateApplicationOpts) (ApplicationResponse, ApplicationErrorResponse, error) {
 	// create the client
 	applicationClient := application.NewAPIClient(client.Config)
 
@@ -296,7 +321,7 @@ func (client *ApplicationClient) UpdateApplication(id string, name string, opts 
 
 	updateOpts := application.UpdateApplicationOpts{Opts: optional.NewInterface(AppOpts)}
 
-	ctx := context.WithValue(context.Background(), application.ContextBasicAuth, application.BasicAuth{
+	ctx = context.WithValue(ctx, application.ContextBasicAuth, application.BasicAuth{
 		UserName: client.apiKey,
 		Password: client.apiSecret,
 	})

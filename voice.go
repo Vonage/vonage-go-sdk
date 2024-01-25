@@ -30,13 +30,17 @@ func NewVoiceClient(Auth Auth) *VoiceClient {
 
 // List your calls
 func (client *VoiceClient) GetCalls() (voice.GetCallsResponse, VoiceErrorResponse, error) {
+	return client.GetCallsContext(context.Background())
+}
+
+// List your calls
+func (client *VoiceClient) GetCallsContext(ctx context.Context) (voice.GetCallsResponse, VoiceErrorResponse, error) {
 	// create the client
 	voiceClient := voice.NewAPIClient(client.Config)
 
 	// set up and then parse the options
 	voiceOpts := voice.GetCallsOpts{}
 
-	ctx := context.Background()
 	result, _, err := voiceClient.CallsApi.GetCalls(ctx, &voiceOpts)
 
 	// catch HTTP errors
@@ -49,10 +53,14 @@ func (client *VoiceClient) GetCalls() (voice.GetCallsResponse, VoiceErrorRespons
 
 // GetCall for the details of a specific call
 func (client *VoiceClient) GetCall(uuid string) (voice.GetCallResponse, VoiceErrorResponse, error) {
+	return client.GetCallContext(context.Background(), uuid)
+}
+
+// GetCallContext for the details of a specific call
+func (client *VoiceClient) GetCallContext(ctx context.Context, uuid string) (voice.GetCallResponse, VoiceErrorResponse, error) {
 	// create the client
 	voiceClient := voice.NewAPIClient(client.Config)
 
-	ctx := context.Background()
 	result, _, err := voiceClient.CallsApi.GetCall(ctx, uuid)
 
 	// catch HTTP errors
@@ -155,6 +163,11 @@ func (client *VoiceClient) createCallCommon(opts CreateCallOpts) voice.CreateCal
 
 // CreateCall Makes a phone call given the from/to details and an NCCO or an Answer URL
 func (client *VoiceClient) CreateCall(opts CreateCallOpts) (voice.CreateCallResponse, VoiceErrorResponse, error) {
+	return client.CreateCallContext(context.Background(), opts)
+}
+
+// CreateCallContext Makes a phone call given the from/to details and an NCCO or an Answer URL
+func (client *VoiceClient) CreateCallContext(ctx context.Context, opts CreateCallOpts) (voice.CreateCallResponse, VoiceErrorResponse, error) {
 	voiceClient := voice.NewAPIClient(client.Config)
 	// use the same validation regardless of which type of call this is
 	commonFields := client.createCallCommon(opts)
@@ -176,7 +189,6 @@ func (client *VoiceClient) CreateCall(opts CreateCallOpts) (voice.CreateCallResp
 
 		callOpts := optional.NewInterface(voiceCallOpts)
 
-		ctx := context.Background()
 		createCallOpts := &voice.CreateCallOpts{Opts: callOpts}
 		NccoResult, _, NccoErr := voiceClient.CallsApi.CreateCall(ctx, createCallOpts)
 		return client.handleCreateCallErrors(NccoResult, NccoErr)
@@ -199,7 +211,6 @@ func (client *VoiceClient) CreateCall(opts CreateCallOpts) (voice.CreateCallResp
 
 		callOpts := optional.NewInterface(voiceCallOpts)
 
-		ctx := context.Background()
 		createCallOpts := &voice.CreateCallOpts{Opts: callOpts}
 		AnswerResult, _, AnswerErr := voiceClient.CallsApi.CreateCall(ctx, createCallOpts)
 		return client.handleCreateCallErrors(AnswerResult, AnswerErr)
@@ -275,6 +286,11 @@ type TransferWithNccoOpts struct {
 
 // TransferCall wraps the Modify Call API endpoint
 func (client *VoiceClient) TransferCall(opts TransferCallOpts) (ModifyCallResponse, VoiceErrorResponse, error) {
+	return client.TransferCallContext(context.Background(), opts)
+}
+
+// TransferCallContext wraps the Modify Call API endpoint
+func (client *VoiceClient) TransferCallContext(ctx context.Context, opts TransferCallOpts) (ModifyCallResponse, VoiceErrorResponse, error) {
 	// create the client
 	voiceClient := voice.NewAPIClient(client.Config)
 
@@ -282,7 +298,6 @@ func (client *VoiceClient) TransferCall(opts TransferCallOpts) (ModifyCallRespon
 		destination := TransferDestinationUrl{Type: "ncco", Url: opts.AnswerUrl}
 		transfer := TransferWithUrlOpts{Action: "transfer", Destination: destination}
 		modifyCallOpts := voice.ModifyCallOpts{Opts: optional.NewInterface(transfer)}
-		ctx := context.Background()
 		response, err := voiceClient.CallsApi.UpdateCall(ctx, opts.Uuid, &modifyCallOpts)
 		if err != nil {
 			e := err.(voice.GenericOpenAPIError)
@@ -304,7 +319,6 @@ func (client *VoiceClient) TransferCall(opts TransferCallOpts) (ModifyCallRespon
 		destination := TransferDestinationNcco{Type: "ncco", Ncco: opts.Ncco}
 		transfer := TransferWithNccoOpts{Action: "transfer", Destination: destination}
 		modifyCallOpts := voice.ModifyCallOpts{Opts: optional.NewInterface(transfer)}
-		ctx := context.Background()
 		response, err := voiceClient.CallsApi.UpdateCall(ctx, opts.Uuid, &modifyCallOpts)
 		if err != nil {
 			e := err.(voice.GenericOpenAPIError)
@@ -334,35 +348,59 @@ type ModifyCallOpts struct {
 
 // Hangup wraps the Modify Call API endpoint
 func (client *VoiceClient) Hangup(uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
-	return client.voiceAction("hangup", uuid)
+	return client.voiceAction(context.Background(), "hangup", uuid)
+}
+
+// HangupContext wraps the Modify Call API endpoint
+func (client *VoiceClient) HangupContext(ctx context.Context, uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
+	return client.voiceAction(ctx, "hangup", uuid)
 }
 
 // Mute wraps the Modify Call API endpoint
 func (client *VoiceClient) Mute(uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
-	return client.voiceAction("mute", uuid)
+	return client.voiceAction(context.Background(), "mute", uuid)
+}
+
+// MuteContext wraps the Modify Call API endpoint
+func (client *VoiceClient) MuteContext(ctx context.Context, uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
+	return client.voiceAction(ctx, "mute", uuid)
 }
 
 // Unmute wraps the Modify Call API endpoint
 func (client *VoiceClient) Unmute(uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
-	return client.voiceAction("unmute", uuid)
+	return client.voiceAction(context.Background(), "unmute", uuid)
+}
+
+// UnmuteContext wraps the Modify Call API endpoint
+func (client *VoiceClient) UnmuteContext(ctx context.Context, uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
+	return client.voiceAction(ctx, "unmute", uuid)
 }
 
 // Earmuff wraps the Modify Call API endpoint
 func (client *VoiceClient) Earmuff(uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
-	return client.voiceAction("earmuff", uuid)
+	return client.voiceAction(context.Background(), "earmuff", uuid)
+}
+
+// EarmuffContext wraps the Modify Call API endpoint
+func (client *VoiceClient) EarmuffContext(ctx context.Context, uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
+	return client.voiceAction(ctx, "earmuff", uuid)
 }
 
 // Unearmuff wraps the Modify Call API endpoint
 func (client *VoiceClient) Unearmuff(uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
-	return client.voiceAction("unearmuff", uuid)
+	return client.voiceAction(context.Background(), "unearmuff", uuid)
+}
+
+// UnearmuffContext wraps the Modify Call API endpoint
+func (client *VoiceClient) UnearmuffContext(ctx context.Context, uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
+	return client.voiceAction(ctx, "unearmuff", uuid)
 }
 
 // voiceAction holds the code for the actions that have no extra params
-func (client *VoiceClient) voiceAction(action string, uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
+func (client *VoiceClient) voiceAction(ctx context.Context, action string, uuid string) (ModifyCallResponse, VoiceErrorResponse, error) {
 	// create the client
 	voiceClient := voice.NewAPIClient(client.Config)
 	modifyCallOpts := voice.ModifyCallOpts{Opts: optional.NewInterface(ModifyCallOpts{Action: action})}
-	ctx := context.Background()
 
 	response, err := voiceClient.CallsApi.UpdateCall(ctx, uuid, &modifyCallOpts)
 	if err != nil {
@@ -390,11 +428,15 @@ type PlayAudioOpts struct {
 
 // PlayAudioStream starts an audio file from a URL playing in a call
 func (client *VoiceClient) PlayAudioStream(uuid string, streamUrl string, opts PlayAudioOpts) (voice.StartStreamResponse, VoiceErrorResponse, error) {
+	return client.PlayAudioStreamContext(context.Background(), uuid, streamUrl, opts)
+}
+
+// PlayAudioStreamContext starts an audio file from a URL playing in a call
+func (client *VoiceClient) PlayAudioStreamContext(ctx context.Context, uuid string, streamUrl string, opts PlayAudioOpts) (voice.StartStreamResponse, VoiceErrorResponse, error) {
 	voiceClient := voice.NewAPIClient(client.Config)
 
 	streamOpts := voice.StartStreamRequest{StreamUrl: []string{streamUrl}}
 
-	ctx := context.Background()
 	response, _, err := voiceClient.StreamAudioApi.StartStream(ctx, uuid, streamOpts)
 
 	if err != nil {
@@ -413,8 +455,12 @@ func (client *VoiceClient) PlayAudioStream(uuid string, streamUrl string, opts P
 
 // StopAudioStream stops the currently-playing audio stream
 func (client *VoiceClient) StopAudioStream(uuid string) (voice.StopStreamResponse, VoiceErrorResponse, error) {
+	return client.StopAudioStreamContext(context.Background(), uuid)
+}
+
+// StopAudioStreamContext stops the currently-playing audio stream
+func (client *VoiceClient) StopAudioStreamContext(ctx context.Context, uuid string) (voice.StopStreamResponse, VoiceErrorResponse, error) {
 	voiceClient := voice.NewAPIClient(client.Config)
-	ctx := context.Background()
 	response, _, err := voiceClient.StreamAudioApi.StopStream(ctx, uuid)
 
 	if err != nil {
@@ -440,6 +486,11 @@ type PlayTtsOpts struct {
 
 // PlayTts starts playing TTS into the call
 func (client *VoiceClient) PlayTts(uuid string, text string, opts PlayTtsOpts) (voice.StartTalkResponse, VoiceErrorResponse, error) {
+	return client.PlayTtsContext(context.Background(), uuid, text, opts)
+}
+
+// PlayTtsContext starts playing TTS into the call
+func (client *VoiceClient) PlayTtsContext(ctx context.Context, uuid string, text string, opts PlayTtsOpts) (voice.StartTalkResponse, VoiceErrorResponse, error) {
 	voiceClient := voice.NewAPIClient(client.Config)
 
 	req_vars := voice.StartTalkRequest{Text: text}
@@ -454,7 +505,6 @@ func (client *VoiceClient) PlayTts(uuid string, text string, opts PlayTtsOpts) (
 	}
 	talkOpts := voice.StartTalkOpts{StartTalkRequest: optional.NewInterface(req_vars)}
 
-	ctx := context.Background()
 	response, _, err := voiceClient.PlayTTSApi.StartTalk(ctx, uuid, &talkOpts)
 
 	if err != nil {
@@ -473,8 +523,12 @@ func (client *VoiceClient) PlayTts(uuid string, text string, opts PlayTtsOpts) (
 
 // StopTts stops the current TTS from playing
 func (client *VoiceClient) StopTts(uuid string) (voice.StopTalkResponse, VoiceErrorResponse, error) {
+	return client.StopTtsContext(context.Background(), uuid)
+}
+
+// StopTtsContext stops the current TTS from playing
+func (client *VoiceClient) StopTtsContext(ctx context.Context, uuid string) (voice.StopTalkResponse, VoiceErrorResponse, error) {
 	voiceClient := voice.NewAPIClient(client.Config)
-	ctx := context.Background()
 	response, _, err := voiceClient.PlayTTSApi.StopTalk(ctx, uuid)
 
 	if err != nil {
@@ -493,10 +547,14 @@ func (client *VoiceClient) StopTts(uuid string) (voice.StopTalkResponse, VoiceEr
 
 // PlayDTMF starts playing a string of DTMF digits into the call
 func (client *VoiceClient) PlayDtmf(uuid string, dtmf string) (voice.DtmfResponse, VoiceErrorResponse, error) {
+	return client.PlayDtmfContext(context.Background(), uuid, dtmf)
+}
+
+// PlayDTMFContext starts playing a string of DTMF digits into the call
+func (client *VoiceClient) PlayDtmfContext(ctx context.Context, uuid string, dtmf string) (voice.DtmfResponse, VoiceErrorResponse, error) {
 	voiceClient := voice.NewAPIClient(client.Config)
 	dtmfOpts := voice.DtmfRequest{Digits: dtmf}
 
-	ctx := context.Background()
 	response, _, err := voiceClient.PlayDTMFApi.StartDTMF(ctx, uuid, dtmfOpts)
 
 	if err != nil {
